@@ -19,16 +19,22 @@
     
     <div id="container"></div>
     <script type="text/babel">
-        let destination = document.querySelector("#container");
-
         class HelloWorld extends React.Component {
+          render(){
+            return <p> Hello, componentized world ! </p>
+          }
 
         }
-        ReactDom.render(
-            <div>
-              <p> Hello, World </p>  
-            </div>, 
-            destination);
+        ReactDOM.render(
+          <div>
+            <HelloWorld/>
+            <HelloWorld/>
+            <HelloWorld/>
+            <HelloWorld/>
+            <HelloWorld/>
+            <HelloWorld/>
+          </div>, 
+            document.querySelector("#container"));
     </script>
   </body>
 </html>
