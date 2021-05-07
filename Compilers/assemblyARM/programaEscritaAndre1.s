@@ -11,6 +11,6 @@ _end:
     MOV R7, #1
     SWI 0
 
-_data
-  string: .ascii "Voce esta sendo vigiado(a) !\n"
+.data
+  string: .ascii "O caminho para o conhecimento eh a liberdade. - Hacker Pyron !\n"
   len_string = .-string
