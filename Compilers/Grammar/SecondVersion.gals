@@ -29,13 +29,17 @@ digit = id: "digit"
 beginFun = id: "BeginFun"
 endFun = id: "EndFun"
 
-"if"
+if = id: "if"
 then = id: "then"
 else = id: "else"
 end = id: "end"
 elif = id: "elif"
-while = id: "while"
+loopwhile = id: "loopwhile"
+do = id: "do"
+endloop = id: "endloop"
 expression = id: "expression"
+compare = id: "compare"
+
 
 "."
 "<-"
@@ -47,6 +51,15 @@ expression = id: "expression"
 "("
 ")"
 
+//Relational Operators
+"="
+"<>"
+"<"
+"<="
+">="
+">"
+"or"
+"and"
 
 #NonTerminals
 <PROGRAMA>
@@ -59,27 +72,32 @@ expression = id: "expression"
 <DISPLAY>
 
 <EXPR>
-<BLK_EXPR>
-<DECLR>
-<DECLR_SIMP>
-<DECLR_COMP>
+<ELSE>
+<ELIF>
 
+<COMPR> 
+<OPER>
 
-<DECLR_IF>
-<DECLR_WHI>
 #Grammar
 <PROGRAMA> ::= beginFun <LISTA_COMANDOS> endFun;
 <LISTA_COMANDOS> ::= <COMANDO>"." <LISTA_COMANDOS> | î ; 
 <COMANDO> ::= id "<-" <EXPR>;
 <COMANDO> ::= <ANT_VAR> id ;
 <ANT_VAR> ::= input | digit;
- 
-
 <COMANDO> ::= display <EXPR>;
+
+//If-Statment
+<COMANDO> ::= if <COMPR> then <LISTA_COMANDOS> <ELIF> <ELSE> end;
+<ELSE> ::= else <LISTA_COMANDOS> | î ;
+<ELIF> ::= elif <COMPR> <LISTA_COMANDOS> | î;
+
+//While-statment
+<COMANDO> ::= loopwhile <COMPR> do <LISTA_COMANDOS> endloop;
+
+//Expressions
 <EXPR> ::= expression;
 
-
-
-
+<COMPR> ::= compare;
+<OPER> ::= "=" | "<>" | "<" | "<=" |">=" |">" | "or" |"and";
 
 
