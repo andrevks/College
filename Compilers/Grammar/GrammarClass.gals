@@ -1,0 +1,92 @@
+#Options
+GenerateScanner = true
+GenerateParser = true
+Language = Java
+ScannerName = Lexico
+ParserName = Sintatico
+SemanticName = Semantico
+ScannerCaseSensitive = true
+ScannerTable = Full
+Input = Stream
+Parser = LL
+#RegularDefinitions
+L : [A-Za-z]
+D : [0-9]
+WS : [\ \t\n\r]
+
+
+
+
+
+
+#Tokens
+:{WS}*
+id: {L} ( {L} | {D})*
+
+display = id:"display" 
+input = id:"input"
+digit = id: "digit"
+beginFun = id: "BeginFun"
+endFun = id: "EndFun"
+
+"if"
+then = id: "then"
+else = id: "else"
+end = id: "end"
+elif = id: "elif"
+while = id: "while"
+expression = id: "expression"
+
+"."
+","
+"+"
+"-"
+"/"
+"*"
+"("
+")"
+"="
+
+#NonTerminals
+<PROGRAMA>
+<LISTA_COMANDOS>
+<COMANDO>
+<DECLR_VAR>
+<VAR>
+<P_DECLR_VAR>
+<ATRIB_VAR>
+
+
+<INPUT> 
+<DISPLAY>
+
+<EXPR>
+<BLK_EXPR>
+<DECLR>
+<DECLR_SIMP>
+<DECLR_COMP>
+
+
+<DECLR_IF>
+<DECLR_WHI>
+#Grammar
+<PROGRAMA> ::= beginFun <LISTA_COMANDOS> endFun;
+<LISTA_COMANDOS> ::= <COMANDO>"." <LISTA_COMANDOS> | î ; 
+<COMANDO> ::= <P_DECLR_VAR> | <DECLR>;
+<P_DECLR_VAR> ::= digit <DECLR_VAR> | <DECLR_VAR> ;
+<DECLR_VAR> ::= id | î; 
+
+
+<DECLR> ::= <DECLR_SIMP>;
+<DECLR_SIMP> ::= <INPUT> | <DISPLAY> | <ATRIB_VAR> ;
+
+<INPUT> ::= input <DECLR_VAR>;
+<DISPLAY> ::= display <DECLR_VAR>;
+<ATRIB_VAR> ::= id "=" <EXPR>; //ainda aparece erro inesperado .
+ 
+<EXPR> ::= expression;
+
+<DECLR_COMP> ::= <DECLR_IF> | <DECLR_WHI> ;
+
+<DECLR_IF> ::= "if";
+<DECLR_WHI> ::= while;
