@@ -1,0 +1,133 @@
+#Options
+GenerateScanner = true
+GenerateParser = true
+Language = Java
+ScannerName = Lexico
+ParserName = Sintatico
+SemanticName = Semantico
+ScannerCaseSensitive = true
+ScannerTable = Full
+Input = Stream
+Parser = LL
+#RegularDefinitions
+L : [A-Za-z]
+D : [0-9]
+WS : [\ \t\n\r]
+
+
+
+
+
+
+#Tokens
+:{WS}*
+id: {L} ({L} | {D})*
+num: {D}+
+
+beginFun = id: "BeginFun"
+endFun = id: "EndFun"
+
+"."
+"<-"
+","
+"("
+")"
+
+
+display = id:"display" 
+input = id:"input"
+digit = id: "digit"
+
+if = id: "if"
+then = id: "then"
+else = id: "else"
+end = id: "end"
+elif = id: "elif"
+loopwhile = id: "loopwhile"
+do = id: "do"
+endloop = id: "endloop"
+
+"."
+"<-"
+","
+"("
+")"
+
+//expressions
+or: "or"
+and: "and"
+
+//Arithmetic Expressions
+sum: "+"
+sub: "-"
+div: "/"
+mult: "*"
+
+//Relational Operators
+igual: "="
+diff: "<>"
+menor: "<"
+maior: ">"
+
+#NonTerminals
+<PROGRAMA>
+<LISTA_COMANDOS>
+<COMANDO>
+<ANT_VAR>
+
+
+<INPUT> 
+<DISPLAY>
+
+
+<ELSE>
+<ELIF>
+
+<COMPR> 
+<OPER>
+<OPER_REL>
+<OPERAN>
+<MULT_OP>
+<ADD_OP>
+<TR_ADD>
+<TR_MULT>
+
+<TERM>
+<EXPR>
+<MULT_EXPR>
+#Grammar
+<PROGRAMA> ::= beginFun <LISTA_COMANDOS> endFun;
+<LISTA_COMANDOS> ::= <COMANDO>"." <LISTA_COMANDOS> | î ; 
+<COMANDO> ::= id "<-" <EXPR>;
+<COMANDO> ::= <ANT_VAR> id ;
+<ANT_VAR> ::= input | digit;
+<COMANDO> ::= display <EXPR>;
+
+//If-Statment
+<COMANDO> ::= if <EXPR> then <LISTA_COMANDOS> <ELIF> <ELSE> end;
+<ELSE> ::= else <LISTA_COMANDOS> | î ;
+<ELIF> ::= elif <EXPR> <LISTA_COMANDOS> | î;
+
+//While-statment
+<COMANDO> ::= loopwhile <EXPR> do <LISTA_COMANDOS> endloop;
+
+//Expressions
+<EXPR> ::= <MULT_EXPR> <TR_ADD>;
+
+<TR_ADD> ::= <ADD_OP> <OPERAN> <TR_MULT> | î;
+
+<TR_MULT> ::= <MULT_OP> <OPERAN> | î;
+
+<MULT_EXPR> ::= <OPERAN> <TR_MULT>; 
+
+
+<OPER_REL> ::= iguadiff | "<>" | "<" | ">" ;
+<OPERAN> ::= id | num ;
+
+<ADD_OP> ::= sum | sun;
+<MULT_OP> ::= mult| div ;
+//<SINAL> ::= "+" | "-"| î ;
+
+
+
+
