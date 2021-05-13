@@ -21,7 +21,7 @@ WS : [\ \t\n\r]
 
 #Tokens
 :{WS}*
-id: {L} ({L} | {D})*
+id: {L} ({L} | {D} | _ )*
 num: {D}+
 
 beginFun = id: "BeginFun"
@@ -94,25 +94,28 @@ maiorq: ">"
 
 <TERM>
 <EXPR>
+<EXPR_BOOL>
+<TR_BOOL> 
 <MULT_EXPR>
 #Grammar
 <PROGRAMA> ::= beginFun <LISTA_COMANDOS> endFun;
-<LISTA_COMANDOS> ::= <COMANDO>"." <LISTA_COMANDOS> | î ; 
+<LISTA_COMANDOS> ::= <COMANDO> "." <LISTA_COMANDOS> | î ; 
 <COMANDO> ::= id "<-" <EXPR>;
 <COMANDO> ::= <ANT_VAR> id ;
 <ANT_VAR> ::= input | digit;
 <COMANDO> ::= display <EXPR>;
 
 //If-Statment
-<COMANDO> ::= if <EXPR> then <LISTA_COMANDOS> <ELIF> <ELSE> end;
+<COMANDO> ::= if <EXPR_BOOL> then <LISTA_COMANDOS> <ELIF> <ELSE> end;
 <ELSE> ::= else <LISTA_COMANDOS> | î ;
-<ELIF> ::= elif <EXPR> <LISTA_COMANDOS> | î;
+<ELIF> ::= elif <EXPR_BOOL> <LISTA_COMANDOS> | î;
 
 //While-statment
-<COMANDO> ::= loopwhile <EXPR> do <LISTA_COMANDOS> endloop;
+<COMANDO> ::= loopwhile <EXPR_BOOL> do <LISTA_COMANDOS> endloop;
 
 //Expressions
 <EXPR> ::= <MULT_EXPR> <TR_ADD>;
+
 
 <TR_ADD> ::= <ADD_OP> <OPERAN> <TR_MULT> | î;
 
@@ -121,13 +124,12 @@ maiorq: ">"
 <MULT_EXPR> ::= <OPERAN> <TR_MULT>; 
 
 
-<OPER_REL> ::= igual | diff | menorq | maiorq ;
-<OPERAN> ::= id | num ;
 
+<OPERAN> ::= id | num | "(" <EXPR> ")" ;
 <ADD_OP> ::= sum | sub;
 <MULT_OP> ::= mult| div ;
-//<SINAL> ::= "+" | "-"| î ;
 
-
+<OPER_REL> ::= igual | diff | menorq | maiorq | or | and;
+<EXPR_BOOL> ::= <EXPR> <OPER_REL> <EXPR>;
 
 
