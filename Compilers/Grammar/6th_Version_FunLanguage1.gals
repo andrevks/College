@@ -21,38 +21,34 @@ WS : [\ \t\n\r]
 
 #Tokens
 :{WS}*
-id: {L} ({L} | {D} | _ )*
-num: {D}+
+tk_id: {L} ({L} | {D} | _ )*
+tk_num: {D}+
+tk_string: \" ({L} | {D} | . | % | :  )* \"
 
-beginFun = id: "BeginFun"
-endFun = id: "EndFun"
+tk_beginFun = tk_id: "BeginFun"
+tk_endFun = tk_id: "EndFun"
 
-"."
-"<-"
-","
-"("
-")"
+tk_period: "."
+tk_atrib:"<-"
+tk_comma:","
+tk_openP:"("
+tk_closeP:")"
 
 
-display = id:"display" 
-input = id:"input"
-digit = id: "digit"
+display = tk_id:"display" 
+input = tk_id:"input"
+digit = tk_id: "digit"
 
-if = id: "if"
-then = id: "then"
-else = id: "else"
-end = id: "end"
-elif = id: "elif"
-loopwhile = id: "loopwhile"
-do = id: "do"
-endloop = id: "endloop"
+if = tk_id: "if"
+then = tk_id: "then"
+else = tk_id: "else"
+end = tk_id: "end"
+elif = tk_id: "elif"
+loopwhile = tk_id: "loopwhile"
+do = tk_id: "do"
+endloop = tk_id: "endloop"
 
-"."
-"<-"
-","
-"("
-")"
-
+//"#"
 //expressions
 
 tk_or: "|" 
@@ -77,15 +73,15 @@ tk_maiorq: ">"
 <ANT_VAR>
 <VAR>
 <DPS_VAR>
-
-<INPUT> 
+<INPUT>
 <DISPLAY>
-
+<DISPLAY_F>
+<KEY>
 
 <ELSE>
 <ELIF>
+<STRING>
 
-<COMPR> 
 <OPER>
 <OPER_REL>
 <OPERAN>
@@ -93,7 +89,6 @@ tk_maiorq: ">"
 <SUM_MINUS>
 
 
-<TERM>
 <EXP>
 <EXP_F>
 <EXPR_BOOL>
@@ -101,14 +96,24 @@ tk_maiorq: ">"
 <BOOL_TYPE>
 
 #Grammar
-<PROGRAMA> ::= beginFun <LISTA_COMANDOS> endFun;
-<LISTA_COMANDOS> ::= <COMANDO> "." <LISTA_COMANDOS> | î ; 
-<COMANDO> ::= <VAR>;
-<VAR> ::= <ANT_VAR> id <DPS_VAR>;
-//<COMANDO> ::= <ANT_VAR> id ;
-<DPS_VAR> ::= "<-" <EXP> | î;
-<ANT_VAR> ::= input | digit | î;
-<COMANDO> ::= display <EXPR_BOOL>;
+<PROGRAMA> ::= tk_beginFun <LISTA_COMANDOS> tk_endFun;
+
+<LISTA_COMANDOS> ::= <COMANDO> tk_period <LISTA_COMANDOS> | î ; 
+
+//Input from the keyboards
+<COMANDO> ::= <INPUT>;
+<INPUT> ::= input tk_id <KEY> | <KEY>;
+<KEY> ::= tk_comma tk_id <INPUT> | î;
+
+<COMANDO> ::= <ANT_VAR> tk_id <DPS_VAR>;
+<DPS_VAR> ::= tk_atrib <EXP> | î;
+<ANT_VAR> ::= digit | î;
+
+//Output to Screen 
+<COMANDO> ::= <DISPLAY>;
+<DISPLAY> ::= display <DISPLAY_F>;
+<DISPLAY_F> ::= <EXPR_BOOL> | <STRING>;
+<STRING> ::= tk_string ;
 
 //If-Statment
 <COMANDO> ::= if <EXPR_BOOL> then <LISTA_COMANDOS> <ELIF> <ELSE> end;
@@ -119,9 +124,10 @@ tk_maiorq: ">"
 <COMANDO> ::= loopwhile <EXPR_BOOL> do <LISTA_COMANDOS> endloop;
 
 //Expressions
+
 //arithmetich expr
 
-<EXP> ::= <OPERAN> <EXP_F>;
+<EXP> ::= <OPERAN> <EXP_F> | tk_openP <EXP> tk_closeP <EXP_F>  ;
 
 <OPER> ::= <MULT_DIV> | <SUM_MINUS> ;
 
@@ -129,7 +135,7 @@ tk_maiorq: ">"
 
 <SUM_MINUS> ::= tk_sum <EXP> | tk_sub <EXP>;
 
-<EXP_F> ::= î | <OPER>  ;
+<EXP_F> ::= î | <OPER> ;
 
 
 //Logic expr
@@ -142,7 +148,7 @@ tk_maiorq: ">"
 
 <BOOL_F> ::= <OPER_REL> | î;
 
-<OPERAN> ::= id | num ;
+<OPERAN> ::= tk_id | tk_num ;
 
 
 
