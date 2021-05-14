@@ -75,7 +75,8 @@ tk_maiorq: ">"
 <LISTA_COMANDOS>
 <COMANDO>
 <ANT_VAR>
-
+<VAR>
+<DPS_VAR>
 
 <INPUT> 
 <DISPLAY>
@@ -102,8 +103,10 @@ tk_maiorq: ">"
 #Grammar
 <PROGRAMA> ::= beginFun <LISTA_COMANDOS> endFun;
 <LISTA_COMANDOS> ::= <COMANDO> "." <LISTA_COMANDOS> | î ; 
-<COMANDO> ::= <ANT_VAR> id "<-" <EXP>;
+<COMANDO> ::= <VAR>;
+<VAR> ::= <ANT_VAR> id <DPS_VAR>;
 //<COMANDO> ::= <ANT_VAR> id ;
+<DPS_VAR> ::= "<-" <EXP> | î;
 <ANT_VAR> ::= input | digit | î;
 <COMANDO> ::= display <EXPR_BOOL>;
 
@@ -120,13 +123,13 @@ tk_maiorq: ">"
 
 <EXP> ::= <OPERAN> <EXP_F>;
 
-<OPER> ::= <MULT_DIV> | <SUM_MINUS>;
+<OPER> ::= <MULT_DIV> | <SUM_MINUS> ;
 
 <MULT_DIV> ::= tk_mult <EXP> | tk_div <EXP>;
 
 <SUM_MINUS> ::= tk_sum <EXP> | tk_sub <EXP>;
 
-<EXP_F> ::= î | <OPER>;
+<EXP_F> ::= î | <OPER>  ;
 
 
 //Logic expr
