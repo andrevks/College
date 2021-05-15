@@ -1,0 +1,153 @@
+#Options
+GenerateScanner = true
+GenerateParser = true
+Language = Java
+ScannerName = Lexico
+ParserName = Sintatico
+SemanticName = Semantico
+ScannerCaseSensitive = true
+ScannerTable = Full
+Input = Stream
+Parser = LL
+#RegularDefinitions
+L : [A-Za-z]
+D : [0-9]
+WS : [\ \t\n\r]
+
+#Tokens
+:{WS}*
+tk_id: {L} ({L} | {D} | _ )*
+tk_num: {D}+
+tk_string: \" ({L} | {D} | . | % | :  )* \"
+
+
+
+
+tk_beginFun = tk_id: "BeginFun"
+tk_endFun = tk_id: "EndFun"
+
+tk_period: "."
+tk_atrib:"<-"
+tk_comma:","
+tk_openP:"("
+tk_closeP:")"
+
+
+display = tk_id:"showMeTheCode" 
+input = tk_id:"grabInput"
+digit = tk_id: "funny"
+
+if = tk_id: "if"
+then = tk_id: "then"
+else = tk_id: "else"
+end = tk_id: "end"
+elif = tk_id: "elif"
+loopwhile = tk_id: "funLoopWhile"
+do = tk_id: "do"
+endloop = tk_id: "endFunLoop"
+
+//"#"
+//expressions
+
+tk_or: "|" 
+tk_and: "&" 
+
+//Arithmetic Expressions
+tk_sum: "+"
+tk_sub: "-"
+tk_div: "/"
+tk_mult: "*"
+
+//Relational Operators
+tk_igual: "="
+tk_diff: "<>"
+tk_menorq: "<"
+tk_maiorq: ">"
+
+#NonTerminals
+<PROGRAMA>
+<LISTA_COMANDOS>
+<COMANDO>
+<ANT_VAR>
+<VAR>
+<DPS_VAR>
+<INPUT>
+<DISPLAY>
+<DISPLAY_F>
+<KEY>
+
+<ELSE>
+<ELIF>
+<STRING>
+
+<OPER>
+<OPER_REL>
+<OPERAN>
+<MULT_DIV>
+<SUM_MINUS>
+
+
+<EXP>
+<EXP_F>
+<EXPR_BOOL>
+<BOOL_F> 
+<BOOL_TYPE>
+
+#Grammar
+<PROGRAMA> ::= tk_beginFun <LISTA_COMANDOS> tk_endFun;
+
+<LISTA_COMANDOS> ::= <COMANDO> tk_period <LISTA_COMANDOS> | î ; 
+
+//Input from the keyboards
+<COMANDO> ::= <INPUT>;
+<INPUT> ::= input tk_id <KEY> | <KEY>;
+<KEY> ::= tk_comma tk_id <INPUT> | î;
+
+<COMANDO> ::= <ANT_VAR> tk_id <DPS_VAR>;
+<DPS_VAR> ::= tk_atrib <EXP> | î;
+<ANT_VAR> ::= digit | î;
+
+//Output to Screen 
+<COMANDO> ::= <DISPLAY>;
+<DISPLAY> ::= display <DISPLAY_F>;
+<DISPLAY_F> ::= <EXPR_BOOL> | <STRING>;
+<STRING> ::= tk_string ;
+
+//If-Statment
+<COMANDO> ::= if <EXPR_BOOL> then <LISTA_COMANDOS> <ELIF> <ELSE> end;
+<ELSE> ::= else <LISTA_COMANDOS> | î ;
+<ELIF> ::= elif <EXPR_BOOL> <LISTA_COMANDOS> | î;
+
+//While-statment
+<COMANDO> ::= loopwhile <EXPR_BOOL> do <LISTA_COMANDOS> endloop;
+
+//Expressions
+
+//arithmetich expr
+
+<EXP> ::= <OPERAN> <EXP_F> | tk_openP <EXP> tk_closeP <EXP_F>  ;
+
+<OPER> ::= <MULT_DIV> | <SUM_MINUS> ;
+
+<MULT_DIV> ::= tk_mult <EXP> | tk_div <EXP>;
+
+<SUM_MINUS> ::= tk_sum <EXP> | tk_sub <EXP>;
+
+<EXP_F> ::= î | <OPER> ;
+
+
+//Logic expr
+<EXPR_BOOL> ::= <OPERAN> <BOOL_F>;
+
+<OPER_REL> ::= tk_igual <EXPR_BOOL> | tk_diff <EXPR_BOOL> | tk_menorq <EXPR_BOOL> | tk_maiorq <EXPR_BOOL>
+| <BOOL_TYPE> <EXPR_BOOL> ;
+
+<BOOL_TYPE> ::= tk_and | tk_or;
+
+<BOOL_F> ::= <OPER_REL> | î;
+
+<OPERAN> ::= tk_id | tk_num ;
+
+
+
+
