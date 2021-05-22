@@ -24,32 +24,81 @@ Steps:
  [Token, Lexema, Line, Column]
 """
 
-#import of regex
+from typing import NamedTuple
 import re
 
-class Lexer:
+class Token(NamedTuple):
+  type: str
+  lexema: str
+  line: int
+  col: int
+
+class LexicalAnalyser:
 
   def __init__(self, source_code):
-    #self.__especiais = ['+','/']
-    #self.__buffer = []
+    self.__keywords = {
+        'BeginFun','EndFun','if','then','else','elif',
+        'end','funLoopWhile','do','endFunLoop',
+        'showMeTheCode','grabInput','funny'
+        }
+    self.__token_pair = [
+        ('TK_NUM', r'\d+'),
+        ('TK_ATRIB', r'<-'),
+        ('TK_PERIOD', r'\.'),
+        ('TK_ID', r'[A-Za-z]([A-Za-z]|\d|_)*'),
+        ('TK_STRING', r'^\"([A-Za-z]|\d|\.|%|:| )*\"$'), #String com aspas
+        ('TK_OP_AR', r'[-+*\/]'), #Operações aritmética
+        ('TK_OP_RE', r'<>|[=<>]'),#Operação relacional  
+        ('TK_BOOL', r'[|&]'),       
+        ('TK_OPEN_P', r'\('),
+        ('TK_CLOSE_P', r'\)'),
+        ('TK_COMMA', r','),
+        ('TK_NEW_LINE',r'\n'),
+        ('TK_SKIP', r'[\ \t\r]+'),
+        ('MISMATCH', r'.'),                
+      ]                            
     self.__source_code = source_code
 
-  def scanning(self):
-
+  def generateToken(self):
+    
+    token_base = self.__token_pair
     buffer = self.__source_code
-    #defining the pattern
-    pattern = re.compile(r'funny')
+    #Cria grupos com o nome de cada par de token no formato: (?P<nomeTk>regex)
+    #Concatena cada par com '|' que vai servir como OU em passos seguintes
+    regex_rules = '|'.join('(?P<%s>%s)' % strPair for strPair in token_base)
+    line = 1
+    col_start = 0
 
+    #tkType: Pega o nome do padrão reconhecido mais recente. Dependendo 
+    #do padrão existem algumas correções antes de salvar como um token
+    #lexema: pega o valor extraído quando o padrão é reconhecido
+    #column: calcula o valor inicial da coluno do token encontrado
 
-    matches = pattern.finditer(buffer)
- 
-    print("\nBuffer: ")
-    print(buffer)
-    print("\n")
-    for match in matches:
-      print(match)
-
-
+    for matchedPattern in re.finditer(regex_rules, buffer):
+      tkType = matchedPattern.lastgroup
+      lexema = matchedPattern.group()
+      column = matchedPattern.start()+1 - col_start
+      #print("LASTGROUP: ", kind)
+      #print("\nVALUE: ", mo.group())
+      #print("\nCOLLUMN: ", mo.start() - line_start)
+      if tkType == 'TK_NUM':
+        lexema = int(lexema)
+      elif lexema in self.__keywords :
+        tkType = lexema
+      elif tkType == 'TK_NEW_LINE':
+        col_start = matchedPattern.end()
+        line += 1
+        continue
+      elif tkType == 'TK_SKIP':
+        continue
+      elif tkType == 'MISMATCH':
+        raise RuntimeError(f'{tkType!r} valor inesperado na linha {line}')
+      #Retorna uma função geradora a quem chamou. A execução começa
+      #apenas quando o gerador é iterado
+      #Vantagem: Nenhuma memória é alocada quando o yield é usado
+      #O parâmetro é uma tupla nomeada (NamedTuple)
+      yield Token(tkType,lexema,line, column)
+    
 def main():
   #read the current fun lang file in test.lang
   # and store it in a buffer
@@ -58,178 +107,11 @@ def main():
   with open("lang.txt", "r") as file:
     content = file.read()
 
-  lex = Lexer(content)
-  tokens = lex.scanning()
+  lexico = LexicalAnalyser(content).generateToken()
 
+
+  for token in lexico:
+    print(token)
+    print('\n')
 
 main()
-
-import re
-
-text_to_search = '''
-BeginFun
-  funny variable.
-  variable <- 10 * (124+ 666).
-EndFun
-
-'''
-
-regexRules = '''
-
-'''
-pattern = re.compile(r'\d+')
-
-matches = pattern.finditer(text_to_search)
-
-for match in matches:
-  print(match)
-
-print(text_to_search[12:17])
-
-subject = "Data Science"
-language = "Python"
-
-output_str = "I am studying %s and using Python as the programming language." %subject 
-
-print(output_str)
-
-list1 = [('NUMBER', r'\d+'),( 'ASSIGN',  r':=') ]
-list2 = [('NOME_TOKEN', r'REGEX_EXP'),('NOME_TOKEN2', r'REGEX_EXP2') ]
-token = "|".join('(?P<%s>%s)' % pair for pair in list1)
-
-
-
-print(token)
-
-from typing import NamedTuple
-import re
-
-
-class Token(NamedTuple):
-  type: str
-  value: str
-  line: int
-  column: int
-
-
-def tokenize(code):
-  keywords = {'BeginFun','EndFun','if','then','else','elif','end','funLoopWhile','do','endFunLoop',
-              'showMeTheCode','grabInput','funny'}
-  token_specification = [
-    ('TK_NUM', r'\d+'),
-    ('TK_ATRIB', r'<-'),
-    ('TK_PERIOD', r'\.'),
-    ('TK_ID', r'[A-Za-z]([A-Za-z]|\d|_)*'),
-    ('TK_STRING', r'^\"([A-Za-z]|\d|\.|%|:| )*\"$'), #String com aspas
-    ('TK_OP_AR', r'[-+*\/]'), #Oerações aritmética
-    ('TK_OP_RE', r'[=<>]|<>'),#Operação relacional  
-    ('TK_BOOL', r'[|&]'),       
-    ('TK_OPEN_P', r'\('),
-    ('TK_CLOSE_P', r'\)'),
-    ('TK_COMMA', r','),
-    ('TK_NEW_LINE',r'\n'),
-    ('TK_SKIP', r'[\ \t\r]+'),
-    ('MISMATCH', r'.'),                
-  ]            
-
-  tk_regex_rules = '|'.join('(?P<%s>%s)' % pair for pair in token_specification)
-
-  line_num = 1
-  line_start = 0
-  for mo in re.finditer(tk_regex_rules,code):
-    kind = mo.lastgroup
-    value = mo.group()
-    column = mo.start() - line_start
-    #print("LASTGROUP: ", kind)
-     #print("\nVALUE: ", mo.group())
-    #print("\nCOLLUMN: ", mo.start() - line_start)
-    if kind == 'TK_NUM':
-      value = int(value)
-    elif value in keywords :
-      kind = value
-    elif kind == 'TK_NEW_LINE':
-      line_start = mo.end()
-      line_num += 1
-      continue
-    elif kind == 'TK_SKIP':
-      continue
-    elif kind == 'MISMATCH':
-      raise RuntimeError(f'{value!r} unexpected on line {line_num}')
-    yield Token(kind,value, line_num, column)
-
-    
-code_source = '''
-BeginFun
-
- if idade < 10 & anoNasc <> 10 then
-
-	funLoopWhile valor_ethereum < valor_bitcoin do
-
-		showMeTheCode investYourMoney.
-
-	endFunLoop.
-
- end.
- 
-EndFun
-'''
-#tokenize(code_source)
-for token in tokenize(code_source):
-  print(token)
-
-from typing import NamedTuple
-import re
-
-class Token(NamedTuple):
-    type: str
-    value: str
-    line: int
-    column: int
-
-def tokenize(code):
-    keywords = {'IF', 'THEN', 'ENDIF', 'FOR', 'NEXT', 'GOSUB', 'RETURN'}
-    token_specification = [
-        ('NUMBER',   r'\d+'),  # Integer or decimal number
-        ('ASSIGN',   r':='),           # Assignment operator
-        ('END',      r';'),            # Statement terminator
-        ('ID',       r'[A-Za-z]+'),    # Identifiers
-        ('OP',       r'[+\-*/]'),      # Arithmetic operators
-        ('NEWLINE',  r'\n'),           # Line endings
-        ('SKIP',     r'[ \t]+'),       # Skip over spaces and tabs
-        ('MISMATCH', r'.'),            # Any other character
-    ]
-    tok_regex = '|'.join('(?P<%s>%s)' % pair for pair in token_specification)
-    print("REGEX: ", tok_regex)
-    line_num = 1
-    line_start = 0
-
-    for mo in re.finditer(tok_regex, code):
-        kind = mo.lastgroup
-        value = mo.group()
-        column = mo.start() - line_start
-        #print("LASTGROUP: ", mo.lastgroup)
-        print("\nVALUE: ", mo.group())
-        #print("\nCOLLUMN: ", mo.start() - line_start)
-        if kind == 'NUMBER':
-            value = int(value)
-        elif kind == 'ID' and value in keywords:
-            kind = value
-        elif kind == 'NEWLINE':
-            line_start = mo.end()
-            line_num += 1
-            continue
-        elif kind == 'SKIP':
-            continue
-        elif kind == 'MISMATCH':
-            raise RuntimeError(f'{value!r} unexpected on line {line_num}')
-        yield Token(kind, value, line_num, column)
-
-statements = '''
-   IF quantity THEN
-        total:=total-price*quantity;
-        tax := price * 5;
-    ENDIF;
-'''
-tokenize(statements)
-for token in tokenize(statements):
-    print("NADA HAVER: ",token)
