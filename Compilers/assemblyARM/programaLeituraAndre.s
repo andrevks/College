@@ -1,3 +1,18 @@
+/* 
+  Author: André Geraldo | github:@Andrevks
+
+  Disciplina: Compiladores
+
+  Objetivo: Implemente um programa, na linguagem Assembly, 
+  que leia dados do usuário (pelo teclado) e escreva uma 
+  mensagem (no monitor) para ele.
+
+  Linguagem: Assembly Arquitetura ARM no Raspberry PI 3
+
+  Data: 23/05/2021
+
+*/
+
 .global _start  
 
 _start:
@@ -22,7 +37,7 @@ _end:
     MOV R7, #1               @Terminate the current process
     SWI 0
 .data
-  user_input: .ascii "                           "
+  user_input: .ascii "                           \n"
   len_user_input = .-user_input
   msg: .ascii "\nSeja bem vindo a corretora MicoLeaoDourado, "
   len_msg = .-msg
