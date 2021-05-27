@@ -21,7 +21,7 @@ public class AlunoDAO extends DAO{
     private static PreparedStatement comandoBuscaMatricula;
 
 
-    public AlunoDAO(ConexaoDB conexao) throws PersistenciaException{
+    public AlunoDAO(ConexaoBD conexao) throws PersistenciaException{
         super(conexao);
         try{
             comandoIncluir = conexao.getConexao().prepareStatement("INSERT INTO ALUNO" +

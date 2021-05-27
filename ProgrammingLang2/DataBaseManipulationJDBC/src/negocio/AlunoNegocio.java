@@ -13,8 +13,7 @@ public class AlunoNegocio {
 
     public AlunoNegocio() throws NegocioException {
         try {
-            //Erro pag 12
-            this.alunoDAO = new AlunoDAO(ConexaoBD.getInstacia());
+            this.alunoDAO = new AlunoDAO(ConexaoBD.getInstancia());
 
         }catch (PersistenciaException ex ){
            throw new NegocioException("Erro ao iniciar a Persistencia - " + ex.getMessage());
