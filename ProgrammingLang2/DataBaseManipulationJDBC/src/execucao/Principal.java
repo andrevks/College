@@ -195,9 +195,10 @@ public class Principal {
 
         try{
             nome = JOptionPane.showInputDialog("Forneca o nome do Aluno", alunoTemp.getNome().trim());
+            System.out.println("ALUNO EM LERDADOS: " + alunoTemp.getNome());
             alunoTemp.setNome(nome);
-            nomeMae = JOptionPane.showInputDialog("Forneca o nome da mae do Aluno"
-            , alunoTemp.getNomeMae().trim());
+            nomeMae = JOptionPane.showInputDialog("Forneca o nome da mae do Aluno", alunoTemp.getNomeMae().trim());
+            alunoTemp.setNomeMae(nomeMae);
 
             nomePai = JOptionPane.showInputDialog("Forneca o nome do pai do Aluno",
                     alunoTemp.getNomePai().trim());
@@ -206,6 +207,7 @@ public class Principal {
             sexo = (EnumSexo) JOptionPane.showInputDialog(null, "" +
                     "Escolha uma Opcao", "Leitura de Dados",
                     JOptionPane.QUESTION_MESSAGE, null, EnumSexo.values(), alunoTemp.getSexo());
+            alunoTemp.setSexo(sexo);
 
             logradouro = JOptionPane.showInputDialog("Forneca o logradouro do endereco",
                     alunoTemp.getEndereco().getLogradouro().trim());
@@ -221,6 +223,7 @@ public class Principal {
 
             cidade = JOptionPane.showInputDialog("Forneca a cidade no endereco",alunoTemp.getEndereco().getCidade().trim());
             alunoTemp.getEndereco().setBairro(bairro);
+            alunoTemp.getEndereco().setCidade(cidade);
 
             uf = (EnumUF) JOptionPane.showInputDialog(null, "Escolha uma Opcao",
                     "Leitura de Dados", JOptionPane.QUESTION_MESSAGE, null,EnumUF.values(),

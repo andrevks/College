@@ -30,7 +30,7 @@ public class AlunoNegocio {
                 throw new NegocioException("Inclusao nao realizada !!");
             }
         }catch (PersistenciaException ex){
-            throw new NegocioException("Erro ao incluir o aluno - " + ex.getMessage());
+            throw new NegocioException("AlunoNegocio: Erro ao incluir o aluno - " + ex.getMessage());
         }
     }
 

@@ -24,7 +24,7 @@ public class AlunoDAO extends DAO{
     public AlunoDAO(ConexaoBD conexao) throws PersistenciaException{
         super(conexao);
         try{
-            comandoIncluir = conexao.getConexao().prepareStatement("INSERT INTO ALUNO" +
+            comandoIncluir = conexao.getConexao().prepareStatement("INSERT INTO Aluno" +
                     "( nome, nomemae, nomepai, sexo, logradouro, numero, bairro, cidade" +
                     "uf )VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?");
             comandoAlterar = conexao.getConexao().prepareStatement("UPDATE Aluno SET  nome=?, " +
@@ -32,7 +32,6 @@ public class AlunoDAO extends DAO{
                             "uf=? WHERE matricula=?");
             comandoExcluir = conexao.getConexao().prepareStatement("DELETE FROM Aluno WHERE" +
                     "matricula=?");
-
             comandoBuscaMatricula = conexao.getConexao().prepareStatement("SELECT * FROM Aluno WHERE" +
                     "matricula=?");
         } catch (SQLException ex) {
@@ -52,6 +51,8 @@ public class AlunoDAO extends DAO{
             comandoIncluir.setString(7,alunoVO.getEndereco().getBairro());
             comandoIncluir.setString(8,alunoVO.getEndereco().getCidade());
             comandoIncluir.setString(9,alunoVO.getEndereco().getUf().name());
+            System.out.println("ALuno: " + alunoVO);
+
             retorno = comandoIncluir.executeUpdate();
         } catch (SQLException ex) {
             throw new PersistenciaException("Erro ao incluir aluno - " + ex.getMessage());
@@ -63,13 +64,13 @@ public class AlunoDAO extends DAO{
         try {
             comandoAlterar.setString(1,alunoVO.getNome());
             comandoAlterar.setString(2,alunoVO.getNomeMae());
-            comandoIncluir.setString(3,alunoVO.getNomePai());
-            comandoIncluir.setInt(4,alunoVO.getSexo().ordinal());
-            comandoIncluir.setString(5,alunoVO.getEndereco().getLogradouro());
-            comandoIncluir.setInt(6, alunoVO.getEndereco().getNumero());
-            comandoIncluir.setString(7, alunoVO.getEndereco().getBairro());
-            comandoIncluir.setString(8,alunoVO.getEndereco().getCidade());
-            comandoIncluir.setString(9,alunoVO.getEndereco().getUf().name());
+            comandoAlterar.setString(3,alunoVO.getNomePai());
+            comandoAlterar.setInt(4,alunoVO.getSexo().ordinal());
+            comandoAlterar.setString(5,alunoVO.getEndereco().getLogradouro());
+            comandoAlterar.setInt(6, alunoVO.getEndereco().getNumero());
+            comandoAlterar.setString(7, alunoVO.getEndereco().getBairro());
+            comandoAlterar.setString(8,alunoVO.getEndereco().getCidade());
+            comandoAlterar.setString(9,alunoVO.getEndereco().getUf().name());
             retorno = comandoAlterar.executeUpdate();
         } catch (SQLException ex) {
             throw new PersistenciaException("Erro ao alterar aluno - " + ex.getMessage());
@@ -117,13 +118,13 @@ public class AlunoDAO extends DAO{
                 alu = this.montaAlunoVO(rs);
                 listaAluno.add(alu);
             }
+            comando.close();
         }catch (Exception ex){
             throw new PersistenciaException("Erro na selecao por nome - " + ex.getMessage());
         }
         return listaAluno;
     }
     private AlunoVO montaAlunoVO(ResultSet rs) throws PersistenciaException{
-
         AlunoVO alu = new AlunoVO();
         if(rs != null){
             try {
