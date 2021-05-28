@@ -21,7 +21,7 @@ class LexicalError(Exception):
         super().__init__(self.msg)
 
     def __str__(self):
-        return f'{self.msg} Padrão \"{self.lex}\" não esperado na linha {self.line} e coluna {self.col}'
+        return f'{self.msg} Padrão \'  {self.lex}  \' não esperado na linha {self.line} e coluna {self.col}'
 
 
 class Token(NamedTuple):
@@ -41,12 +41,16 @@ class LexicalAnalyser:
             'end', 'funLoopWhile', 'do', 'endFunLoop',
             'showMeTheCode', 'grabInput', 'funny'
         }
+        # self.__keywords = r'\b(BeginFun|EndFun|if|then|else|elif|end|' \
+        #                   r'funLoopWhile|do|endFunLoop|showMeTheCode|' \
+        #                   r'grabInput|funny)\b'
         self.__token_pair = [
-            ('TK_NUM', r'\d+'),
+            ('TK_NUM', r'\b\d+\b'),
             ('TK_ATRIB', r'<-'),
             ('TK_PERIOD', r'\.'),
             ('TK_ID', r'[A-Za-z]([A-Za-z]|\d|_)*'),
-            ('TK_STRING', r'^\"([A-Za-z]|\d|\.|%|:| )*\"$'),  # String com aspas
+            # ('TK_STRING', r'\"([A-Za-z]|\d|\.|%|:| )*\"'),  # String com aspas
+            ('TK_STRING', r'"[^"\\\r\n]*(?:\\.[^"\\\r\n]*)*"'),  # String com aspas
             ('TK_OP_AR', r'[-+*\/]'),  # Operações aritmética
             ('TK_OP_RE', r'<>|[=<>]'),  # Operação relacional
             ('TK_BOOL', r'[|&]'),
