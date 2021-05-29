@@ -1,3 +1,5 @@
+from sys import argv
+from receiveFlags import flags
 from typing import NamedTuple
 import re
 
@@ -41,9 +43,13 @@ class LexicalAnalyser:
             'end', 'funLoopWhile', 'do', 'endFunLoop',
             'showMeTheCode', 'grabInput', 'funny'
         }
-        # self.__keywords = r'\b(BeginFun|EndFun|if|then|else|elif|end|' \
-        #                   r'funLoopWhile|do|endFunLoop|showMeTheCode|' \
-        #                   r'grabInput|funny)\b'
+
+        self.__keywords1 = {
+            'BEGINFUN', 'ENDFUN', 'IF', 'THEN', 'ELSE', 'ELIF',
+            'END', 'FUNLOOPWHILE', 'DO', 'ENDFUNLOOP',
+            'SHOWMETHECODE', 'GRABINPUT', 'FUNNY'
+        }
+
         self.__token_pair = [
             ('TK_NUM', r'\b\d+\b'),
             ('TK_ATRIB', r'<-'),
@@ -84,8 +90,10 @@ class LexicalAnalyser:
             column = (matchedPattern.start() + 1) - col_start
             if tk_type == 'TK_NUM':
                 lexeme = int(lexeme)
-            elif lexeme in self.__keywords and tk_type == 'TK_ID':
-                tk_type = lexeme
+            elif lexeme.upper() in self.__keywords1 and tk_type == 'TK_ID':
+                if lexeme not in self.__keywords:
+                    raise LexicalError(line, column, lexeme, "ERRO LÉXICO: Palavra chave -")
+                tk_type = 'KEYWORD'
             elif tk_type == 'TK_NEW_LINE':
                 col_start = matchedPattern.end()
                 line += 1
@@ -103,17 +111,16 @@ class LexicalAnalyser:
 
 
 def main():
-
+    content = flags(argv)
     try:
-        with open("arquivo.fonte", "r") as file:
-            content = file.read()
-    except IOError as err:
-        print("Arquivo não encontrado ! " + err)
+        lexico = LexicalAnalyser(content).generate_token()
+    except:
+        print("TOKENS:")
+        print("( TOKEN ,  LEXEMA,  LINHA  , COLUNA)")
+        for token in lexico:
+            print(f'({token.type}), {token.lexeme}, {token.line}, {token.col}')
 
-    lexico = LexicalAnalyser(content).generate_token()
 
-    for token in lexico:
-        print(token)
 
 
 main()
