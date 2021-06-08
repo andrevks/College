@@ -6,8 +6,8 @@ import vo.AlunoVO;
 import vo.EnumSexo;
 import vo.EnumUF;
 
-import javax.swing.*;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 public class Principal {
     private static AlunoNegocio alunoNegocio;
@@ -25,7 +25,7 @@ public class Principal {
             do {
                 try {
                     opcao = exibirMenu();
-                    switch (opcao){
+                    switch (opcao) {
                         case IncluirAluno:
                             incluirAluno();
                             break;
@@ -41,16 +41,15 @@ public class Principal {
                         case PesqNome:
                             pesquisarPorNome();
                     }
-                } catch (NegocioException ex){
+                } catch (NegocioException ex) {
                     System.out.println("Operacao nao realizada corretamente - " + ex.getMessage());
                 }
-            }while (opcao != EnumMenu.Sair);
+            } while (opcao != EnumMenu.Sair);
         }
-
         System.exit(0);
     }
 
-    /*
+    /**
      Inclui um novo aluno na base de dados
      @throws NegocioException
      */
@@ -59,7 +58,7 @@ public class Principal {
         alunoNegocio.inserir(alunoTemp);
     }
 
-    /*
+    /**
     * Permite a alteracao dos dados de um aluno por meio da matricula
     *
     * @throws NegocioException
@@ -69,31 +68,26 @@ public class Principal {
         try {
             matricula = Integer.parseInt(JOptionPane.showInputDialog(null,"" +
                     "Forneca a matricula do Aluno", "Leitura de Dados",JOptionPane.QUESTION_MESSAGE));
-
         }catch (Exception ex){
             JOptionPane.showMessageDialog(null, "Digitacao incosistente - " + ex.getMessage());
         }
-
         AlunoVO alunoVO = alunoNegocio.pesquisaMatricula(matricula);
         if(alunoVO != null){
             AlunoVO alunoTemp = lerDados(alunoVO);
             alunoNegocio.alterar(alunoTemp);
-        } else {
-            JOptionPane.showMessageDialog(null, "Aluno nao localizado");
-        }
+        } else JOptionPane.showMessageDialog(null, "Aluno nao localizado");
     }
 
-    /*
+    /**
     * Exclui um aluno por meio de uma matricula fornecida.
     *
-    * @thows NegocioException
+    * @throws NegocioException
     * */
-
     private static void excluirAluno() throws NegocioException {
         int matricula = 0;
         try{
             matricula = Integer.parseInt(JOptionPane.showInputDialog(null, "" +
-                    "Forneca a matrica do Aluno","Leitura de Dados",JOptionPane.QUESTION_MESSAGE));
+                    "Forneca a matricula do Aluno","Leitura de Dados",JOptionPane.QUESTION_MESSAGE));
         }catch (Exception ex){
             JOptionPane.showMessageDialog(null,"Digitacao inconsistente - " + ex.getMessage());
         }
@@ -111,7 +105,6 @@ public class Principal {
     *
     * @throws NegocioException
     * */
-
     private static void pesquisarPorMatricula() throws NegocioException {
         int matricula = 0;
         try {
@@ -156,18 +149,17 @@ public class Principal {
     }
 
     /**
-     * Exibe no console da aplicacao os dados dos alunos recebidos pelo parametro alunoVO
+     * Exibe no console da aplicacao os dados dos alunos recebidos pelo parametro alunoVO.
      *
      * @param alunoVO
      */
-
     private static void mostrarDados(AlunoVO alunoVO){
         if(alunoVO != null){
             System.out.println("Matricula: " + alunoVO.getMatricula());
             System.out.println("Nome: " + alunoVO.getNome());
-            System.out.println("Nome da Mae" + alunoVO.getNomeMae());
-            System.out.println("Nome do Pai" + alunoVO.getNomePai());
-            System.out.println("Sexo" + alunoVO.getSexo().name());
+            System.out.println("Nome da Mae: " + alunoVO.getNomeMae());
+            System.out.println("Nome do Pai: " + alunoVO.getNomePai());
+            System.out.println("Sexo: " + alunoVO.getSexo().name());
             if(alunoVO.getEndereco() != null){
                 System.out.println("Logradouro: " + alunoVO.getEndereco().getLogradouro());
                 System.out.println("Numero: " + alunoVO.getEndereco().getNumero());
@@ -188,15 +180,20 @@ public class Principal {
      * @return
      */
     private static AlunoVO lerDados(AlunoVO alunoTemp) {
-        String nome, nomeMae, nomePai, logradouro, bairro, cidade;
+        String nome;
+        String nomeMae;
+        String nomePai;
+        String logradouro;
+        String bairro;
+        String cidade;
         int numero;
         EnumSexo sexo;
         EnumUF uf;
 
         try{
             nome = JOptionPane.showInputDialog("Forneca o nome do Aluno", alunoTemp.getNome().trim());
-            System.out.println("ALUNO EM LERDADOS: " + alunoTemp.getNome());
             alunoTemp.setNome(nome);
+
             nomeMae = JOptionPane.showInputDialog("Forneca o nome da mae do Aluno", alunoTemp.getNomeMae().trim());
             alunoTemp.setNomeMae(nomeMae);
 
@@ -222,7 +219,6 @@ public class Principal {
             alunoTemp.getEndereco().setBairro(bairro);
 
             cidade = JOptionPane.showInputDialog("Forneca a cidade no endereco",alunoTemp.getEndereco().getCidade().trim());
-            alunoTemp.getEndereco().setBairro(bairro);
             alunoTemp.getEndereco().setCidade(cidade);
 
             uf = (EnumUF) JOptionPane.showInputDialog(null, "Escolha uma Opcao",
@@ -240,7 +236,6 @@ public class Principal {
      *
      * @return
      */
-
     private static AlunoVO lerDados() {
         AlunoVO alunoTemp = new AlunoVO();
         return lerDados(alunoTemp);
@@ -251,7 +246,6 @@ public class Principal {
      *
      * @return
      */
-
     private static EnumMenu exibirMenu() {
         EnumMenu opcao;
 
@@ -261,6 +255,7 @@ public class Principal {
                 EnumMenu.values()[0]);
         if(opcao == null){
             JOptionPane.showInputDialog(null, "Nenhuma Opcao Escolhida");
+            opcao = EnumMenu.Sair;
         }
         return opcao;
     }

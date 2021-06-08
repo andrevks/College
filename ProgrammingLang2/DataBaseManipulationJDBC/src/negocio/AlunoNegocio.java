@@ -14,7 +14,6 @@ public class AlunoNegocio {
     public AlunoNegocio() throws NegocioException {
         try {
             this.alunoDAO = new AlunoDAO(ConexaoBD.getInstancia());
-
         }catch (PersistenciaException ex ){
            throw new NegocioException("Erro ao iniciar a Persistencia - " + ex.getMessage());
         }
@@ -90,6 +89,9 @@ public class AlunoNegocio {
         }
         if(alunoVO.getEndereco().getLogradouro() == null || alunoVO.getEndereco().getLogradouro().length() == 0) {
             mensagemErros += "\n Logradouro nao pode ser vazio";
+        }
+        if(alunoVO.getEndereco().getNumero() <= 0) {
+            mensagemErros += "\n Numero deve ser maior que zero";
         }
         if(alunoVO.getEndereco().getBairro() == null || alunoVO.getEndereco().getBairro().length() == 0) {
             mensagemErros += "\n Bairro nao pode ser vazio";

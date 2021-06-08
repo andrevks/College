@@ -80,7 +80,6 @@ public class AlunoVO {
     }
 
     @Override
-
     public String toString() {
         return matricula + ", " + nome + ", "+sexo+", residente em: "+endereco;
     }
