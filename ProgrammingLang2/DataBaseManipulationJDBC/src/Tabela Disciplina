@@ -1,0 +1,20 @@
+CREATE TABLE disciplina
+(
+    codigo serial NOT NULL,
+    nome character(50) NOT NULL,
+    semestre integer NOT NULL,
+    cargahoraria integer NOT NULL,
+    curso integer REFERENCES curso(curso_pkey),
+    CONSTRAINT disciplina_pkey PRIMARY KEY(codigo),
+);
+
+//Implemented in PSQL:
+CREATE TABLE disciplina
+(
+    codigo serial NOT NULL,
+    nome character(50) NOT NULL,
+    semestre integer NOT NULL,
+    cargahoraria integer NOT NULL,
+    curso integer REFERENCES curso(codigo),
+    CONSTRAINT disciplina_pkey PRIMARY KEY(codigo)
+); CREATE TABLE

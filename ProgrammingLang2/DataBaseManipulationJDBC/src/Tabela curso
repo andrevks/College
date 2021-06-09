@@ -1,0 +1,7 @@
+CREATE TABLE curso
+(
+    codigo serial NOT NULL,
+    nome character(50) NOT NULL,
+    descricao character(50),
+    CONSTRAINT curso_pkey PRIMARY KEY (codigo)
+);

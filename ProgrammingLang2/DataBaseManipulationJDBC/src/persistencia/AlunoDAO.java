@@ -35,7 +35,7 @@ public class AlunoDAO extends DAO{
                     " matricula=?");
             comandoBuscaMatricula = conexao.getConexao().prepareStatement("SELECT * FROM Aluno WHERE matricula=?");
         } catch (SQLException ex) {
-           throw new PersistenciaException("AlunoDAO: Erro ao incluir novo aluno - " + ex.getMessage());
+           throw new PersistenciaException("Erro ao incluir novo aluno - " + ex.getMessage());
         }
     }
 

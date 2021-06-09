@@ -1,8 +1,10 @@
 package execucao;
 
 import negocio.AlunoNegocio;
+import negocio.CursoNegocio;
 import negocio.NegocioException;
 import vo.AlunoVO;
+import vo.CursoVO;
 import vo.EnumSexo;
 import vo.EnumUF;
 
@@ -11,6 +13,7 @@ import javax.swing.JOptionPane;
 
 public class Principal {
     private static AlunoNegocio alunoNegocio;
+    private static CursoNegocio cursoNegocio;
 
     public static void main(String [] args){
 
@@ -19,27 +22,47 @@ public class Principal {
         }catch (NegocioException ex){
             System.out.println("Camada de negocio e pesistencia não iniciada - " + ex.getMessage());
         }
+        try{
+            cursoNegocio = new CursoNegocio();
+        }catch (NegocioException ex){
+            System.out.println("Camada de negocio e pesistencia não iniciada - " + ex.getMessage());
+        }
 
-        if(alunoNegocio != null) {
+        if(alunoNegocio != null && cursoNegocio != null) {
             EnumMenu opcao = EnumMenu.Sair;
             do {
                 try {
                     opcao = exibirMenu();
                     switch (opcao) {
-                        case IncluirAluno:
-                            incluirAluno();
+//                        case IncluirAluno:
+//                            incluirAluno();
+//                            break;
+//                        case AlterarAluno:
+//                            alterarAluno();
+//                            break;
+//                        case ExcluirAluno:
+//                            excluirAluno();
+//                            break;
+//                        case PesqMatricula:
+//                            pesquisarPorMatricula();
+//                            break;
+//                        case PesqNome:
+//                            pesquisarPorNome();
+//                            break;
+                        case IncluirCurso:
+                            incluirCurso();
                             break;
-                        case AlterarAluno:
-                            alterarAluno();
+                        case AlterarCurso:
+                            alterarCurso();
                             break;
-                        case ExcluirAluno:
-                            excluirAluno();
+                        case ExcluirCurso:
+                            excluirCurso();
                             break;
-                        case PesqMatricula:
-                            pesquisarPorMatricula();
+                        case PesqCodCurso:
+                            pesquisarPorCodigo();
                             break;
-                        case PesqNome:
-                            pesquisarPorNome();
+                        case PesqNomeCurso:
+                            pesquisarPorNomeCurso();
                     }
                 } catch (NegocioException ex) {
                     System.out.println("Operacao nao realizada corretamente - " + ex.getMessage());
@@ -48,6 +71,153 @@ public class Principal {
         }
         System.exit(0);
     }
+
+    /**
+     Inclui um novo curso na base de dados
+     @throws NegocioException
+     */
+    private static void incluirCurso() throws NegocioException {
+        CursoVO cursoTemp = lerDadosCurso();
+        cursoNegocio.inserir(cursoTemp);
+    }
+
+    /**
+     * Permite a alteracao dos dados de um aluno por meio da matricula
+     *
+     * @throws NegocioException
+     * */
+    private static void alterarCurso() throws NegocioException {
+        int codigo = 0;
+        try {
+            codigo = Integer.parseInt(JOptionPane.showInputDialog(null,"" +
+                    "Forneca o codigo do curso", "Leitura de Dados",JOptionPane.QUESTION_MESSAGE));
+        }catch (Exception ex){
+            JOptionPane.showMessageDialog(null, "Digitacao incosistente - " + ex.getMessage());
+        }
+        CursoVO cursoVO = cursoNegocio.pesquisaCodigo(codigo);
+        if(cursoVO != null){
+            CursoVO cursotemp = lerDadosCurso(cursoVO);
+            cursoNegocio.alterar(cursotemp);
+        } else JOptionPane.showMessageDialog(null, "Curso nao localizado");
+    }
+
+    /**
+     * Exclui um curso por meio de um codigo fornecida.
+     *
+     * @throws NegocioException
+     * */
+    private static void excluirCurso() throws NegocioException {
+        int codigo = 0;
+        try{
+            codigo = Integer.parseInt(JOptionPane.showInputDialog(null, "" +
+                    "Forneca o codigo do Curso","Leitura de Dados",JOptionPane.QUESTION_MESSAGE));
+        }catch (Exception ex){
+            JOptionPane.showMessageDialog(null,"Digitacao inconsistente - " + ex.getMessage());
+        }
+
+        CursoVO cursoVO = cursoNegocio.pesquisaCodigo(codigo);
+        if(cursoVO != null){
+            cursoNegocio.excluir(cursoVO.getCodigo());
+        } else{
+            JOptionPane.showMessageDialog(null, "Curso nao localizado");
+        }
+    }
+
+    /**
+     * Pesquisa um curso por meio do codigo.
+     *
+     * @throws NegocioException
+     * */
+    private static void pesquisarPorCodigo() throws NegocioException {
+        int codigo = 0;
+        try {
+            codigo = Integer.parseInt(JOptionPane.showInputDialog(null, "" +
+                    "Forneca o codigo do Curso","Leitura de Dados",JOptionPane.QUESTION_MESSAGE));
+        } catch (Exception ex){
+            JOptionPane.showMessageDialog(null, "Digitacao inconsistente - " + ex.getMessage());
+        }
+        CursoVO cursoVO = cursoNegocio.pesquisaCodigo(codigo);
+        if(cursoVO != null){
+            mostrarDadosCurso(cursoVO);
+        }else {
+            JOptionPane.showMessageDialog(null,"Curso nao localizado");
+        }
+    }
+
+    /**
+     * Le um nome ou parte de um nome de um curso e busca no banco de dados
+     * cursos que possuem esse nome, ou que iniciam com a parte do nome fornecida.
+     * Caso nao seja fornecido nenhum valor de entrada sera retornado
+     * os 10 primeiros cursos ordenados pelo nome.
+     *
+     * @throws NegocioException
+     */
+    private static void pesquisarPorNomeCurso() throws NegocioException {
+        String nome = JOptionPane.showInputDialog(null, "Forneca" +
+                "o nome do Curso", "Leitura de Dados",JOptionPane.QUESTION_MESSAGE);
+        if(nome != null){
+            List<CursoVO> listaCursoVO = cursoNegocio.pesquisaParteNome(nome);
+
+            if(listaCursoVO.size() > 0){
+                for(CursoVO cursoVO : listaCursoVO) {
+                    mostrarDadosCurso(cursoVO);
+                }
+            }else{
+                JOptionPane.showMessageDialog(null, "Curso nao localizado");
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Nome nao pode ser nulo");
+        }
+
+    }
+
+    /**
+     * Exibe no console da aplicacao os dados dos alunos recebidos pelo parametro alunoVO.
+     *
+     * @param cursoVO
+     */
+    private static void mostrarDadosCurso(CursoVO cursoVO){
+        if(cursoVO != null){
+            System.out.println("Codigo: " + cursoVO.getCodigo());
+            System.out.println("Nome: " + cursoVO.getNome());
+            System.out.println("Descricao: " + cursoVO.getDescricao());
+        }
+    }
+
+    /**
+     * Le os dados de um curso exibindo os dados atuais recebidos pelo parametro
+     * cursoTemp. Na alteracao permite que os dados atuais dos cursos sejam visualizados.
+     * Na inclusao sao exibidos os dados inicializados no CursoVo.
+     *
+     * @param cursoVO
+     * @return
+     */
+    private static CursoVO lerDadosCurso(CursoVO cursoVO) {
+        String nome,descricao;
+        try{
+            nome = JOptionPane.showInputDialog("Forneca o nome do Curso", cursoVO.getNome().trim());
+            cursoVO.setNome(nome);
+
+            descricao = JOptionPane.showInputDialog("Forneca a descricao do Curso",cursoVO.getDescricao().trim());
+            cursoVO.setDescricao(descricao);
+
+        } catch (Exception ex){
+            System.out.println("Digitacao incosistente - " + ex.getMessage());
+        }
+        return cursoVO;
+    }
+
+    /**
+     * Cria uma nova instacia de CursoVO e chama o metodo lerDados(CursoVO cursoVO).
+     *
+     * @return
+     */
+    private static CursoVO lerDadosCurso() {
+        CursoVO cursoTemp = new CursoVO();
+        return lerDadosCurso(cursoTemp);
+    }
+
+    //---------------------------ALUNO---------------------------------
 
     /**
      Inclui um novo aluno na base de dados
