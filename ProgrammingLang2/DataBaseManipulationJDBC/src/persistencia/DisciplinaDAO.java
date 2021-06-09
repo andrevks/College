@@ -1,0 +1,125 @@
+package persistencia;
+
+import vo.DisciplinaVO;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DisciplinaDAO extends DAO{
+
+    private static PreparedStatement comandoIncluir;
+    private static PreparedStatement comandoAlterar;
+    private static PreparedStatement comandoExcluir;
+    private static PreparedStatement comandoBuscaCodigo;
+
+    public DisciplinaDAO(ConexaoBD conexao) throws PersistenciaException {
+        super(conexao);
+        try{
+            comandoIncluir = conexao.getConexao().prepareStatement("INSERT INTO disciplina(nome, semestre, cargahoraria, " +
+                    "curso)" +
+                    "VALUES(?,?,?,?)");
+            comandoAlterar = conexao.getConexao().prepareStatement("UPDATE disciplina SET nome=?, semestre=?, cargahoraria=?," +
+                    "curso=? WHERE codigo=?");
+            comandoExcluir = conexao.getConexao().prepareStatement("DELETE FROM disciplina WHERE codigo=?");
+            comandoBuscaCodigo = conexao.getConexao().prepareStatement("SELECT * FROM disciplina WHERE" +
+                    " codigo=?");
+        }catch (SQLException ex){
+            throw new PersistenciaException("CursoDAO: Erro ao incluir nova disciplina - " + ex.getMessage());
+        }
+    }
+
+    public int incluir(DisciplinaVO disciplinaVO) throws PersistenciaException{
+        int retorno = 0;
+        try {
+            comandoIncluir.setString(1,disciplinaVO.getNome());
+            comandoIncluir.setInt(2,disciplinaVO.getSemestre());
+            comandoIncluir.setInt(3,disciplinaVO.getCargahoraria());
+            comandoIncluir.setInt(4,disciplinaVO.getCurso());
+            retorno = comandoIncluir.executeUpdate();
+        } catch (SQLException ex) {
+            throw new PersistenciaException("Erro ao incluir a disciplina - " + ex.getMessage());
+        }
+        return retorno;
+    }
+
+    public int alterar(DisciplinaVO disciplinaVO)throws PersistenciaException{
+        int retorno = 0;
+        try {
+            comandoAlterar.setString(1,disciplinaVO.getNome());
+            comandoAlterar.setInt(2,disciplinaVO.getSemestre());
+            comandoAlterar.setInt(3,disciplinaVO.getCargahoraria());
+            comandoAlterar.setInt(4,disciplinaVO.getCurso());
+            comandoAlterar.setInt(5,disciplinaVO.getCodigo());
+            retorno = comandoAlterar.executeUpdate();
+        }catch (SQLException ex){
+            throw new PersistenciaException("Erro ao alterar a disciplina - " + ex.getMessage());
+        }
+        return retorno;
+    }
+
+    public int excluir(int codigo) throws PersistenciaException {
+        int retorno = 0;
+        try {
+            comandoExcluir.setInt(1,codigo);
+            retorno = comandoExcluir.executeUpdate();
+        }catch (SQLException ex){
+            throw new PersistenciaException("Erro ao excluir a disciplina - " + ex.getMessage());
+        }
+        return retorno;
+    }
+
+    public DisciplinaVO buscarPorCodigo(int codigo) throws PersistenciaException {
+        DisciplinaVO disc = null;
+
+        try {
+            comandoBuscaCodigo.setInt(1,codigo);
+            ResultSet rs = comandoBuscaCodigo.executeQuery();
+            if(rs.next()){
+                disc = this.montaDisciplinaVO(rs);
+            }
+        } catch (SQLException ex) {
+            throw new PersistenciaException("Erro na selecao por codigo - " + ex.getMessage());
+        }
+        return disc;
+    }
+
+    public List<DisciplinaVO> buscarPorNome(String nome) throws PersistenciaException {
+        List<DisciplinaVO> listaCurso = new ArrayList<>();
+         DisciplinaVO disc = null;
+
+        String comandoSQL = "SELECT * FROM disciplina WHERE UPPER(nome) LIKE'"+nome.trim().toUpperCase() +
+                "%' ORDER BY NOME LIMIT 10";
+
+        try {
+            PreparedStatement comando = conexao.getConexao().prepareStatement(comandoSQL);
+            ResultSet rs = comando.executeQuery();
+            while(rs.next()){
+                disc = this.montaDisciplinaVO(rs);
+                listaCurso.add(disc);
+            }
+            comando.close();
+        }catch (Exception ex){
+            throw new PersistenciaException("Erro na selecao por nome - " + ex.getMessage());
+        }
+        return listaCurso;
+    }
+
+    private DisciplinaVO montaDisciplinaVO(ResultSet rs) throws PersistenciaException {
+        DisciplinaVO disc = new DisciplinaVO();
+        if(rs != null){
+            try {
+                disc.setCodigo(rs.getInt("codigo"));
+                disc.setNome(rs.getString("nome"));
+                disc.setSemestre(rs.getInt("semestre"));
+                disc.setCargahoraria(rs.getInt("cargahoraria"));
+                disc.setCurso(rs.getInt("curso"));
+            }catch (Exception ex){
+                throw new PersistenciaException("Erro ao acessar os dados do resultado");
+            }
+        }
+        return disc;
+    }
+}

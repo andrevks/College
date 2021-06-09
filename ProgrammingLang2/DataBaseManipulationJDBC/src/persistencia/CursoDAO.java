@@ -1,6 +1,5 @@
 package persistencia;
 
-import vo.AlunoVO;
 import vo.CursoVO;
 
 import java.sql.PreparedStatement;

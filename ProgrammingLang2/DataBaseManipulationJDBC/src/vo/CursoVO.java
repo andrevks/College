@@ -1,6 +1,6 @@
 package vo;
 
-public class CursoVO {
+public class DisciplinaVO {
     private int codigo;
     private String nome;
     private String descricao;
