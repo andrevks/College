@@ -3,7 +3,6 @@ package negocio;
 import persistencia.DisciplinaDAO;
 import persistencia.ConexaoBD;
 import persistencia.PersistenciaException;
-import vo.AlunoVO;
 import vo.DisciplinaVO;
 
 import java.util.List;

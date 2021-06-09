@@ -102,6 +102,9 @@ public class AlunoNegocio {
         if(alunoVO.getEndereco().getUf() == null) {
             mensagemErros += "\n UF nao pode ser vazio";
         }
+        if(alunoVO.getCurso() <=0 ){
+            mensagemErros += "\n O codigo do curso deve ser maior que ZERO";
+        }
         return mensagemErros;
     }
 }

@@ -4,7 +4,6 @@ import vo.AlunoVO;
 import vo.EnumSexo;
 import vo.EnumUF;
 
-import javax.sound.midi.Soundbank;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,10 +26,10 @@ public class AlunoDAO extends DAO{
         try{
             comandoIncluir = conexao.getConexao().prepareStatement("INSERT INTO Aluno" +
                     "( nome, nomemae, nomepai, sexo, logradouro, numero, bairro, cidade," +
-                    "uf)VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    "uf, curso)VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             comandoAlterar = conexao.getConexao().prepareStatement("UPDATE Aluno SET  nome=?, " +
                             "nomemae=?, nomepai=?, sexo=?, logradouro=?, numero=?, bairro=?, cidade=?," +
-                            "uf=? WHERE matricula=?");
+                            "uf=?, curso=? WHERE matricula=?");
             comandoExcluir = conexao.getConexao().prepareStatement("DELETE FROM Aluno WHERE" +
                     " matricula=?");
             comandoBuscaMatricula = conexao.getConexao().prepareStatement("SELECT * FROM Aluno WHERE matricula=?");
@@ -51,7 +50,7 @@ public class AlunoDAO extends DAO{
             comandoIncluir.setString(7,alunoVO.getEndereco().getBairro());
             comandoIncluir.setString(8,alunoVO.getEndereco().getCidade());
             comandoIncluir.setString(9,alunoVO.getEndereco().getUf().name());
-
+            comandoIncluir.setInt(10,alunoVO.getCurso());
             retorno = comandoIncluir.executeUpdate();
         } catch (SQLException ex) {
             throw new PersistenciaException("Erro ao incluir aluno - " + ex.getMessage());
@@ -70,7 +69,8 @@ public class AlunoDAO extends DAO{
             comandoAlterar.setString(7, alunoVO.getEndereco().getBairro());
             comandoAlterar.setString(8,alunoVO.getEndereco().getCidade());
             comandoAlterar.setString(9,alunoVO.getEndereco().getUf().name());
-            comandoAlterar.setInt(10, alunoVO.getMatricula());
+            comandoAlterar.setInt(10,alunoVO.getCurso());
+            comandoAlterar.setInt(11, alunoVO.getMatricula());
             retorno = comandoAlterar.executeUpdate();
         } catch (SQLException ex) {
             throw new PersistenciaException("Erro ao alterar aluno - " + ex.getMessage());
@@ -138,6 +138,7 @@ public class AlunoDAO extends DAO{
                 alu.getEndereco().setBairro(rs.getString("bairro"));
                 alu.getEndereco().setCidade(rs.getString("cidade"));
                 alu.getEndereco().setUf(EnumUF.valueOf(rs.getString("uf")));
+                alu.setCurso(rs.getInt("curso"));
             }catch (Exception ex){
                 throw new PersistenciaException("Erro ao acessar os dados do resultado");
             }
