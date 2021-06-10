@@ -71,6 +71,10 @@ public class Principal {
                             break;
                         case PesqNomeCurso:
                             pesquisarPorNomeCurso();
+                            break;
+                        case ListarAlunos:
+                            listarAlunos();
+                            break;
                         case IncluirDisciplina:
                             incluirDisciplina();
                             break;
@@ -494,6 +498,20 @@ public class Principal {
 
     }
 
+    private static void listarAlunos() throws NegocioException {
+
+            List<AlunoVO> listaAlunoVO = alunoNegocio.listaAlunos();
+
+            if(listaAlunoVO.size() > 0){
+                for(AlunoVO alunoVO : listaAlunoVO) {
+                    mostrarDadosAlunos(alunoVO);
+                }
+        }else{
+            JOptionPane.showMessageDialog(null, "Nome nao pode ser nulo");
+        }
+
+    }
+
     /**
      * Exibe no console da aplicacao os dados dos alunos recebidos pelo parametro alunoVO.
      *
@@ -515,6 +533,19 @@ public class Principal {
             }
             System.out.println("Curso: " + alunoVO.getCurso());
             System.out.println("--------------------------------------------");
+        }
+    }
+
+    /**
+     * Exibe no console da aplicacao os dados dos alunos recebidos pelo parametro alunoVO.
+     *
+     * @param alunoVO
+     */
+    private static void mostrarDadosAlunos(AlunoVO alunoVO){
+        if(alunoVO != null){
+            System.out.println("Matricula: " + alunoVO.getMatricula());
+            System.out.println("Nome: " + alunoVO.getNome());
+            System.out.println("Sexo: " + alunoVO.getSexo().name());
         }
     }
 

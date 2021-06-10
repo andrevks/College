@@ -146,4 +146,40 @@ public class AlunoDAO extends DAO{
 
         return alu;
     }
+
+    private AlunoVO montaListaAlunoVO(ResultSet rs) throws PersistenciaException{
+        AlunoVO alu = new AlunoVO();
+        if(rs != null){
+            try {
+                alu.setMatricula(rs.getInt("matricula"));
+                alu.setNome(rs.getString("nome"));
+                alu.setSexo(EnumSexo.values()[rs.getInt("sexo")]);
+            }catch (Exception ex){
+                throw new PersistenciaException("Erro ao acessar os dados do resultado");
+            }
+        }
+
+        return alu;
+    }
+
+    public List<AlunoVO> listarAlunos() throws PersistenciaException{
+        List<AlunoVO> listaAluno = new ArrayList<>();
+        AlunoVO alu = null;
+
+        String comandoSQL = "SELECT matricula, nome, sexo FROM Aluno";
+
+        try{
+           PreparedStatement comando = conexao.getConexao().prepareStatement(comandoSQL);
+           ResultSet rs = comando.executeQuery();
+           while(rs.next()){
+               alu = this.montaListaAlunoVO(rs);
+               listaAluno.add(alu);
+           }
+
+        }catch (Exception ex){
+            throw new PersistenciaException("Erro na selecao dos alunos - " + ex.getMessage());
+        }
+
+        return listaAluno;
+    }
 }
