@@ -87,8 +87,8 @@ public class DisciplinaDAO extends DAO{
     }
 
     public List<DisciplinaVO> buscarPorNome(String nome) throws PersistenciaException {
-        List<DisciplinaVO> listaCurso = new ArrayList<>();
-         DisciplinaVO disc = null;
+        List<DisciplinaVO> listaDisc = new ArrayList<>();
+        DisciplinaVO disc = null;
 
         String comandoSQL = "SELECT * FROM disciplina WHERE UPPER(nome) LIKE'"+nome.trim().toUpperCase() +
                 "%' ORDER BY NOME LIMIT 10";
@@ -98,13 +98,13 @@ public class DisciplinaDAO extends DAO{
             ResultSet rs = comando.executeQuery();
             while(rs.next()){
                 disc = this.montaDisciplinaVO(rs);
-                listaCurso.add(disc);
+                listaDisc.add(disc);
             }
             comando.close();
         }catch (Exception ex){
             throw new PersistenciaException("Erro na selecao por nome - " + ex.getMessage());
         }
-        return listaCurso;
+        return listaDisc;
     }
 
     private DisciplinaVO montaDisciplinaVO(ResultSet rs) throws PersistenciaException {
@@ -121,5 +121,42 @@ public class DisciplinaDAO extends DAO{
             }
         }
         return disc;
+    }
+
+    private DisciplinaVO montaDisciplinas(ResultSet rs) throws PersistenciaException {
+        DisciplinaVO disc = new DisciplinaVO();
+        if(rs != null){
+            try {
+                disc.setCodigo(rs.getInt("codigo"));
+                disc.setNome(rs.getString("nome"));
+                disc.setSemestre(rs.getInt("semestre"));
+                disc.setCargahoraria(rs.getInt("cargahoraria"));
+            }catch (Exception ex){
+                throw new PersistenciaException("Erro ao acessar os dados do resultado");
+            }
+        }
+        return disc;
+    }
+
+    public List<DisciplinaVO> listarDisciplinas() throws PersistenciaException {
+        List<DisciplinaVO> listaDisc = new ArrayList<>();
+        DisciplinaVO disc = null;
+
+        String comandoSQL = "SELECT codigo, nome, semestre, cargahoraria FROM disciplina";
+
+        try {
+            PreparedStatement comando = conexao.getConexao().prepareStatement(comandoSQL);
+            ResultSet rs = comando.executeQuery();
+            while(rs.next()){
+                disc = this.montaDisciplinas(rs);
+                listaDisc.add(disc);
+            }
+            comando.close();
+        }catch (Exception ex){
+            throw new PersistenciaException("Erro na selecao por nome - " + ex.getMessage());
+        }
+        return listaDisc;
+
+
     }
 }

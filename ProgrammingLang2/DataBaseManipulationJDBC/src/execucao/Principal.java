@@ -57,6 +57,9 @@ public class Principal {
                         case PesqNome:
                             pesquisarPorNome();
                             break;
+                        case ListarAlunos:
+                            listarAlunos();
+                            break;
                         case IncluirCurso:
                             incluirCurso();
                             break;
@@ -72,8 +75,8 @@ public class Principal {
                         case PesqNomeCurso:
                             pesquisarPorNomeCurso();
                             break;
-                        case ListarAlunos:
-                            listarAlunos();
+                        case ListarCursos:
+                            listarCursos();
                             break;
                         case IncluirDisciplina:
                             incluirDisciplina();
@@ -89,6 +92,9 @@ public class Principal {
                             break;
                         case PesqNomeDisciplina:
                             pesquisarPorNomeDisciplina();
+                            break;
+                        case ListarDisciplinas:
+                            listarDisciplinas();
                     }
                 } catch (NegocioException ex) {
                     System.out.println("Operacao nao realizada corretamente - " + ex.getMessage());
@@ -98,6 +104,7 @@ public class Principal {
         System.exit(0);
     }
 
+    //---------------------------DISCIPLINA-------------------------
     /**
      Inclui um nova disciplina na base de dados
      @throws NegocioException
@@ -197,6 +204,23 @@ public class Principal {
     }
 
     /**
+     * Busca as disciplina cadastradas.
+     *
+     */
+    private static void listarDisciplinas() throws NegocioException {
+
+        List<DisciplinaVO> listaDisc = disciplinaNegocio.listaDisciplinas();
+
+        if(listaDisc.size() > 0){
+            for(DisciplinaVO disciplinaVO : listaDisc) {
+                mostrarDadosDisciplinas(disciplinaVO);
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Nome nao pode ser nulo");
+        }
+
+    }
+    /**
      * Exibe no console da aplicacao os dados das disciplinas recebidas pelo parametro disciplinaVO.
      *
      * @param disciplinaVO
@@ -208,9 +232,24 @@ public class Principal {
             System.out.println("Semestre: " + disciplinaVO.getSemestre());
             System.out.println("Carga Horaria: " + disciplinaVO.getCargahoraria());
             System.out.println("Curso: " + disciplinaVO.getCurso());
+            System.out.println("--------------------------------------------");
         }
     }
 
+    /**
+     * Exibe no console da aplicacao os dados de todas disciplinas.
+     *
+     * @param disciplinaVO
+     */
+    private static void mostrarDadosDisciplinas(DisciplinaVO disciplinaVO){
+        if(disciplinaVO != null){
+            System.out.println("Codigo: " + disciplinaVO.getCodigo());
+            System.out.println("Nome: " + disciplinaVO.getNome());
+            System.out.println("Semestre: " + disciplinaVO.getSemestre());
+            System.out.println("Carga Horaria: " + disciplinaVO.getCargahoraria());
+            System.out.println("--------------------------------------------");
+        }
+    }
     /**
      * Le os dados de uma disciplina exibindo os dados atuais recebidos pelo parametro
      * discTemp. Na alteracao permite que os dados atuais das disciplinas sejam visualizados.
@@ -351,6 +390,19 @@ public class Principal {
 
     }
 
+    private static void listarCursos() throws NegocioException {
+
+        List<CursoVO> listaCursoVO = cursoNegocio.listaCursos();
+
+        if(listaCursoVO.size() > 0){
+            for(CursoVO cursoVO : listaCursoVO) {
+                mostrarDadosCursos(cursoVO);
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Nome nao pode ser nulo");
+        }
+
+    }
     /**
      * Exibe no console da aplicacao os dados dos alunos recebidos pelo parametro alunoVO.
      *
@@ -361,6 +413,20 @@ public class Principal {
             System.out.println("Codigo: " + cursoVO.getCodigo());
             System.out.println("Nome: " + cursoVO.getNome());
             System.out.println("Descricao: " + cursoVO.getDescricao());
+            System.out.println("--------------------------------------------");
+        }
+    }
+
+    /**
+     * Exibe no console da aplicacao os dados dos alunos recebidos pelo parametro alunoVO.
+     *
+     * @param cursoVO
+     */
+    private static void mostrarDadosCursos(CursoVO cursoVO){
+        if(cursoVO != null){
+            System.out.println("Codigo: " + cursoVO.getCodigo());
+            System.out.println("Nome: " + cursoVO.getNome());
+            System.out.println("--------------------------------------------");
         }
     }
 
@@ -537,7 +603,8 @@ public class Principal {
     }
 
     /**
-     * Exibe no console da aplicacao os dados dos alunos recebidos pelo parametro alunoVO.
+     * Exibe no console da aplicacao os dados matricula, nome e sexo dos alunos recebidos pelo parametro
+     * alunoVO.
      *
      * @param alunoVO
      */
@@ -546,6 +613,7 @@ public class Principal {
             System.out.println("Matricula: " + alunoVO.getMatricula());
             System.out.println("Nome: " + alunoVO.getNome());
             System.out.println("Sexo: " + alunoVO.getSexo().name());
+            System.out.println("--------------------------------------------");
         }
     }
 

@@ -89,4 +89,14 @@ public class DisciplinaNegocio {
 
         return mensagemErros;
     }
+
+    public List<DisciplinaVO> listaDisciplinas() throws NegocioException{
+
+        try {
+            return disciplinaDAO.listarDisciplinas();
+        } catch (PersistenciaException ex) {
+            throw new NegocioException("Erro ao listar disciplinas - " + ex.getMessage());
+        }
+
+}
 }

@@ -117,4 +117,38 @@ public class CursoDAO extends DAO{
         }
         return curso;
     }
+
+    private CursoVO montaCursos(ResultSet rs) throws PersistenciaException {
+        CursoVO curso = new CursoVO();
+        if(rs != null){
+            try {
+                curso.setCodigo(rs.getInt("codigo"));
+                curso.setNome(rs.getString("nome"));
+            }catch (Exception ex){
+                throw new PersistenciaException("Erro ao acessar os dados do resultado");
+            }
+        }
+        return curso;
+    }
+
+
+    public List<CursoVO> listarCursos() throws PersistenciaException{
+        List<CursoVO> listaCurso = new ArrayList<>();
+        CursoVO curso = null;
+        String comandoSQL = "SELECT codigo, nome FROM curso";
+
+        try {
+            PreparedStatement comando = conexao.getConexao().prepareStatement(comandoSQL);
+            ResultSet rs = comando.executeQuery();
+            while(rs.next()){
+                curso = this.montaCursos(rs);
+                listaCurso.add(curso);
+            }
+            comando.close();
+        } catch (SQLException ex) {
+            throw new PersistenciaException("Erro na listagem de alunos  - " + ex.getMessage());
+
+        }
+        return listaCurso;
+    }
 }
