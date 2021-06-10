@@ -7,6 +7,7 @@ public enum EnumMenu {
     PesqMatricula,
     PesqNome,
     ListarAlunos,
+    ListarAlunosPorCurso,
     IncluirCurso,
     AlterarCurso,
     ExcluirCurso,
@@ -19,5 +20,7 @@ public enum EnumMenu {
     PesqCodDisciplina,
     PesqNomeDisciplina,
     ListarDisciplinas,
+    ListarDisciplinasPorCurso,
+    ListarDisciplinasPorAluno,
     Sair
 }

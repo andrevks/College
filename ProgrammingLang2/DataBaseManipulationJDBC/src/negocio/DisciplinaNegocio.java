@@ -98,5 +98,15 @@ public class DisciplinaNegocio {
             throw new NegocioException("Erro ao listar disciplinas - " + ex.getMessage());
         }
 
-}
+    }
+
+    public List<DisciplinaVO> listaDisciplinas(int codigo) throws NegocioException{
+
+        try {
+            return disciplinaDAO.listarDisciplinasPorCurso(codigo);
+        } catch (PersistenciaException ex) {
+            throw new NegocioException("Erro ao listar disciplinas - " + ex.getMessage());
+        }
+
+    }
 }

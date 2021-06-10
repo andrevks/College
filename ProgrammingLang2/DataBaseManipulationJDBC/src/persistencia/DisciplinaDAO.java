@@ -1,5 +1,6 @@
 package persistencia;
 
+import vo.AlunoVO;
 import vo.DisciplinaVO;
 
 import java.sql.PreparedStatement;
@@ -14,6 +15,7 @@ public class DisciplinaDAO extends DAO{
     private static PreparedStatement comandoAlterar;
     private static PreparedStatement comandoExcluir;
     private static PreparedStatement comandoBuscaCodigo;
+    private static PreparedStatement comandoListarPorCurso;
 
     public DisciplinaDAO(ConexaoBD conexao) throws PersistenciaException {
         super(conexao);
@@ -26,6 +28,8 @@ public class DisciplinaDAO extends DAO{
             comandoExcluir = conexao.getConexao().prepareStatement("DELETE FROM disciplina WHERE codigo=?");
             comandoBuscaCodigo = conexao.getConexao().prepareStatement("SELECT * FROM disciplina WHERE" +
                     " codigo=?");
+            comandoListarPorCurso =conexao.getConexao().prepareStatement("SELECT codigo, nome FROM disciplina WHERE curso=?") ;
+
         }catch (SQLException ex){
             throw new PersistenciaException("CursoDAO: Erro ao incluir nova disciplina - " + ex.getMessage());
         }
@@ -138,6 +142,19 @@ public class DisciplinaDAO extends DAO{
         return disc;
     }
 
+    private DisciplinaVO montaDisciplinasPorCurso(ResultSet rs) throws PersistenciaException {
+        DisciplinaVO disc = new DisciplinaVO();
+        if(rs != null){
+            try {
+                disc.setCodigo(rs.getInt("codigo"));
+                disc.setNome(rs.getString("nome"));
+            }catch (Exception ex){
+                throw new PersistenciaException("Erro ao acessar os dados do resultado");
+            }
+        }
+        return disc;
+    }
+
     public List<DisciplinaVO> listarDisciplinas() throws PersistenciaException {
         List<DisciplinaVO> listaDisc = new ArrayList<>();
         DisciplinaVO disc = null;
@@ -152,6 +169,27 @@ public class DisciplinaDAO extends DAO{
                 listaDisc.add(disc);
             }
             comando.close();
+        }catch (Exception ex){
+            throw new PersistenciaException("Erro na selecao por nome - " + ex.getMessage());
+        }
+        return listaDisc;
+
+
+    }
+
+    public List<DisciplinaVO> listarDisciplinasPorCurso(int codigo) throws PersistenciaException {
+        List<DisciplinaVO> listaDisc = new ArrayList<>();
+        DisciplinaVO disc = null;
+
+
+        try {
+            comandoListarPorCurso.setInt(1,codigo);
+            ResultSet rs = comandoListarPorCurso.executeQuery();
+            while(rs.next()){
+                disc = this.montaDisciplinasPorCurso(rs);
+                listaDisc.add(disc);
+            }
+
         }catch (Exception ex){
             throw new PersistenciaException("Erro na selecao por nome - " + ex.getMessage());
         }

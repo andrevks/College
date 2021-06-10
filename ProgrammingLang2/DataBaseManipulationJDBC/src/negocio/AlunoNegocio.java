@@ -81,6 +81,16 @@ public class AlunoNegocio {
         }
     }
 
+    public List<AlunoVO> listaAlunos(int codigo) throws NegocioException {
+        try{
+            return alunoDAO.listarAlunos(codigo);
+        }catch (PersistenciaException ex) {
+            throw new NegocioException("Erro ao listar alunos - " + ex.getMessage());
+        }
+    }
+
+
+
     private String validarDados(AlunoVO alunoVO) {
         String mensagemErros = "";
         if(alunoVO.getNome() == null || alunoVO.getNome().length() == 0){

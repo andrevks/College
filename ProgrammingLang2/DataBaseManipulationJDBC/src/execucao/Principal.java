@@ -69,6 +69,9 @@ public class Principal {
                         case ExcluirCurso:
                             excluirCurso();
                             break;
+                        case ListarAlunosPorCurso:
+                            listarAlunosPorCurso();
+                            break;
                         case PesqCodCurso:
                             pesquisarPorCodigo();
                             break;
@@ -92,6 +95,12 @@ public class Principal {
                             break;
                         case PesqNomeDisciplina:
                             pesquisarPorNomeDisciplina();
+                            break;
+                        case ListarDisciplinasPorCurso:
+                            listarDisciplinasPorCurso();
+                            break;
+                        case ListarDisciplinasPorAluno:
+                            listarDisciplinasPorAluno();
                             break;
                         case ListarDisciplinas:
                             listarDisciplinas();
@@ -220,6 +229,61 @@ public class Principal {
         }
 
     }
+
+    private static void listarDisciplinasPorCurso() throws NegocioException {
+
+        int codigo = 0;
+        try {
+            codigo = Integer.parseInt(JOptionPane.showInputDialog(null, "" +
+                    "Forneca o codigo do curso","Leitura de Dados",JOptionPane.QUESTION_MESSAGE));
+        } catch (Exception ex){
+            JOptionPane.showMessageDialog(null, "Digitacao inconsistente - " + ex.getMessage());
+        }
+
+        List<DisciplinaVO> listaDisc = disciplinaNegocio.listaDisciplinas(codigo);
+        CursoVO cursoVO = cursoNegocio.pesquisaCodigo(codigo);
+
+        if(listaDisc.size() > 0){
+            for(DisciplinaVO disciplinaVO : listaDisc) {
+                mostrarDadosCurso2(cursoVO);
+                mostrarDadosDisciplinas2(disciplinaVO);
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Nome nao pode ser nulo");
+        }
+
+    }
+
+    private static void listarDisciplinasPorCurso(int codigo) throws NegocioException {
+
+        List<DisciplinaVO> listaDisc = disciplinaNegocio.listaDisciplinas(codigo);
+
+        if(listaDisc.size() > 0){
+            for(DisciplinaVO disciplinaVO : listaDisc) {
+                mostrarDadosDisciplinas2(disciplinaVO);
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Nome nao pode ser nulo");
+        }
+
+    }
+
+    private static void listarDisciplinasPorAluno() throws NegocioException {
+
+        int matricula = 0;
+        try {
+            matricula = Integer.parseInt(JOptionPane.showInputDialog(null, "" +
+                    "Forneca a matricula do Aluno","Leitura de Dados",JOptionPane.QUESTION_MESSAGE));
+        } catch (Exception ex){
+            JOptionPane.showMessageDialog(null, "Digitacao inconsistente - " + ex.getMessage());
+        }
+
+        AlunoVO alunoVO = alunoNegocio.pesquisaMatricula(matricula);
+        int codigo = alunoVO.getCurso();
+        listarAlunosPorCurso(codigo);
+        listarDisciplinasPorCurso(codigo);
+
+    }
     /**
      * Exibe no console da aplicacao os dados das disciplinas recebidas pelo parametro disciplinaVO.
      *
@@ -247,6 +311,19 @@ public class Principal {
             System.out.println("Nome: " + disciplinaVO.getNome());
             System.out.println("Semestre: " + disciplinaVO.getSemestre());
             System.out.println("Carga Horaria: " + disciplinaVO.getCargahoraria());
+            System.out.println("--------------------------------------------");
+        }
+    }
+
+    /**
+     * Exibe no console da aplicacao os dados de todas disciplinas.
+     *
+     * @param disciplinaVO
+     */
+    private static void mostrarDadosDisciplinas2(DisciplinaVO disciplinaVO){
+        if(disciplinaVO != null){
+            System.out.println("Codigo: " + disciplinaVO.getCodigo());
+            System.out.println("Nome: " + disciplinaVO.getNome());
             System.out.println("--------------------------------------------");
         }
     }
@@ -364,6 +441,27 @@ public class Principal {
     }
 
     /**
+     * Pesquisa um curso por meio do codigo.
+     *
+     * @throws NegocioException
+     * */
+    private static void pesquisarPorCodigo2() throws NegocioException {
+        int codigo = 0;
+        try {
+            codigo = Integer.parseInt(JOptionPane.showInputDialog(null, "" +
+                    "Forneca o codigo do Curso","Leitura de Dados",JOptionPane.QUESTION_MESSAGE));
+        } catch (Exception ex){
+            JOptionPane.showMessageDialog(null, "Digitacao inconsistente - " + ex.getMessage());
+        }
+        CursoVO cursoVO = cursoNegocio.pesquisaCodigo(codigo);
+        if(cursoVO != null){
+            mostrarDadosCurso2(cursoVO);
+        }else {
+            JOptionPane.showMessageDialog(null,"Curso nao localizado");
+        }
+    }
+
+    /**
      * Le um nome ou parte de um nome de um curso e busca no banco de dados
      * cursos que possuem esse nome, ou que iniciam com a parte do nome fornecida.
      * Caso nao seja fornecido nenhum valor de entrada sera retornado
@@ -417,6 +515,12 @@ public class Principal {
         }
     }
 
+    private static void mostrarDadosCurso2(CursoVO cursoVO){
+        if(cursoVO != null){
+            System.out.println("Codigo: " + cursoVO.getCodigo());
+            System.out.println("Nome: " + cursoVO.getNome());
+        }
+    }
     /**
      * Exibe no console da aplicacao os dados dos alunos recebidos pelo parametro alunoVO.
      *
@@ -578,6 +682,44 @@ public class Principal {
 
     }
 
+    private static void listarAlunosPorCurso() throws NegocioException {
+
+        int codigo = 0;
+        try {
+            codigo = Integer.parseInt(JOptionPane.showInputDialog(null, "" +
+                    "Forneca o codigo do curso","Leitura de Dados",JOptionPane.QUESTION_MESSAGE));
+        } catch (Exception ex){
+            JOptionPane.showMessageDialog(null, "Digitacao inconsistente - " + ex.getMessage());
+        }
+
+        List<AlunoVO> listaAlunoVO = alunoNegocio.listaAlunos(codigo);
+        CursoVO cursoVO = cursoNegocio.pesquisaCodigo(codigo);
+
+        if(listaAlunoVO.size() > 0){
+            for(AlunoVO alunoVO : listaAlunoVO) {
+                mostrarDadosCurso2(cursoVO);
+                mostrarDadosAlunosCurso(alunoVO);
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Nome nao pode ser nulo");
+        }
+
+    }
+
+    private static void listarAlunosPorCurso(int codigo) throws NegocioException {
+
+        List<AlunoVO> listaAlunoVO = alunoNegocio.listaAlunos(codigo);
+
+        if(listaAlunoVO.size() > 0){
+            for(AlunoVO alunoVO : listaAlunoVO) {
+                mostrarDadosAlunosCurso(alunoVO);
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Nome nao pode ser nulo");
+        }
+
+    }
+
     /**
      * Exibe no console da aplicacao os dados dos alunos recebidos pelo parametro alunoVO.
      *
@@ -613,6 +755,14 @@ public class Principal {
             System.out.println("Matricula: " + alunoVO.getMatricula());
             System.out.println("Nome: " + alunoVO.getNome());
             System.out.println("Sexo: " + alunoVO.getSexo().name());
+            System.out.println("--------------------------------------------");
+        }
+    }
+
+    private static void mostrarDadosAlunosCurso(AlunoVO alunoVO){
+        if(alunoVO != null){
+            System.out.println("Matricula: " + alunoVO.getMatricula());
+            System.out.println("Nome: " + alunoVO.getNome());
             System.out.println("--------------------------------------------");
         }
     }

@@ -19,6 +19,7 @@ public class AlunoDAO extends DAO{
     private static PreparedStatement comandoAlterar;
     private static PreparedStatement comandoExcluir;
     private static PreparedStatement comandoBuscaMatricula;
+    private static PreparedStatement comandoListarPorCurso;
 
 
     public AlunoDAO(ConexaoBD conexao) throws PersistenciaException{
@@ -33,6 +34,7 @@ public class AlunoDAO extends DAO{
             comandoExcluir = conexao.getConexao().prepareStatement("DELETE FROM Aluno WHERE" +
                     " matricula=?");
             comandoBuscaMatricula = conexao.getConexao().prepareStatement("SELECT * FROM Aluno WHERE matricula=?");
+            comandoListarPorCurso = conexao.getConexao().prepareStatement("SELECT matricula, nome FROM Aluno WHERE curso=?");
         } catch (SQLException ex) {
            throw new PersistenciaException("Erro ao incluir novo aluno - " + ex.getMessage());
         }
@@ -162,6 +164,20 @@ public class AlunoDAO extends DAO{
         return alu;
     }
 
+    private AlunoVO montaListaAlunoPorCurso(ResultSet rs) throws PersistenciaException{
+        AlunoVO alu = new AlunoVO();
+        if(rs != null){
+            try {
+                alu.setMatricula(rs.getInt("matricula"));
+                alu.setNome(rs.getString("nome"));
+            }catch (Exception ex){
+                throw new PersistenciaException("Erro ao acessar os dados do resultado");
+            }
+        }
+
+        return alu;
+    }
+
     public List<AlunoVO> listarAlunos() throws PersistenciaException{
         List<AlunoVO> listaAluno = new ArrayList<>();
         AlunoVO alu = null;
@@ -175,6 +191,25 @@ public class AlunoDAO extends DAO{
                alu = this.montaListaAlunoVO(rs);
                listaAluno.add(alu);
            }
+
+        }catch (Exception ex){
+            throw new PersistenciaException("Erro na selecao dos alunos - " + ex.getMessage());
+        }
+
+        return listaAluno;
+    }
+
+    public List<AlunoVO> listarAlunos(int codigo) throws PersistenciaException{
+        List<AlunoVO> listaAluno = new ArrayList<>();
+        AlunoVO alu = null;
+
+        try{
+            comandoListarPorCurso.setInt(1,codigo);
+            ResultSet rs = comandoListarPorCurso.executeQuery();
+            while(rs.next()){
+                alu = this.montaListaAlunoPorCurso(rs);
+                listaAluno.add(alu);
+            }
 
         }catch (Exception ex){
             throw new PersistenciaException("Erro na selecao dos alunos - " + ex.getMessage());

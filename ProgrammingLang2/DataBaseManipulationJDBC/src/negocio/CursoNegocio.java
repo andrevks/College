@@ -90,6 +90,7 @@ public class CursoNegocio {
         }catch (PersistenciaException ex){
             throw new NegocioException("Erro ao listar alunos - " + ex.getMessage());
         }
-
     }
+
+
 }
