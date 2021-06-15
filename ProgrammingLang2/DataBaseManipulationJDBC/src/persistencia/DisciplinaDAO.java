@@ -67,6 +67,19 @@ public class DisciplinaDAO extends DAO{
     public int excluir(int codigo) throws PersistenciaException {
         int retorno = 0;
         try {
+            /*
+
+            When you're using a relational DB, you are setting entities with relationships
+             between these entities.
+
+            The error that you're getting means that:
+
+            You're trying to delete a record that its primary key is functioning as a foreign key
+            in another table, thus you can't delete it.
+
+            In order to delete that record, first, delete the record with the foreign key, and then delete
+            the original that you wanted to delete.
+             */
             comandoExcluir.setInt(1,codigo);
             retorno = comandoExcluir.executeUpdate();
         }catch (SQLException ex){

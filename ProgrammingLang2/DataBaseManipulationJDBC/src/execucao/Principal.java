@@ -159,7 +159,7 @@ public class Principal {
 
         DisciplinaVO disciplinaVO = disciplinaNegocio.pesquisaCodigo(codigo);
         if(disciplinaVO != null){
-            cursoNegocio.excluir(disciplinaVO.getCodigo());
+            disciplinaNegocio.excluir(disciplinaVO.getCodigo());
         } else{
             JOptionPane.showMessageDialog(null, "Disciplina nao localizada");
         }
