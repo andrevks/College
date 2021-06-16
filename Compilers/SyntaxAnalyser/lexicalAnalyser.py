@@ -107,7 +107,7 @@ class LexicalAnalyser:
 
 def main():
     # content = flags(argv)
-    content = open('tinyarquivo.fonte').read()
+    content = open('arquivo.fonte').read()
     lexico = LexicalAnalyser(content).generate_token()
     print("TOKENS:")
     print("( TOKEN ,  LEXEMA,  LINHA  , COLUNA)")
@@ -115,7 +115,6 @@ def main():
     lexico_queue = []
     for token in lexico:
         # print(f'( {token.type}, {token.lexeme}, {token.line}, {token.col} )')
-        print(f'( {token.type}, {token.lexeme}, {token.line}, {token.col} )')
         lexico_queue.append(token)
     end_of_file = Token('$', '$', 100, 1)
     lexico_queue.append(end_of_file)

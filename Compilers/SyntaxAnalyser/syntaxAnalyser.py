@@ -22,7 +22,6 @@ SYNTAX_TABLE = {
                    'grabInput':'','funny': 11,'if':'','then':'','else':'', 'end': '','elif': '','funLoopWhile':'',
                    'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': '','TK_OP_RE':''
                    },
-
     '<DPS_VAR>': {'$': '', 'TK_ID':'' ,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
                'TK_PERIOD':10,'TK_ATRIB':9,'TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
                'grabInput':'','funny': '','if':'','then':'','else':'', 'end': '','elif': '','funLoopWhile':'',
@@ -182,9 +181,11 @@ class SyntaxAnalyser:
         self.__stack.push('$')
         self.__stack.push('<PROGRAMA>')
 
+    def tokens_recognised(self):
+        return self.__stack.isEmpty() and not self.__tokens
+
     def consult_table(self, line, col):
 
-        # if self.__syntax_table[line][col] != '':
         try:
             rules_index = self.__syntax_table[line][col]
             # prodution found
@@ -196,7 +197,6 @@ class SyntaxAnalyser:
             rule = rule.split()
             print("rule: ", rule)
             max = len(rule)
-            # print("num_max: ", max)
             for i in range(max):
                 # send element in opposite order to the stack
                 rule_to_stack = rule.pop()
@@ -204,25 +204,17 @@ class SyntaxAnalyser:
                 if rule_to_stack == '#':
                     continue
                 self.__stack.push(rule_to_stack)
-                # print(rule)
-            # print("Top of the stack: " , self.__stack.peek())
         except KeyError as err:
             raise SyntaxError(line, col, "Não encontrou um elemento correspodente na tabela")
 
     def recognise_sentence(self):
-        recognised = False
         index = 0
         try:
-            while not recognised :
-                print("TOKEN: ", tokens[index].type)
+            while not self.tokens_recognised() :
                 top_stack= self.__stack.peek()
                 first_elem = self.__tokens[index].type
                 print('TOP STACK: ',top_stack)
-                # col = self.__tokens[index].type
                 print('FIRST ELEM QUEUE: ',first_elem)
-                # actual_table_loc = self.__syntax_table[line][col]
-                # print("Table location: ", actual_table_loc)
-                # print(self.__syntax_table_values[actual_table_loc])
 
                 if self.__stack.peek() == tokens[index].type :
                     self.__stack.pop()
@@ -231,24 +223,13 @@ class SyntaxAnalyser:
                     print("CURRENT TOKEN LIST:", tokens)
                 elif self.__syntax_table[top_stack][first_elem] != None:
                     self.consult_table(top_stack,first_elem)
-                elif self.__stack.isEmpty() and not tokens:
-                    recognised = True
-                print('RECOGNISED:',recognised)
-                print('----------------------\n')
+                print("-------------------------- \n")
         except :
             raise SyntaxError(tokens[index].line , tokens[index].col, "ERRO Sintático no loop")
+
 
 if __name__ == '__main__':
 
     tokens = lexicalAnalyser.main()
     syntaxAnaliser = SyntaxAnalyser(tokens)
     syntaxAnaliser.recognise_sentence()
-
-
-
-
-
-
-
-
-
