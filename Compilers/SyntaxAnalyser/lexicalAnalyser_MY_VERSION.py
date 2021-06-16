@@ -4,22 +4,26 @@ from typing import NamedTuple
 import re
 
 
-class LexicalError:
+# classe custom que herda da classe Exception
+class LexicalError(Exception):
+    """
+        Exception para comandos que não respeitam a gramática
+        Atributos:
+            Line -- a linha que ocorreu o erro
+            Column -- a coluna que ocorreu o erro
+            Mensagem -- A mensagem contendo a descrição do erro
+            Lexeme -- O valor encontrado
+    """
 
-    def __init__(self, line, col, lex, msg):
-        self.__line = line
-        self.__col = col
-        self.__lex = lex
-        self.__msg = msg
-        self.print_error()
+    def __init__(self, line, col, lex, msg='ERRO LÉXICO !'):
+        self.line = line
+        self.col = col
+        self.msg = msg
+        self.lex = lex
+        super().__init__(self.msg)
 
-    def print_error(self):
-        print('\n----------------------|ERRO|-----------------------')
-        print(f'Tipo de erro: "ERRO LÉXICO" \n'
-              f'Padrão: \'  {self.__lex}  \' inesperado na' 
-              f' linha {self.__line} e coluna {self.__col}\n'
-              f'Descrição: {self.__msg}')
-        print('---------------------------------------------------\n')
+    def __str__(self):
+        return f'{self.msg} Padrão \'  {self.lex}  \' não esperado na linha {self.line} e coluna {self.col}'
 
 
 class Token(NamedTuple):
@@ -51,6 +55,7 @@ class LexicalAnalyser:
             ('TK_ATRIB', r'<-'),
             ('TK_PERIOD', r'\.'),
             ('TK_ID', r'[A-Za-z]([A-Za-z]|\d|_)*'),
+            # ('TK_STRING', r'\"([A-Za-z]|\d|\.|%|:| )*\"'),  # String com aspas
             ('TK_STRING', r'"[^"\\\r\n]*(?:\\.[^"\\\r\n]*)*"'),  # String com aspas
             ('TK_OP_AR', r'[-+*\/]'),  # Operações aritmética
             ('TK_OP_RE', r'<>|[=<>]'),  # Operação relacional
@@ -78,6 +83,7 @@ class LexicalAnalyser:
         # do padrão existem algumas correções antes de salvar como um token
         # lexeme: pega o valor extraído quando o padrão é reconhecido
         # column: calcula o valor inicial da coluna do token encontrado
+
         for matchedPattern in re.finditer(regex_rules, buffer):
             tk_type = matchedPattern.lastgroup
             lexeme = matchedPattern.group()
@@ -86,8 +92,8 @@ class LexicalAnalyser:
                 lexeme = int(lexeme)
             elif lexeme.upper() in self.__keywords1 and tk_type == 'TK_ID':
                 if lexeme not in self.__keywords:
-                    LexicalError(line, column, lexeme, " Palavra chave ")
-                tk_type = lexeme
+                    raise LexicalError(line, column, lexeme, "ERRO LÉXICO: Palavra chave -")
+                tk_type = 'KEYWORD'
             elif tk_type == 'TK_NEW_LINE':
                 col_start = matchedPattern.end()
                 line += 1
@@ -95,8 +101,7 @@ class LexicalAnalyser:
             elif tk_type == 'TK_SKIP':
                 continue
             elif tk_type == 'MISMATCH':
-                LexicalError(line, column, lexeme, "Formato de token NÃO registrado")
-                continue
+                raise LexicalError(line, column, lexeme)
 
             # Retorna uma função geradora a quem chamou. A execução começa
             # apenas quando o gerador é iterado
@@ -106,20 +111,16 @@ class LexicalAnalyser:
 
 
 def main():
-    # content = flags(argv)
-    content = open('tinyarquivo.fonte').read()
-    lexico = LexicalAnalyser(content).generate_token()
-    print("TOKENS:")
-    print("( TOKEN ,  LEXEMA,  LINHA  , COLUNA)")
-    lexico_copy = lexico
-    lexico_queue = []
-    for token in lexico:
-        # print(f'( {token.type}, {token.lexeme}, {token.line}, {token.col} )')
-        print(f'( {token.type}, {token.lexeme}, {token.line}, {token.col} )')
-        lexico_queue.append(token)
-    end_of_file = Token('$', '$', 100, 1)
-    lexico_queue.append(end_of_file)
-    return lexico_queue
+    content = flags()
+    try:
+        lexico = LexicalAnalyser(content).generate_token()
+    except:
+        print("TOKENS:")
+        print("( TOKEN ,  LEXEMA,  LINHA  , COLUNA)")
+        for token in lexico:
+            print(f'({token.type}), {token.lexeme}, {token.line}, {token.col}')
 
 
 
+
+main()

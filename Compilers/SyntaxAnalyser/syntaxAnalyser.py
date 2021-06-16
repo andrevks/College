@@ -1,4 +1,4 @@
-
+import lexicalAnalyser
 
 #Representing the big table
 SYNTAX_TABLE = {
@@ -19,7 +19,7 @@ SYNTAX_TABLE = {
                    },
     '<ANT_VAR>':{'$': '', 'TK_ID':12 ,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
                    'TK_PERIOD':'','TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
-                   'grabInput':11,'funny': '','if':'','then':'','else':'', 'end': '','elif': '','funLoopWhile':'',
+                   'grabInput':'','funny': 11,'if':'','then':'','else':'', 'end': '','elif': '','funLoopWhile':'',
                    'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': '','TK_OP_RE':''
                    },
 
@@ -29,8 +29,8 @@ SYNTAX_TABLE = {
                'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': '','TK_OP_RE':''
                },
     '<INPUT>': {'$': '', 'TK_ID':'' ,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
-             'TK_PERIOD':5,'TK_ATRIB':'','TK_COMMA':5, 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':4,
-             'grabInput':'','funny': '','if':'','then':'','else':'', 'end': '','elif': '','funLoopWhile':'',
+             'TK_PERIOD':5,'TK_ATRIB':'','TK_COMMA':5, 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
+             'grabInput':4,'funny': '','if':'','then':'','else':'', 'end': '','elif': '','funLoopWhile':'',
              'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': '','TK_OP_RE':''
              },
     '<DISPLAY>': {'$': '', 'TK_ID':'' ,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
@@ -105,21 +105,20 @@ SYNTAX_TABLE = {
              }
 }
 
-syntax_table_dict = { 0: 'BeginFun <LISTA_COMANDOS> EndFun', 1: '<COMANDO> TK_PERIOD <LISTA_COMANDOS>',
-                      2: '#', 3: '<INPUT>',
-                      4: 'grabInput TK_ID <KEY>', 5: '<KEY>', 6: 'TK_COMMA TK_ID <INPUT>', 7: '#',
-                      8: '<ANT_VAR> TK_ID <DPS_VAR>',
-                      9: 'TK_ATRIB <EXP>', 10: '#', 11: 'funny', 12: '#', 13: '<DISPLAY>',
-                      14: 'showMeTheCode <DISPLAY_F>',
-                      15: '<EXPR_BOOL>', 16: '<STRING>', 17: 'TK_STRING',
-                      18: 'if <EXPR_BOOL> then <LISTA_COMANDOS> <ELIF> <ELSE> end',
-                      19: 'else <LISTA_COMANDOS>', 20: '#', 21: 'elif <EXPR_BOOL> <LISTA_COMANDOS>', 22: '#',
-                      23: 'funLoopWhile <EXPR_BOOL> do <LISTA_COMANDOS> endFunLoop', 24: '<OPERAN> <EXP_F>',
-                      25: 'TK_OPEN_P <EXP> TK_CLOSE_P <EXP_F>', 26: 'TK_OP_AR <EXP>', 27: '#', 28: '<OPER>',
-                      29: '<OPERAN> <BOOL_F>',
-                      30: 'TK_OP_RE <EXPR_BOOL>', 31: '<BOOL_TYPE> <EXPR_BOOL>', 32: 'TK_BOOL', 33: '<OPER_REL>',
-                      34: '#', 35: 'TK_ID',
-                      36: 'TK_NUM' }
+class SyntaxError:
+
+    def __init__(self, line, col, msg):
+        self.__line = line
+        self.__col = col
+        self.__msg = msg
+        self.print_error()
+
+    def print_error(self):
+        print('\n----------------------|ERRO|-----------------------')
+        print(f'Tipo de erro: "ERRO SINTÁTICO" \n'
+              f' linha {self.__line} e coluna {self.__col}\n'
+              f'Descrição: {self.__msg}')
+        print('---------------------------------------------------\n')
 
 
 class Node(object):
@@ -158,33 +157,94 @@ class SyntaxAnalyser:
 
     def __init__(self, tokens):
         self.__tokens = tokens
+        self.initiate_stack()
+        self.__syntax_table_values = {
+                      0: 'BeginFun <LISTA_COMANDOS> EndFun', 1: '<COMANDO> TK_PERIOD <LISTA_COMANDOS>',
+                      2: '#', 3: '<INPUT>',
+                      4: 'grabInput TK_ID <KEY>', 5: '<KEY>', 6: 'TK_COMMA TK_ID <INPUT>', 7: '#',
+                      8: '<ANT_VAR> TK_ID <DPS_VAR>',
+                      9: 'TK_ATRIB <EXP>', 10: '#', 11: 'funny', 12: '#', 13: '<DISPLAY>',
+                      14: 'showMeTheCode <DISPLAY_F>',
+                      15: '<EXPR_BOOL>', 16: '<STRING>', 17: 'TK_STRING',
+                      18: 'if <EXPR_BOOL> then <LISTA_COMANDOS> <ELIF> <ELSE> end',
+                      19: 'else <LISTA_COMANDOS>', 20: '#', 21: 'elif <EXPR_BOOL> <LISTA_COMANDOS>', 22: '#',
+                      23: 'funLoopWhile <EXPR_BOOL> do <LISTA_COMANDOS> endFunLoop', 24: '<OPERAN> <EXP_F>',
+                      25: 'TK_OPEN_P <EXP> TK_CLOSE_P <EXP_F>', 26: 'TK_OP_AR <EXP>', 27: '#', 28: '<OPER>',
+                      29: '<OPERAN> <BOOL_F>',
+                      30: 'TK_OP_RE <EXPR_BOOL>', 31: '<BOOL_TYPE> <EXPR_BOOL>', 32: 'TK_BOOL', 33: '<OPER_REL>',
+                      34: '#', 35: 'TK_ID',
+                      36: 'TK_NUM' }
+        self.__syntax_table = SYNTAX_TABLE
+
+
+    def initiate_stack(self):
+        self.__stack = Stack()
+        self.__stack.push('$')
+        self.__stack.push('<PROGRAMA>')
+
+    def consult_table(self, line, col):
+
+        # if self.__syntax_table[line][col] != '':
+        try:
+            rules_index = self.__syntax_table[line][col]
+            # prodution found
+            rule = self.__syntax_table_values[rules_index]
+            print("rule: ", rule)
+            # pop the last element of the stack
+            self.__stack.pop()
+            # split the whole rule
+            rule = rule.split()
+            print("rule: ", rule)
+            max = len(rule)
+            # print("num_max: ", max)
+            for i in range(max):
+                # send element in opposite order to the stack
+                rule_to_stack = rule.pop()
+                print("Rule to STACK: ", rule_to_stack)
+                if rule_to_stack == '#':
+                    continue
+                self.__stack.push(rule_to_stack)
+                # print(rule)
+            # print("Top of the stack: " , self.__stack.peek())
+        except KeyError as err:
+            raise SyntaxError(line, col, "Não encontrou um elemento correspodente na tabela")
+
+    def recognise_sentence(self):
+        recognised = False
+        index = 0
+        try:
+            while not recognised :
+                print("TOKEN: ", tokens[index].type)
+                top_stack= self.__stack.peek()
+                first_elem = self.__tokens[index].type
+                print('TOP STACK: ',top_stack)
+                # col = self.__tokens[index].type
+                print('FIRST ELEM QUEUE: ',first_elem)
+                # actual_table_loc = self.__syntax_table[line][col]
+                # print("Table location: ", actual_table_loc)
+                # print(self.__syntax_table_values[actual_table_loc])
+
+                if self.__stack.peek() == tokens[index].type :
+                    self.__stack.pop()
+                    removed_token = tokens.pop(0) #removing first token
+                    print("Removed token: ", removed_token)
+                    print("CURRENT TOKEN LIST:", tokens)
+                elif self.__syntax_table[top_stack][first_elem] != None:
+                    self.consult_table(top_stack,first_elem)
+                elif self.__stack.isEmpty() and not tokens:
+                    recognised = True
+                print('RECOGNISED:',recognised)
+                print('----------------------\n')
+        except :
+            raise SyntaxError(tokens[index].line , tokens[index].col, "ERRO Sintático no loop")
 
 if __name__ == '__main__':
 
-    # s = Stack()
-    #
-    # print(s.isEmpty())
-    # s.push('<PROGRAMA>')
-    # s.push('<LISTA_COMANDO>')
-    # s.push('ELSE')
-    # s.push('funLoopWhile')
-    # print("REMOVED: ",s.pop())
-    # print("REMOVED: ",s.pop())
-    # print("REMOVED: ",s.pop())
-    # print("PEEK: ",s.peek())
-    #
-    # print(s.isEmpty())
-    file_path = 'list_syntax_table'
-    content = ''
-    try:
-        with open(file_path, "r") as file:
-            content = file.read()
-    except IOError and FileNotFoundError as err:
-        print("Arquivo não encontrado! " + err)
+    tokens = lexicalAnalyser.main()
+    syntaxAnaliser = SyntaxAnalyser(tokens)
+    syntaxAnaliser.recognise_sentence()
 
-    # str = '<PROGRAMA> ::= BeginFun <LISTA_COMANDOS> EndFun'
 
-    print(SYNTAX_TABLE['<BOOL_F>']['TK_PERIOD'])
 
 
 
