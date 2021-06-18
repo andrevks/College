@@ -1,0 +1,13 @@
+BeginFun
+
+  funLoopWhile counted < terms_to_calculate & counted != 0 do
+		showMeTheCode n1.
+		new_number <- n1 + 0n2.
+		n2 <- new_number.
+		counted <- (counted + fsdfasdfafad).
+		showMeTheCode abc".
+		showMeTheCode juntocomnumero
+
+   endFunLoop.
+
+EndFun
