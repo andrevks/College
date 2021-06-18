@@ -1,0 +1,132 @@
+#Options
+GenerateScanner = true
+GenerateParser = true
+Language = Java
+ScannerName = Lexico
+ParserName = Sintatico
+SemanticName = Semantico
+ScannerCaseSensitive = true
+ScannerTable = Full
+Input = Stream
+Parser = LL
+#RegularDefinitions
+L : [A-Za-z]
+D : [0-9]
+WS : [\ \t\n\r]
+OP_AR : [\+ \- \* /]
+OP_RE : <> | [ = <> ]
+BOOL : [ \| & ] 
+#Tokens
+:{WS}*
+TK_ID: {L} ({L} | {D} | _ )*
+TK_NUM: {D}+
+TK_STRING: \" ({L} | {D} | . | % | :  )* \"
+
+BeginFun =TK_ID: "BeginFun"
+EndFun = TK_ID: "EndFun"
+
+TK_PERIOD: "."
+TK_ATRIB:"<-"
+TK_COMMA:","
+TK_OPEN_P:"("
+TK_CLOSE_P:")"
+
+showMeTheCode = TK_ID:"showMeTheCode" 
+grabInput = TK_ID:"grabInput"
+funny = TK_ID: "funny"
+
+if = TK_ID: "if"
+then = TK_ID: "then"
+else = TK_ID: "else"
+end = TK_ID: "end"
+elif = TK_ID: "elif"
+funLoopWhile = TK_ID: "funLoopWhile"
+do = TK_ID: "do"
+endFunLoop = TK_ID: "endFunLoop"
+
+//expressions
+TK_BOOL: {BOOL}
+
+//Arithmetic Expressions
+TK_OP_AR: {OP_AR}
+
+//Relational Operators
+TK_OP_RE: {OP_RE}
+
+#NonTerminals
+<PROGRAMA>
+<LISTA_COMANDOS>
+<COMANDO>
+<ANT_VAR>
+
+<DPS_VAR>
+<INPUT>
+<DISPLAY>
+<DISPLAY_F>
+<KEY>
+
+<ELSE>
+<ELIF>
+<STRING>
+
+<OPER>
+<OPER_REL>
+<OPERAN>
+
+
+<EXP>
+<EXP_F>
+<EXPR_BOOL>
+<BOOL_F> 
+<BOOL_TYPE>
+
+#Grammar
+<PROGRAMA> ::= BeginFun <LISTA_COMANDOS> EndFun;
+
+<LISTA_COMANDOS> ::= <COMANDO> TK_PERIOD <LISTA_COMANDOS>  | î ; 
+
+//Input from the keyboards
+<COMANDO> ::= <INPUT>;
+<INPUT> ::= grabInput TK_ID <KEY> | <KEY>;
+<KEY> ::= TK_COMMA TK_ID <INPUT> | î;
+
+<COMANDO> ::= <ANT_VAR> TK_ID  <DPS_VAR>;
+<DPS_VAR> ::= TK_ATRIB <EXP> | î;
+<ANT_VAR> ::= funny  | î;
+
+//Output to Screen 
+<COMANDO> ::= <DISPLAY>;
+<DISPLAY> ::= showMeTheCode <DISPLAY_F>;
+<DISPLAY_F> ::= <EXPR_BOOL> | <STRING>;
+<STRING> ::= TK_STRING  ;
+
+//If-Statement
+<COMANDO> ::= if <EXPR_BOOL> then <LISTA_COMANDOS> <ELIF> <ELSE> end;
+<ELSE> ::= else <LISTA_COMANDOS> | î ;
+<ELIF> ::= elif <EXPR_BOOL> <LISTA_COMANDOS> | î;
+
+//While-statement
+<COMANDO> ::= funLoopWhile <EXPR_BOOL> do <LISTA_COMANDOS> endFunLoop;
+
+//Expressions
+
+//arithmetic expr
+
+<EXP> ::= <OPERAN> <EXP_F> | TK_OPEN_P <EXP> TK_CLOSE_P <EXP_F>  ;
+
+<OPER> ::=  TK_OP_AR <EXP> ;
+
+<EXP_F> ::= î | <OPER> ;
+
+
+//Logic expr
+<EXPR_BOOL> ::= <OPERAN> <BOOL_F>;
+
+<OPER_REL> ::= TK_OP_RE <EXPR_BOOL> | <BOOL_TYPE> <EXPR_BOOL> ;
+
+<BOOL_TYPE> ::= TK_BOOL ;
+
+<BOOL_F> ::= <OPER_REL> | î;
+
+<OPERAN> ::= TK_ID  | TK_NUM ;
+

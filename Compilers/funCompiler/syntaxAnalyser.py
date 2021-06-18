@@ -180,7 +180,7 @@ class SyntaxAnalyser:
     def switch_mode(self,log):
         if log:
             print("\n---------------Analisador Sintático--------------\n")
-            print("LOG DE OPERAÇÕES:")
+            print("\nLOG DE OPERAÇÕES:\n")
             self.initiate_stack_log()
             self.recognise_sentence_log()
             return self.tokens_recognised_log()
