@@ -113,20 +113,13 @@ class SyntaxError(Exception):
         self.__msg = msg
         self.__lex = lex
         self.print_error()
-        # super().__init__(self.__msg)
-
-    def __str__(self):
-        return f'Tipo de erro: "ERRO SINTÁTICO"\n' \
-               f'linha {self.__line} e coluna {self.__col}\n'\
-               f'Descrição: {self.__msg}'\
-               f'Próximo ao padrão \'  {self.__lex}  \''
 
     def print_error(self):
         print('\n----------------------|ERRO|-----------------------')
         print(f'Tipo de erro: "ERRO SINTÁTICO" \n'
               f'Linha {self.__line} e Coluna {self.__col}\n'
               f'Descrição: {self.__msg}\n'
-              f'Próximo ao padrão \'  {self.__lex}  \'')
+              f'Próximo ao padrão  \'  {self.__lex}  \' ou o próprio padrão')
         print('---------------------------------------------------\n')
 
 
@@ -164,9 +157,8 @@ class Stack:
 
 class SyntaxAnalyser:
 
-    def __init__(self, tokens):
+    def __init__(self, tokens, log = False):
         self.__tokens = tokens
-        self.initiate_stack()
         self.__syntax_table_values = {
                       0: 'BeginFun <LISTA_COMANDOS> EndFun', 1: '<COMANDO> TK_PERIOD <LISTA_COMANDOS>',
                       2: '#', 3: '<INPUT>',
@@ -184,8 +176,92 @@ class SyntaxAnalyser:
                       34: '#', 35: 'TK_ID',
                       36: 'TK_NUM' }
         self.__syntax_table = SYNTAX_TABLE
+        self.switch_mode(log)
+
+    def switch_mode(self,log):
+        if log:
+            print("\n---------------Analisador Sintático--------------\n")
+            print("LOG DE OPERAÇÕES:")
+            self.initiate_stack_log()
+            self.recognise_sentence_log()
+        else:
+            self.initiate_stack()
+            self.recognise_sentence()
+
+    def initiate_stack_log(self):
+        self.__stack = Stack()
+        print("Empilhar $")
+        self.__stack.push('$')
+        print("Empilhar Não-Terminal Inicial \n")
+        self.__stack.push('<PROGRAMA>')
+
+    def tokens_recognised_log(self):
+        print("Verificar Pilha Vazia")
+        print("Verificar Estado da Lista")
+        return self.__stack.isEmpty() and not self.__tokens
+
+    def error_verification_log(self,top_stack, first_elem):
+        tk_line = self.__tokens[0].line
+        tk_col = self.__tokens[0].col
+        lex = self.__tokens[0].lexeme
+
+        if self.__stack.isEmpty() and self.__tokens:
+            print("Verificar Pilha Vazia")
+            print("Verificar Estado da Lista")
+            SyntaxError(tk_line, tk_col, lex, 'PILHA VAZIA e ainda há elementos na LISTA')
+        elif not self.__stack.isEmpty() and len(self.__tokens) == 0:
+            print("Verificar Pilha Vazia")
+            print("Verificar Estado da Lista")
+            SyntaxError(tk_line, tk_col, lex, 'LISTA VAZIA e ainda há elementos na Pilha')
+        else:
+            SyntaxError(tk_line, tk_col, lex, f'Não encontrou um elemento correspondente na tabela - {top_stack}:{first_elem}')
 
 
+    def consult_table_log(self, line, col):
+        print("Buscar Indice na Tabela Sintática")
+        rules_index = self.__syntax_table[line][col]
+        # prodution found
+        if rules_index == '':
+            self.error_verification(line,col)
+        print("Retornar Produção Encontrada")
+        rule = self.__syntax_table_values[rules_index]
+        # pop the last element of the stack
+        print("Desempilhar")
+        self.__stack.pop()
+        # split the whole rule
+        rule = rule.split()
+        max = len(rule)
+        for i in range(max):
+            # send element in opposite order to the stack
+            rule_to_stack = rule.pop()
+            if rule_to_stack == '#':
+                continue
+            print("Empilhar Produção: ", rule_to_stack)
+            self.__stack.push(rule_to_stack)
+
+
+    def recognise_sentence_log(self):
+        index = 0
+        try:
+            while not self.tokens_recognised_log() :
+                print('Consultar Topo')
+                top_stack= self.__stack.peek()
+                print('Consultar Elemento da Lista')
+                first_elem = self.__tokens[index].type
+                if top_stack == first_elem :
+                    print("Desempilhar")
+                    self.__stack.pop()
+                    print("Remover Elemento da Lista")
+                    tokens.pop(0) #removing first token
+                elif self.__syntax_table[top_stack][first_elem] != None:
+                    self.consult_table_log(top_stack,first_elem)
+                print('\n')
+        except Exception as ex:
+            self.error_verification_log(top_stack, first_elem)
+
+    '''
+        ---------------- Default ---------------- 
+    '''
     def initiate_stack(self):
         self.__stack = Stack()
         self.__stack.push('$')
@@ -208,26 +284,21 @@ class SyntaxAnalyser:
 
 
     def consult_table(self, line, col):
-        print("Buscar Indice na Tabela")
         rules_index = self.__syntax_table[line][col]
         # prodution found
         if rules_index == '':
             self.error_verification(line,col)
-        print("Retornar Produção Encontrada")
         rule = self.__syntax_table_values[rules_index]
         # pop the last element of the stack
-        print("Desempilhar")
         self.__stack.pop()
         # split the whole rule
         rule = rule.split()
-        print("Buscar Produção: ", rule)
         max = len(rule)
         for i in range(max):
             # send element in opposite order to the stack
             rule_to_stack = rule.pop()
             if rule_to_stack == '#':
                 continue
-            print("Empilhar Produção: ", rule_to_stack)
             self.__stack.push(rule_to_stack)
 
 
@@ -237,26 +308,16 @@ class SyntaxAnalyser:
             while not self.tokens_recognised() :
                 top_stack= self.__stack.peek()
                 first_elem = self.__tokens[index].type
-                print('Topo: ',top_stack)
-                print('Token da lista: ',first_elem)
                 if self.__stack.peek() == tokens[index].type :
-                    print("Desempilhar")
                     self.__stack.pop()
-                    print("Remover Elemento da Lista")
-                    removed_token = tokens.pop(0) #removing first token
-                    print("Remover Token: ", removed_token)
-                    print("Lista Tokens Atual: ", tokens)
-                    # self.error_verification()
+                    tokens.pop(0) #removing first token
                 elif self.__syntax_table[top_stack][first_elem] != None:
                     self.consult_table(top_stack,first_elem)
-                print('\n')
         except Exception as ex:
             self.error_verification(top_stack, first_elem)
 
-
-
-if __name__ == '__main__':
-
-    tokens = lexicalAnalyser.main()
-    syntaxAnaliser = SyntaxAnalyser(tokens)
-    syntaxAnaliser.recognise_sentence()
+#
+# if __name__ == '__main__':
+#
+#     tokens = lexicalAnalyser.main()
+#     syntaxAnalyser = SyntaxAnalyser(tokens,True)

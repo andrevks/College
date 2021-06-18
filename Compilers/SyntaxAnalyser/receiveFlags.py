@@ -1,5 +1,5 @@
 import argparse
-from sys import argv
+from typing import NamedTuple
 
 '''
    Options:
@@ -15,22 +15,41 @@ from sys import argv
           onde:
             -lt parâmetro para imprimir a listagem dos tokens
              arquivoErro.fonte é o arquivo texto, com o código fonte do programa
+             
+   -tudo : exibe todas as listagens do compilador
    
+   -lt : exibe  a listagem dos Tokens
+
+   -as : exibe a árvore sintática (se for implementada)
+
+   -ls  exibe o LOG do analisador sintático
+
 '''
 
+parser = argparse.ArgumentParser(description='Fun Compiler.')
 
-def flags(argv):
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-lt', '--listartokens',
-                        dest='iofile',
-                        help='Send a file',
-                        type=str)
+parser.add_argument('-tudo',
+                    dest='tudo',
+                    action='store_true',
+                    help='Exibe todas as listagens do compilador.')
 
-    args = parser.parse_args()
-    file_path = args.iofile
-    try:
-        with open(file_path, "r") as file:
-            content = file.read()
-            return content
-    except IOError and FileNotFoundError as err:
-        print("Arquivo não encontrado! " + err)
+parser.add_argument('-lt',
+                    dest='ltokens',
+                    action='store_true',
+                    help='Exibe a listagem dos Tokens.')
+
+parser.add_argument('-ls',
+                    dest='lsintatico',
+                    action='store_true',
+                    help='Exibe o LOG do analisador sintático.')
+
+# file required argument
+parser.add_argument('filename', help='Required: Informe um caminho para um arquivo')
+args = parser.parse_args()
+
+try:
+    with open(args.filename, "r") as file:
+        source_code = file.read()
+except IOError and FileNotFoundError as err:
+    print("Arquivo não encontrado! " + err)
+
