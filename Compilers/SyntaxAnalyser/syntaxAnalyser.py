@@ -104,19 +104,29 @@ SYNTAX_TABLE = {
              }
 }
 
-class SyntaxError:
+class SyntaxError(Exception):
 
-    def __init__(self, line, col, msg):
+
+    def __init__(self, line, col, lex = '', msg = 'ERRO SINTÁTICO !'):
         self.__line = line
         self.__col = col
         self.__msg = msg
+        self.__lex = lex
         self.print_error()
+        # super().__init__(self.__msg)
+
+    def __str__(self):
+        return f'Tipo de erro: "ERRO SINTÁTICO"\n' \
+               f'linha {self.__line} e coluna {self.__col}\n'\
+               f'Descrição: {self.__msg}'\
+               f'Próximo ao padrão \'  {self.__lex}  \''
 
     def print_error(self):
         print('\n----------------------|ERRO|-----------------------')
         print(f'Tipo de erro: "ERRO SINTÁTICO" \n'
-              f' linha {self.__line} e coluna {self.__col}\n'
-              f'Descrição: {self.__msg}')
+              f'Linha {self.__line} e Coluna {self.__col}\n'
+              f'Descrição: {self.__msg}\n'
+              f'Próximo ao padrão \'  {self.__lex}  \'')
         print('---------------------------------------------------\n')
 
 
@@ -184,28 +194,42 @@ class SyntaxAnalyser:
     def tokens_recognised(self):
         return self.__stack.isEmpty() and not self.__tokens
 
-    def consult_table(self, line, col):
+    def error_verification(self,top_stack, first_elem):
+        tk_line = self.__tokens[0].line
+        tk_col = self.__tokens[0].col
+        lex = self.__tokens[0].lexeme
 
-        try:
-            rules_index = self.__syntax_table[line][col]
-            # prodution found
-            rule = self.__syntax_table_values[rules_index]
-            print("rule: ", rule)
-            # pop the last element of the stack
-            self.__stack.pop()
-            # split the whole rule
-            rule = rule.split()
-            print("rule: ", rule)
-            max = len(rule)
-            for i in range(max):
-                # send element in opposite order to the stack
-                rule_to_stack = rule.pop()
-                print("Rule to STACK: ", rule_to_stack)
-                if rule_to_stack == '#':
-                    continue
-                self.__stack.push(rule_to_stack)
-        except KeyError as err:
-            raise SyntaxError(line, col, "Não encontrou um elemento correspodente na tabela")
+        if self.__stack.isEmpty() and self.__tokens:
+            SyntaxError(tk_line, tk_col, lex, 'PILHA VAZIA e ainda há elementos na LISTA')
+        elif not self.__stack.isEmpty() and len(self.__tokens) == 0:
+            SyntaxError(tk_line, tk_col, lex, 'LISTA VAZIA e ainda há elementos na Pilha')
+        else:
+            SyntaxError(tk_line, tk_col, lex, f'Não encontrou um elemento correspondente na tabela - {top_stack}:{first_elem}')
+
+
+    def consult_table(self, line, col):
+        print("Buscar Indice na Tabela")
+        rules_index = self.__syntax_table[line][col]
+        # prodution found
+        if rules_index == '':
+            self.error_verification(line,col)
+        print("Retornar Produção Encontrada")
+        rule = self.__syntax_table_values[rules_index]
+        # pop the last element of the stack
+        print("Desempilhar")
+        self.__stack.pop()
+        # split the whole rule
+        rule = rule.split()
+        print("Buscar Produção: ", rule)
+        max = len(rule)
+        for i in range(max):
+            # send element in opposite order to the stack
+            rule_to_stack = rule.pop()
+            if rule_to_stack == '#':
+                continue
+            print("Empilhar Produção: ", rule_to_stack)
+            self.__stack.push(rule_to_stack)
+
 
     def recognise_sentence(self):
         index = 0
@@ -213,19 +237,22 @@ class SyntaxAnalyser:
             while not self.tokens_recognised() :
                 top_stack= self.__stack.peek()
                 first_elem = self.__tokens[index].type
-                print('TOP STACK: ',top_stack)
-                print('FIRST ELEM QUEUE: ',first_elem)
-
+                print('Topo: ',top_stack)
+                print('Token da lista: ',first_elem)
                 if self.__stack.peek() == tokens[index].type :
+                    print("Desempilhar")
                     self.__stack.pop()
+                    print("Remover Elemento da Lista")
                     removed_token = tokens.pop(0) #removing first token
-                    print("Removed token: ", removed_token)
-                    print("CURRENT TOKEN LIST:", tokens)
+                    print("Remover Token: ", removed_token)
+                    print("Lista Tokens Atual: ", tokens)
+                    # self.error_verification()
                 elif self.__syntax_table[top_stack][first_elem] != None:
                     self.consult_table(top_stack,first_elem)
-                print("-------------------------- \n")
-        except :
-            raise SyntaxError(tokens[index].line , tokens[index].col, "ERRO Sintático no loop")
+                print('\n')
+        except Exception as ex:
+            self.error_verification(top_stack, first_elem)
+
 
 
 if __name__ == '__main__':
