@@ -37,7 +37,7 @@ _end:
     MOV R7, #1               @Terminate the current process
     SWI 0
 .data
-  user_input: .ascii "                           \n"
+  user_input: .ascii "                  \n"
   len_user_input = .-user_input
   msg: .ascii "\nSeja bem vindo a corretora MicoLeaoDourado, "
   len_msg = .-msg
