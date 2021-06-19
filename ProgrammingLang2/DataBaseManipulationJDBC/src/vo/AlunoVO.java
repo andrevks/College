@@ -13,6 +13,7 @@ public class AlunoVO {
     private String nomePai;
     private EnumSexo sexo;
     private EnderecoVO endereco;
+    private int curso;
 
 
     //Constructor
@@ -23,6 +24,7 @@ public class AlunoVO {
         this.nomeMae = "";
         this.nomePai = "";
         this.sexo = EnumSexo.FEMININO;
+        this.curso = 0;
     }
     public AlunoVO(int matricula, String nome, EnumSexo sexo) {
         this();
@@ -79,9 +81,16 @@ public class AlunoVO {
         this.endereco = endereco;
     }
 
-    @Override
+    public int getCurso() {
+        return curso;
+    }
 
+    public void setCurso(int curso) {
+        this.curso = curso;
+    }
+
+    @Override
     public String toString() {
-        return matricula + ", " + nome + ", "+sexo+", residente em: "+endereco;
+        return matricula + ", " + nome + ", "+sexo+", residente em: "+endereco+ " no curso de " + curso;
     }
 }

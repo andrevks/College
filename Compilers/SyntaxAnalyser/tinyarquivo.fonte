@@ -1,0 +1,10 @@
+BeginFun
+
+	    funny valor_barato.
+	    grabInput valor_barato.
+
+		showMeTheCode "Guarde seu dinheiro".
+
+		showMeTheCode "Continue fazendo analises dos precos".
+
+EndFun

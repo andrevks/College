@@ -7,17 +7,17 @@ Superclasse para as classes de persistência (DAO).
 
 public class DAO {
 
-    protected ConexaoDB conexao;
+    protected ConexaoBD conexao;
 
-    public DAO(ConexaoDB conexao) throws PersistenciaException{
+    public DAO(ConexaoBD conexao) throws PersistenciaException{
         this.conexao = conexao;
     }
 
-    public ConexaoDB getConexao() {
+    public ConexaoBD getConexao() {
         return conexao;
     }
 
-    public void setConexao(ConexaoDB conexao) {
+    public void setConexao(ConexaoBD conexao) {
         this.conexao = conexao;
     }
 

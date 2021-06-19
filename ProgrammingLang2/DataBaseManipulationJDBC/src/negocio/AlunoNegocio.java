@@ -13,9 +13,7 @@ public class AlunoNegocio {
 
     public AlunoNegocio() throws NegocioException {
         try {
-            //Erro pag 12
-            this.alunoDAO = new AlunoDAO(ConexaoBD.getInstacia());
-
+            this.alunoDAO = new AlunoDAO(ConexaoBD.getInstancia());
         }catch (PersistenciaException ex ){
            throw new NegocioException("Erro ao iniciar a Persistencia - " + ex.getMessage());
         }
@@ -31,7 +29,7 @@ public class AlunoNegocio {
                 throw new NegocioException("Inclusao nao realizada !!");
             }
         }catch (PersistenciaException ex){
-            throw new NegocioException("Erro ao incluir o aluno - " + ex.getMessage());
+            throw new NegocioException("AlunoNegocio: Erro ao incluir o aluno - " + ex.getMessage());
         }
     }
 
@@ -75,6 +73,24 @@ public class AlunoNegocio {
         }
     }
 
+    public List<AlunoVO> listaAlunos() throws NegocioException {
+        try{
+            return alunoDAO.listarAlunos();
+        }catch (PersistenciaException ex) {
+            throw new NegocioException("Erro ao listar alunos - " + ex.getMessage());
+        }
+    }
+
+    public List<AlunoVO> listaAlunos(int codigo) throws NegocioException {
+        try{
+            return alunoDAO.listarAlunos(codigo);
+        }catch (PersistenciaException ex) {
+            throw new NegocioException("Erro ao listar alunos - " + ex.getMessage());
+        }
+    }
+
+
+
     private String validarDados(AlunoVO alunoVO) {
         String mensagemErros = "";
         if(alunoVO.getNome() == null || alunoVO.getNome().length() == 0){
@@ -92,6 +108,9 @@ public class AlunoNegocio {
         if(alunoVO.getEndereco().getLogradouro() == null || alunoVO.getEndereco().getLogradouro().length() == 0) {
             mensagemErros += "\n Logradouro nao pode ser vazio";
         }
+        if(alunoVO.getEndereco().getNumero() <= 0) {
+            mensagemErros += "\n Numero deve ser maior que zero";
+        }
         if(alunoVO.getEndereco().getBairro() == null || alunoVO.getEndereco().getBairro().length() == 0) {
             mensagemErros += "\n Bairro nao pode ser vazio";
         }
@@ -100,6 +119,9 @@ public class AlunoNegocio {
         }
         if(alunoVO.getEndereco().getUf() == null) {
             mensagemErros += "\n UF nao pode ser vazio";
+        }
+        if(alunoVO.getCurso() <=0 ){
+            mensagemErros += "\n O codigo do curso deve ser maior que ZERO";
         }
         return mensagemErros;
     }

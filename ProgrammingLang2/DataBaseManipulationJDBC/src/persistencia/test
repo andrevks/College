@@ -1,0 +1,1 @@
+INSERT INTO Aluno( nome, nomemae, nomepai, sexo, logradouro, numero, bairro, cidade" +uf )VALUES ('andre','sima' ,'tonho', 'M', 'alves', 32 , 'cristorei', 'varzeagrande', 'mt');

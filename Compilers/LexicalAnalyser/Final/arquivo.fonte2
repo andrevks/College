@@ -1,0 +1,59 @@
+BeginFun
+
+
+	funny terms_to_calculate <- 9 .
+
+	funny n1.
+
+	funny n2.
+
+	funny counted <- 0.
+
+	funLoopWhile counted < terms_to_calculate do
+
+		showMeTheCode n1.
+
+		new_number <- n1 + n2.
+
+		n2 <- new_number.
+
+		counted <- counted + 1.
+
+	endFunLoop.
+
+
+
+	grabInput valor_barato, valor_caro, bitcoin, dogeCoin, shibaInu, whatever.
+
+	funny valor_barato.
+
+	grabInput valor_barato.
+
+	funny valor_investido <- (((bitcoin/10) * ((idade+1000)+jurosComp+taxas))/(quadriculado+400)).
+
+	showMeTheCode valor_investido .
+
+
+	funLoopWhile valor_ethereum < valor_bitcoin do
+
+
+ 		 if valor_ethereum = valor_barato & taxas < 123 then
+
+			showMeTheCode "Invista seu dinheiro".
+
+
+		  elif valor_etherem > 4000
+
+
+			showMeTheCode "Guarde seu dinheiro".
+		  else
+
+
+			showMeTheCode "Continue fazendo analises dos precos".
+
+		end.
+
+	endFunLoop.
+
+
+EndFun

@@ -1,0 +1,17 @@
+BeginFun
+  if idade < 10 & anoNasc <> 10 then
+
+	  funLoopWhile valor_ethereum < valor_bitcoin do
+
+		  showMeTheCode investYourMoney.
+
+	  endFunLoop.
+
+   end.
+EndFun
+
+
+
+
+
+                                                                 #
