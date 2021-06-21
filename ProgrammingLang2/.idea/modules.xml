@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/DataBaseManipulationJDBC/DataBaseManipulationJDBC.iml" filepath="$PROJECT_DIR$/DataBaseManipulationJDBC/DataBaseManipulationJDBC.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ProgrammingLang2.iml" filepath="$PROJECT_DIR$/.idea/ProgrammingLang2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ProvaJDBC/ProvaJDBC.iml" filepath="$PROJECT_DIR$/ProvaJDBC/ProvaJDBC.iml" />
+    </modules>
+  </component>
+</project>
