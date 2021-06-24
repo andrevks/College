@@ -26,7 +26,6 @@ public class Selecao3 {
             }else{
                 System.out.println("Nao encontrado! ");
             }
-            resultado.close();
         }catch (SQLException ex){
             System.out.println("Erro ao recuperar um grupo " + ex.toString());
         }finally {
