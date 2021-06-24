@@ -1,5 +1,6 @@
 package apps;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,7 +15,7 @@ public class Conexao3 {
         Properties proBD = new Properties();
         FileInputStream leitorArquivo;
         try {
-            leitorArquivo = new FileInputStream("apps/conexao.properties");
+            leitorArquivo = new FileInputStream(new File("C:\\Users\\andre\\IdeaProjects\\College\\ProgrammingLang2\\ProvaJDBC\\src\\conexao.properties"));
             proBD.load(leitorArquivo);
             leitorArquivo.close();
         }catch (FileNotFoundException ex){
