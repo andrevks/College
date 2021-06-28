@@ -97,7 +97,8 @@ _div:
   @R3 = result
   @R1 = divisor
   @R0 = dividend
-  SUBS R0, R0, R1
+  CMP R0, R1
+  SUB R0, R0, R1
   ADD R3, R3, #1 @incr result
   BHI _div
   BAL _result4
