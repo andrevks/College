@@ -78,6 +78,7 @@ _cases:
   CMP R3, #3
     BEQ _mult
   CMP R3, #4
+    MOV R3, #0
     BEQ _div
   _default:
     BAL _result1
@@ -93,6 +94,16 @@ _sub:
 _mult:
 
 _div:
+  @R3 = result
+  @R1 = divisor
+  @R0 = dividend
+  SUBS R0, R0, R1
+  ADD R3, R3, #1 @incr result
+  BHI _div
+  BAL _result4
+  
+
+
 
 _result1:
   LDR R0, addr_result1 @String Result: %d
@@ -102,7 +113,7 @@ _result2:
   LDR R0, addr_result2 @String Result: %d
   BAL _print_result
 
-_result4
+_result4:
   LDR R0, addr_result4 @String Result: %d
   BAL _print_result
 
@@ -117,7 +128,7 @@ _print_result:
 _end:
   LDR lr, addr_backup_lr@End func, reset LR
   LDR lr, [lr]
-  BX lr@Return for the main
+  BX lr @Return for the main
 @Address for the data:
 addr_question: .word question
 addr_op: .word op
@@ -128,6 +139,7 @@ addr_number2: .word number2
 addr_resultvalue: .word resultvalue
 addr_result1: .word result1
 addr_result2: .word result2
+addr_result4: .word result4
 addr_backup_lr: .word backup_lr
 
 .global printf
