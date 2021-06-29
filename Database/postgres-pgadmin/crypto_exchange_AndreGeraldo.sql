@@ -1,5 +1,5 @@
 CREATE TABLE moeda (
-  codmoeda SERIAL NOT NULL,
+  codmoeda CHAR(3) NOT NULL,
   nome VARCHAR(25) NOT NULL UNIQUE,
   simbolo VARCHAR(200),
   CONSTRAINT pkmoeda PRIMARY KEY (codmoeda)
@@ -23,7 +23,7 @@ CREATE TABLE ordem (
   quantidade INTEGER NOT NULL,
   valorunitario NUMERIC(10,9) NOT NULL,
   idusuario INTEGER NOT NULL,
-  codmoeda INTEGER NOT NULL,
+  codmoeda CHAR(3) NOT NULL,
   CONSTRAINT pkordem PRIMARY KEY (idordem),
   CONSTRAINT fkordem_usuario FOREIGN KEY(idusuario) REFERENCES usuario(idusuario),
   CONSTRAINT fkordem_moeda FOREIGN KEY(codmoeda) REFERENCES moeda(codmoeda)
