@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  postgres-cp:
+    image: postgres:12.4-alpine
+    container_name: postgres
+    environment:
+       POSTGRES_PASSWORD: "admin"
+    ports:
+      - "5440:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data 
+    networks: 
+      - network
+
+  pgadmin-cp:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment: 
+       PGADMIN_DEFAULT_EMAIL: "andre@gmail.com" 
+       PGADMIN_DEFAULT_PASSWORD: "123"
+    ports: 
+      - "25432:80"
+    depends_on: 
+      - postgres-cp
+    networks: 
+      - network
+
+networks: 
+  network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    external: true
