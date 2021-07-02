@@ -62,7 +62,7 @@ class SemanticAnalyser:
                 #put the variables on the table
                 print("\nDECLARAR VARIÁVEL")
                 l_index_bu = l_index + 1
-                while tok[l_index_bu].lexeme != '.' :
+                while tok[l_index_bu].lexeme != '.':
 
                     if tok[l_index_bu].type == 'TK_ID':
                         lex = tok[l_index_bu].lexeme
@@ -74,6 +74,19 @@ class SemanticAnalyser:
                             SemanticError(line , col , lex , f'Variável Duplicada')
                     elif tok[l_index_bu].type == 'TK_ATRIB':
                         break
+
+                    # elif tok[l_index_bu].type == 'TK_ATRIB':
+                    #     if not tok[l_index_bu + 2].type == 'TK_PERIOD':
+                    #         continue
+                    #     if tok[l_index_bu+1].type == 'TK_ID':
+                    #         var = tok[l_index+1].var
+                    #         if self.__symbol_table.find(var) == None :
+                    #             self.insert(lex,line,0,l_index_bu)
+                    #
+                    #
+                    #     if tok[l_index+1].type == 'TK_NUM':
+
+                        break
                     l_index_bu += 1
             elif type == 'TK_ID':
                 print("\nENCONTROU VARIÁVEL")
@@ -83,5 +96,30 @@ class SemanticAnalyser:
                         print("Variável foi declarada")
                 except AttributeError as att:
                     SemanticError(line , col , lex ,f'Variável NÃO Declarada: ( {att} )')
+
+            elif type == 'TK_ATRIB':
+
+                #Apenas interessado em variável com uma var ou num.
+                if not tok[l_index + 2].type == 'TK_PERIOD':
+                    l_index += 1
+                    continue
+                if tok[l_index+1].type == 'TK_NUM':
+                    num = tok[l_index+1].lexeme
+                    var = tok[l_index-1].lexeme
+                    print(f'Num {num} to Var value: {var} ')
+                    #Supondo que a var existe na tabela:
+                    var_value = self.__symbol_table.find(var).value = num
+                    print(f'Var value is {var_value}')
+
+                if tok[l_index+1].type == 'TK_ID':
+                    right_var= tok[l_index+1].lexeme
+                    left_var = tok[l_index-1].lexeme
+                    print(f'Right Var {right_var} to Left Var value: {left_var} ')
+                    right_var_value = self.__symbol_table.find(right_var).value
+                    result = self.__symbol_table.find(left_var).value = right_var_value
+
+                    print(f'Var value is {result} ')
+
+
 
             l_index += 1
