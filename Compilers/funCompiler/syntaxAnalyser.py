@@ -105,8 +105,6 @@ SYNTAX_TABLE = {
 }
 
 class SyntaxError(Exception):
-
-
     def __init__(self, line, col, lex = '', msg = 'ERRO SINTÁTICO !'):
         self.__line = line
         self.__col = col
