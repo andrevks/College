@@ -33,11 +33,13 @@ class SemanticAnalyser:
 
 
 
-    def switch_mode(self,lse):
+    def switch_mode(self,lse,ts):
         if lse:
             print("\n---------------Analisador Semântico--------------\n")
             print("\nLOG DE OPERAÇÕES:\n")
-            self.verify_semantic_log()
+            self.verify_semantic_log(ts)
+        elif ts:
+            self.verify_semantic_log(ts)
         else:
             self.verify_semantic()
 
@@ -55,19 +57,20 @@ class SemanticAnalyser:
         print("Buscar Variavel\n")
         return self.__symbol_table.find(key) != None;
 
-    def show_symbol_table_log(self):
-        print("\n---------------------TABELA DE SÍMBOLOS-------------------")
-        print('{:<20}  {:<10} {:<10}'.format('Variáveis' , 'Valor', 'linha'))
-        print('{:<20}  {:<10} {:<10}'.format('----------' , '------', '-----'))
-        for key in self.__keys_history:
+    def show_symbol_table_log(self,ts):
+        if ts:
+            print("\n---------------------TABELA DE SÍMBOLOS-------------------")
+            print('{:<20}  {:<10} {:<10}'.format('Variáveis' , 'Valor', 'linha'))
+            print('{:<20}  {:<10} {:<10}'.format('----------' , '------', '-----'))
+            for key in self.__keys_history:
 
-            var_value = self.__symbol_table.find(key).value
-            var = self.__symbol_table.find(key).var
-            line = self.__symbol_table.find(key).line
-            print('{:<20}  {:<10} {:<10}'.format(var,var_value,line))
+                var_value = self.__symbol_table.find(key).value
+                var = self.__symbol_table.find(key).var
+                line = self.__symbol_table.find(key).line
+                print('{:<20}  {:<10} {:<10}'.format(var,var_value,line))
 
 
-    def verify_semantic_log(self):
+    def verify_semantic_log(self,ts):
         l_index = 0
         tok = self.__token_list
         while l_index < len(tok):
@@ -134,7 +137,7 @@ class SemanticAnalyser:
                     SemanticError(line , col , lex , f'Divisão por ZERO')
 
             l_index += 1
-        self.show_symbol_table_log()
+        self.show_symbol_table_log(ts)
 
     '''
         ---------------- Default ---------------- 

@@ -33,16 +33,15 @@ BeginFun
     idade <- valor_caro.
 
 
-    bitcoin <-counted/4.
+    bitcoin <-counted/0.
 
+	funny valor_barato.
 
 	grabInput valor_barato.
 
-    valor_barato <- 10.
+    valor_barato <- 0.
     taxas <- 1/valor_barato.
 
-    funny jurosComp.
-    funny valor_bitcoin.
 	funny valor_investido <- (((bitcoin/10) * ((idade+1000)+jurosComp+taxas))/(quadriculado+400)).
 
 	showMeTheCode valor_investido .
