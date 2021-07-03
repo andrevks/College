@@ -26,9 +26,11 @@ BeginFun
 	funny bitcoin.
 	funny dogeCoin.
     funny idade.
-    funny jurosComp.
     funny taxas.
     funny quadriculado.
+
+
+
 
     bitcoin <-counted/0.
 
