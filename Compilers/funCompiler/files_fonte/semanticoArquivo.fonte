@@ -18,6 +18,8 @@ BeginFun
 
 	endFunLoop.
 
+
+
     funny valor_barato.
 	funny valor_caro.
 	funny bitcoin.
@@ -28,9 +30,14 @@ BeginFun
     funny taxas.
     funny quadriculado.
 
+    bitcoin <-counted/0.
+
 	funny valor_barato.
 
 	grabInput valor_barato.
+
+    valor_barato <- 0.
+    taxas <- 1/valor_barato.
 
 	funny valor_investido <- (((bitcoin/10) * ((idade+1000)+jurosComp+taxas))/(quadriculado+400)).
 

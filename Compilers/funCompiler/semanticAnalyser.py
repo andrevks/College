@@ -13,7 +13,7 @@ class SemanticError(Exception):
         print(f'Tipo de erro: "ERRO SEMÂNTICO" \n'
               f'Linha {self.__line} e Coluna {self.__col}\n'
               f'Descrição: {self.__msg}\n'
-              f'Variável: \'  {self.__lex}  \'')
+              f'Variável/Padrão: \'  {self.__lex}  \'')
         print('---------------------------------------------------\n')
 
 class Symbol:
@@ -28,25 +28,38 @@ class SemanticAnalyser:
     def __init__(self,tokens):
         self.__symbol_table = HashTable()
         self.__token_list = tokens
+        self.__history_table = []
 
 
     def insert(self , lexeme, line, value , location):
         new_var = Symbol(lexeme,value,line,location)
-        print("Inserir variável")
-        print("VARIÁVEL A SER DECLARADA: ",new_var.var)
+        # print("VARIÁVEL A SER DECLARADA: ",new_var.var)
         key = new_var.var
+        number = new_var.value
+        print(f"Inserir variável ({key})")
+        # self.__history_table.append(new_var)
         self.__symbol_table.insert(key,new_var)
 
     def is_var_on_table(self, key):
         check = False
         try:
-            print("Está na tabela ? ", self.__symbol_table.find(key).var == key)
-            print("Encontrar Variavel")
+            # print("Está na tabela ? ", self.__symbol_table.find(key).var == key)
+            # print("Encontrar Variavel")
             check = self.__symbol_table.find(key).var == key;
             return check
         except AttributeError as att:
             raise
             check = False
+    # def show_symbol_table(self):
+    #     print("\nMostrar tabela\n")
+    #     print(f'( VAR, VALUE, LINE, LOCATION )')
+    #     for item in self.__history_table:
+    #         # print(f'( {item.var}, {item.value}, {item.line}, {item.location} )')
+    #         # print(f'( {item.var}, {item.value} )')
+    #         # item.value = self.__symbol_table.find(key).value
+    #         print(f'{item.var}: {item.value}')
+
+
 
     def verify_semantic(self):
         l_index = 0
@@ -60,7 +73,7 @@ class SemanticAnalyser:
             #DECLARAÇÃO DE VARIÁVEL
             if type == 'funny':
                 #put the variables on the table
-                print("\nDECLARAR VARIÁVEL")
+                # print("\nDECLARAR VARIÁVEL")
                 l_index_bu = l_index + 1
                 while tok[l_index_bu].lexeme != '.':
 
@@ -75,30 +88,16 @@ class SemanticAnalyser:
                     elif tok[l_index_bu].type == 'TK_ATRIB':
                         break
 
-                    # elif tok[l_index_bu].type == 'TK_ATRIB':
-                    #     if not tok[l_index_bu + 2].type == 'TK_PERIOD':
-                    #         continue
-                    #     if tok[l_index_bu+1].type == 'TK_ID':
-                    #         var = tok[l_index+1].var
-                    #         if self.__symbol_table.find(var) == None :
-                    #             self.insert(lex,line,0,l_index_bu)
-                    #
-                    #
-                    #     if tok[l_index+1].type == 'TK_NUM':
-
-                        break
                     l_index_bu += 1
             elif type == 'TK_ID':
-                print("\nENCONTROU VARIÁVEL")
+                # print("\nENCONTROU VARIÁVEL")
                 try:
                     var = lex
-                    if self.is_var_on_table(var):
-                        print("Variável foi declarada")
+                    self.is_var_on_table(var)
                 except AttributeError as att:
                     SemanticError(line , col , lex ,f'Variável NÃO Declarada: ( {att} )')
 
             elif type == 'TK_ATRIB':
-
                 #Apenas interessado em variável com uma var ou num.
                 if not tok[l_index + 2].type == 'TK_PERIOD':
                     l_index += 1
@@ -106,20 +105,34 @@ class SemanticAnalyser:
                 if tok[l_index+1].type == 'TK_NUM':
                     num = tok[l_index+1].lexeme
                     var = tok[l_index-1].lexeme
-                    print(f'Num {num} to Var value: {var} ')
+                    print(f'{var} <- {num}')
                     #Supondo que a var existe na tabela:
                     var_value = self.__symbol_table.find(var).value = num
-                    print(f'Var value is {var_value}')
+                    print(f'{var} == {var_value}')
 
                 if tok[l_index+1].type == 'TK_ID':
                     right_var= tok[l_index+1].lexeme
                     left_var = tok[l_index-1].lexeme
-                    print(f'Right Var {right_var} to Left Var value: {left_var} ')
+                    print(f' {left_var} <- {right_var}')
                     right_var_value = self.__symbol_table.find(right_var).value
                     result = self.__symbol_table.find(left_var).value = right_var_value
 
-                    print(f'Var value is {result} ')
+                    print(f'{left_var} == {result} ')
 
+
+            elif 'TK_OP_AR' and lex == '/':
+                print("DIVISÃO !!!!")
+
+                right_var = tok[l_index + 1]
+                lex = right_var.lexeme
+                col = right_var.col
+                if right_var.type == 'TK_ID':
+                    print("Consultar Tabela")
+                    right_var_value = self.__symbol_table.find(right_var.lexeme).value
+                    if right_var_value == 0:
+                        SemanticError(line , col , lex , f'Divisão por ZERO')
+                elif right_var.lexeme == 0:
+                    SemanticError(line , col , lex , f'Divisão por ZERO')
 
 
             l_index += 1
