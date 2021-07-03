@@ -43,6 +43,16 @@ parser.add_argument('-ls',
                     action='store_true',
                     help='Exibe o LOG do analisador sintático.')
 
+parser.add_argument('-lse',
+                    dest='lsemantico',
+                    action='store_true',
+                    help='Exibe o LOG do analisador semântico.')
+
+parser.add_argument('-ts',
+                    dest='tsimbolos',
+                    action='store_true',
+                    help='Exibe a tabela de símbolos.')
+
 # file required argument
 parser.add_argument('filename', help='Required: Informe um caminho para um arquivo')
 args = parser.parse_args()

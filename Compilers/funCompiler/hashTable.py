@@ -18,6 +18,9 @@ class HashTable:
 		self.capacity = INITIAL_CAPACITY
 		self.size = 0
 		self.buckets = [None]*self.capacity
+
+	def __repr__(self):
+		return str(self)
 	# Generate a hash for a given key
 	# Input:  key - string
 	# Output: Index from 0 to self.capacity

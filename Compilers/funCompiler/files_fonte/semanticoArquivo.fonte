@@ -3,7 +3,7 @@ BeginFun
 	funny terms_to_calculate <- 9 .
 	funny n1.
 	funny n2.
-	funny counted <- 0.
+	funny counted <- 2.
     funny new_number.
 
 	funLoopWhile counted < terms_to_calculate & counted <> 0 do
@@ -29,7 +29,8 @@ BeginFun
     funny taxas.
     funny quadriculado.
 
-
+    valor_caro <- 60.
+    idade <- valor_caro.
 
 
     bitcoin <-counted/0.
