@@ -4,103 +4,98 @@ import lexicalAnalyser
 SYNTAX_TABLE = {
     '<PROGRAMA>': {'$': '', 'TK_ID':'' ,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': 0, 'EndFun':'',
                     'TK_PERIOD':'','TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
-                    'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','elif':'','funLoopWhile':'',
+                    'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','funLoopWhile':'',
                     'do':'','endFunLoop':'','TK_BOOL':'','TK_OP_AR': '','TK_OP_RE':''
                     },
     '<LISTA_COMANDOS>':{'$': '', 'TK_ID': 1,'TK_NUM': '' , 'TK_STRING': '', 'BeginFun': '', 'EndFun':2,
                           'TK_PERIOD':1,'TK_ATRIB':'','TK_COMMA':1, 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':1,
-                          'grabInput':1,'funny': 1,'if':1,'then':'','else': 2,'end': 2, 'elif': 2,'funLoopWhile':1,'do':'',
+                          'grabInput':1,'funny': 1,'if':1,'then':'','else': 2,'end': 2, 'funLoopWhile':1,'do':'',
                           'endFunLoop':2,'TK_BOOL': '','TK_OP_AR': '','TK_OP_RE': ''
                           },
     '<COMANDO>':{'$': '', 'TK_ID': 8,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
                    'TK_PERIOD':3,'TK_ATRIB':'','TK_COMMA':3, 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':13,
-                   'grabInput':3,'funny': 8,'if':18,'then':'','else':'', 'end': '','elif': '','funLoopWhile':23,
+                   'grabInput':3,'funny': 8,'if':18,'then':'','else':'', 'end': '','funLoopWhile':21,
                    'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': '','TK_OP_RE':''
                    },
     '<ANT_VAR>':{'$': '', 'TK_ID':12 ,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
                    'TK_PERIOD':'','TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
-                   'grabInput':'','funny': 11,'if':'','then':'','else':'', 'end': '','elif': '','funLoopWhile':'',
+                   'grabInput':'','funny': 11,'if':'','then':'','else':'', 'end': '','funLoopWhile':'',
                    'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': '','TK_OP_RE':''
                    },
     '<DPS_VAR>': {'$': '', 'TK_ID':'' ,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
                'TK_PERIOD':10,'TK_ATRIB':9,'TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
-               'grabInput':'','funny': '','if':'','then':'','else':'', 'end': '','elif': '','funLoopWhile':'',
+               'grabInput':'','funny': '','if':'','then':'','else':'', 'end': '','funLoopWhile':'',
                'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': '','TK_OP_RE':''
                },
     '<INPUT>': {'$': '', 'TK_ID':'' ,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
              'TK_PERIOD':5,'TK_ATRIB':'','TK_COMMA':5, 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
-             'grabInput':4,'funny': '','if':'','then':'','else':'', 'end': '','elif': '','funLoopWhile':'',
+             'grabInput':4,'funny': '','if':'','then':'','else':'', 'end': '','funLoopWhile':'',
              'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': '','TK_OP_RE':''
              },
     '<DISPLAY>': {'$': '', 'TK_ID':'' ,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
            'TK_PERIOD':'','TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':14,
-           'grabInput':'','funny': '','if':'','then':'','else':'', 'end': '','elif': '','funLoopWhile':'',
+           'grabInput':'','funny': '','if':'','then':'','else':'', 'end': '','funLoopWhile':'',
            'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': '','TK_OP_RE':''
            },
-    '<DISPLAY_F>': {'$': '', 'TK_ID':15 ,'TK_NUM': 15 ,'TK_STRING': 16, 'BeginFun': '', 'EndFun':'',
+    '<DISPLAY_F>': {'$': '', 'TK_ID':15 ,'TK_NUM': '' ,'TK_STRING': 16, 'BeginFun': '', 'EndFun':'',
              'TK_PERIOD':'','TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
-             'grabInput':'','funny': '','if':'','then':'','else':'', 'end': '','elif': '','funLoopWhile':'',
+             'grabInput':'','funny': '','if':'','then':'','else':'', 'end': '','funLoopWhile':'',
              'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': '','TK_OP_RE':''
              },
     '<KEY>':{'$': '', 'TK_ID':'' ,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
        'TK_PERIOD':7,'TK_ATRIB':'','TK_COMMA':6, 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
-       'grabInput':'','funny': '','if':'','then':'','else':'', 'end': '','elif': '','funLoopWhile':'',
+       'grabInput':'','funny': '','if':'','then':'','else':'', 'end': '','funLoopWhile':'',
        'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': '','TK_OP_RE':''
        },
     '<ELSE>':{'$': '', 'TK_ID':'' ,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
         'TK_PERIOD':'','TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
-        'grabInput':'','funny': '','if':'','then':'','else':19, 'end':20,'elif': '','funLoopWhile':'',
-        'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': '','TK_OP_RE':''
-        },
-    '<ELIF>' :{'$': '', 'TK_ID':'' ,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
-        'TK_PERIOD':'','TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
-        'grabInput':'','funny': '','if':'','then':'','else':22, 'end':22,'elif': 21,'funLoopWhile':'',
+        'grabInput':'','funny': '','if':'','then':'','else':19, 'end':20,'funLoopWhile':'',
         'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': '','TK_OP_RE':''
         },
     '<STRING>': {'$': '', 'TK_ID':'' ,'TK_NUM': '' ,'TK_STRING': 17, 'BeginFun': '', 'EndFun':'',
           'TK_PERIOD':'','TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
-          'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','elif':'','funLoopWhile':'',
+          'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','funLoopWhile':'',
           'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': '','TK_OP_RE':''
           },
     '<OPER>' : {'$': '', 'TK_ID':'' ,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
         'TK_PERIOD':'','TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
-        'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','elif':'','funLoopWhile':'',
-        'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': 26,'TK_OP_RE':''
+        'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','funLoopWhile':'',
+        'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': 24,'TK_OP_RE':''
         },
     '<OPER_REL>': {'$': '', 'TK_ID':'' ,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
             'TK_PERIOD':'','TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
-            'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','elif':'','funLoopWhile':'',
-            'do':'','endFunLoop':'','TK_BOOL': 31,'TK_OP_AR':'', 'TK_OP_RE': 30
+            'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','funLoopWhile':'',
+            'do':'','endFunLoop':'','TK_BOOL': 29,'TK_OP_AR':'', 'TK_OP_RE': 28
             },
-    '<OPERAN>': {'$': '', 'TK_ID':35 ,'TK_NUM': 36 ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
+    '<OPERAN>': {'$': '', 'TK_ID':33 ,'TK_NUM': 34,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
           'TK_PERIOD':'','TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
-          'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','elif':'','funLoopWhile':'',
+          'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','funLoopWhile':'',
           'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': '','TK_OP_RE':''
           },
-    '<EXP>': {'$': '', 'TK_ID':24 ,'TK_NUM': 24 ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
-       'TK_PERIOD':'','TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':25, 'TK_CLOSE_P':'','showMeTheCode':'',
-       'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','elif':'','funLoopWhile':'',
+    '<EXP>': {'$': '', 'TK_ID':22 ,'TK_NUM': 22 ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
+       'TK_PERIOD':'','TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':23, 'TK_CLOSE_P':'','showMeTheCode':'',
+       'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','funLoopWhile':'',
        'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': '','TK_OP_RE':''
        },
     '<EXP_F>': {'$': '', 'TK_ID':'' ,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
-         'TK_PERIOD':27,'TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':27,'showMeTheCode':'',
-         'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','elif':'','funLoopWhile':'',
-         'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': 28,'TK_OP_RE':''
+         'TK_PERIOD':25,'TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':25,'showMeTheCode':'',
+         'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','funLoopWhile':'',
+         'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': 26,'TK_OP_RE':''
          },
-    '<EXPR_BOOL>': {'$': '', 'TK_ID':29 ,'TK_NUM': 29 ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
+    '<EXPR_BOOL>': {'$': '', 'TK_ID':27 ,'TK_NUM': 27 ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
              'TK_PERIOD':'','TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
-             'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','elif':'','funLoopWhile':'',
+             'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','funLoopWhile':'',
              'do':'','endFunLoop':'','TK_BOOL': '','TK_OP_AR': '','TK_OP_RE':''
              },
-    '<BOOL_F>': {'$': '', 'TK_ID': 34,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
-          'TK_PERIOD':34,'TK_ATRIB':'','TK_COMMA':34, 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':34,
-          'grabInput':34,'funny': 34,'if':34,'then':34,'else': 34,'end': 34,'elif': '','funLoopWhile':34,
-          'do':34,'endFunLoop':'','TK_BOOL': 33,'TK_OP_AR': '','TK_OP_RE': 33
+    '<BOOL_F>': {'$': '', 'TK_ID': '','TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
+          'TK_PERIOD':'','TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
+          'grabInput':'','funny': '','if':'','then':32,'else': '','end': '','funLoopWhile':'',
+          'do':32,'endFunLoop':'','TK_BOOL': 31,'TK_OP_AR': '','TK_OP_RE': 31
           },
     '<BOOL_TYPE>' : {'$': '', 'TK_ID':'' ,'TK_NUM': '' ,'TK_STRING': '', 'BeginFun': '', 'EndFun':'',
              'TK_PERIOD':'','TK_ATRIB':'','TK_COMMA':'', 'TK_OPEN_P':'', 'TK_CLOSE_P':'','showMeTheCode':'',
-             'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','elif':'','funLoopWhile':'',
-             'do':'','endFunLoop':'','TK_BOOL':32,'TK_OP_AR': '','TK_OP_RE':''
+             'grabInput':'','funny': '','if':'','then':'','else':'', 'end':'','funLoopWhile':'',
+             'do':'','endFunLoop':'','TK_BOOL':30,'TK_OP_AR': '','TK_OP_RE':''
              }
 }
 
@@ -164,15 +159,16 @@ class SyntaxAnalyser:
                       8: '<ANT_VAR> TK_ID <DPS_VAR>',
                       9: 'TK_ATRIB <EXP>', 10: '#', 11: 'funny', 12: '#', 13: '<DISPLAY>',
                       14: 'showMeTheCode <DISPLAY_F>',
-                      15: '<EXPR_BOOL>', 16: '<STRING>', 17: 'TK_STRING',
-                      18: 'if <EXPR_BOOL> then <LISTA_COMANDOS> <ELIF> <ELSE> end',
-                      19: 'else <LISTA_COMANDOS>', 20: '#', 21: 'elif <EXPR_BOOL> <LISTA_COMANDOS>', 22: '#',
-                      23: 'funLoopWhile <EXPR_BOOL> do <LISTA_COMANDOS> endFunLoop', 24: '<OPERAN> <EXP_F>',
-                      25: 'TK_OPEN_P <EXP> TK_CLOSE_P <EXP_F>', 26: 'TK_OP_AR <EXP>', 27: '#', 28: '<OPER>',
-                      29: '<OPERAN> <BOOL_F>',
-                      30: 'TK_OP_RE <EXPR_BOOL>', 31: '<BOOL_TYPE> <EXPR_BOOL>', 32: 'TK_BOOL', 33: '<OPER_REL>',
-                      34: '#', 35: 'TK_ID',
-                      36: 'TK_NUM' }
+                      15: 'TK_ID', 16: '<STRING>', 17: 'TK_STRING',
+                      18: 'if <EXPR_BOOL> then <LISTA_COMANDOS> <ELSE> end',
+                      19: 'else <LISTA_COMANDOS>', 20: '#',
+                      21: 'funLoopWhile <EXPR_BOOL> do <LISTA_COMANDOS> endFunLoop', 22: '<OPERAN> <EXP_F>',
+                      23: 'TK_OPEN_P <EXP> TK_CLOSE_P <EXP_F>', 24: 'TK_OP_AR <EXP>',
+                      25: '#', 26: '<OPER>',
+                      27: '<OPERAN> <BOOL_F>',
+                      28: 'TK_OP_RE <EXPR_BOOL>', 29: '<BOOL_TYPE> <EXPR_BOOL>', 30: 'TK_BOOL', 31: '<OPER_REL>',
+                      32: '#', 33: 'TK_ID',
+                      34: 'TK_NUM' }
         self.__syntax_table = SYNTAX_TABLE
 
     def switch_mode(self,log):
