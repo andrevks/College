@@ -1,4 +1,4 @@
-from typing import List , Any
+from typing import List, Any
 
 from receiveFlags import args
 from receiveFlags import source_code
@@ -38,6 +38,5 @@ def fun_compiler():
         syntax = SyntaxAnalyser(token_list, ls).switch_mode(ls)
         syntax_result(syntax)
         SemanticAnalyser(token_list_backup, lse, ts).switch_mode(lse, ts)
-
 
 fun_compiler()
