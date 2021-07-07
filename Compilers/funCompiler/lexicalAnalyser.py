@@ -32,12 +32,12 @@ class LexicalAnalyser:
     def __init__(self, source_code, lt):
         self.__source_code = source_code
         self.__keywords = {
-            'BeginFun', 'EndFun', 'if', 'then', 'else', 'elif',
+            'BeginFun', 'EndFun', 'if', 'then', 'else',
             'end', 'funLoopWhile', 'do', 'endFunLoop',
             'showMeTheCode', 'grabInput', 'funny'
         }
         self.__keywords1 = {
-            'BEGINFUN', 'ENDFUN', 'IF', 'THEN', 'ELSE', 'ELIF',
+            'BEGINFUN', 'ENDFUN', 'IF', 'THEN', 'ELSE',
             'END', 'FUNLOOPWHILE', 'DO', 'ENDFUNLOOP',
             'SHOWMETHECODE', 'GRABINPUT', 'FUNNY'
         }
