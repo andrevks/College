@@ -4,6 +4,7 @@ class IntermediateCode:
     def __init__(self, variable_list, tokens_list):
         self.__variables = variable_list
         self.__tokens_list = tokens_list
+        # self.__log_inter_code = []
         self.__intermediate_code = []
         self.convert = StackInfix()
         self.generate_intermediate_code()
@@ -25,7 +26,6 @@ class IntermediateCode:
             type = tok[l_index].type
             col = tok[l_index].col
 
-            # print('{:<20}  {:<25} {:<20}'.format(type , lex, line))
             if lex == 'grabInput':
               comand = 'leia'
               while tok[l_index].lexeme != '.':
@@ -33,7 +33,6 @@ class IntermediateCode:
                     lex = tok[l_index].lexeme
                     self.__intermediate_code.append(f'{comand} {lex}')
                 l_index += 1
-
             elif type == 'TK_ATRIB':
                 var = tok[l_index - 1].lexeme
                 infix_exp = ''
@@ -47,7 +46,6 @@ class IntermediateCode:
                 postfix_exp = self.convert.infixToPostfix(infix_exp)
                 print("POSTFIX: ", postfix_exp)
                 self.__intermediate_code.append(f'{var} = {postfix_exp}')
-
             elif lex == 'funLoopWhile':
                 comand = 'enquanto'
                 endcmd = 'faca'
@@ -61,7 +59,6 @@ class IntermediateCode:
             elif lex == 'endFunLoop':
                 comand = 'fim_enquanto'
                 self.__intermediate_code.append(f'{comand}')
-
             elif lex == 'if':
                 comand = 'se'
                 endcmd = 'entao'
@@ -79,22 +76,19 @@ class IntermediateCode:
             elif lex == 'end':
                 comand = 'fim_se'
                 self.__intermediate_code.append(f'{comand}')
-
-
             elif lex == 'showMeTheCode':
                 comand = 'escreva'
                 bool_exp = ''
                 l_index += 1
-
                 while tok[l_index].lexeme != '.':
                     lex = tok[l_index].lexeme
                     print("lex: ", lex)
                     bool_exp += ' ' + str(lex)
                     l_index += 1
                 self.__intermediate_code.append(f'{comand}{bool_exp}')
-
             l_index += 1
 
         print("\n---------CÓDIGO INTERMEDIÁRIO---------")
         for codeline in self.__intermediate_code:
             print(codeline)
+        return self.__intermediate_code
