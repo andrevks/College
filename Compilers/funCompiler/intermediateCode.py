@@ -35,7 +35,7 @@ class IntermediateCode:
                 l_index += 1
 
             elif type == 'TK_ATRIB':
-                comand = tok[l_index - 1].lexeme
+                var = tok[l_index - 1].lexeme
                 infix_exp = ''
                 l_index += 1
                 while tok[l_index].lexeme != '.':
@@ -46,7 +46,52 @@ class IntermediateCode:
                 print("INFIX: ", infix_exp)
                 postfix_exp = self.convert.infixToPostfix(infix_exp)
                 print("POSTFIX: ", postfix_exp)
-                self.__intermediate_code.append(f'{comand} = {postfix_exp}')
+                self.__intermediate_code.append(f'{var} = {postfix_exp}')
+
+            elif lex == 'funLoopWhile':
+                comand = 'enquanto'
+                endcmd = 'faca'
+                bool_exp = ''
+                l_index += 1
+                while tok[l_index].lexeme != 'do':
+                    lex = tok[l_index].lexeme
+                    bool_exp += ' ' + str(lex)
+                    l_index += 1
+                self.__intermediate_code.append(f'\n{comand}{bool_exp} {endcmd}')
+            elif lex == 'endFunLoop':
+                comand = 'fim_enquanto'
+                self.__intermediate_code.append(f'{comand}')
+
+            elif lex == 'if':
+                comand = 'se'
+                endcmd = 'entao'
+                bool_exp = ''
+                l_index += 1
+                while tok[l_index].lexeme != 'then':
+                    lex = tok[l_index].lexeme
+                    print("lex: ", lex)
+                    bool_exp += ' ' + str(lex)
+                    l_index += 1
+                self.__intermediate_code.append(f'\n{comand}{bool_exp} {endcmd}')
+            elif lex == 'else':
+                comand = 'senao'
+                self.__intermediate_code.append(f'{comand}')
+            elif lex == 'end':
+                comand = 'fim_se'
+                self.__intermediate_code.append(f'{comand}')
+
+
+            elif lex == 'showMeTheCode':
+                comand = 'escreva'
+                bool_exp = ''
+                l_index += 1
+
+                while tok[l_index].lexeme != '.':
+                    lex = tok[l_index].lexeme
+                    print("lex: ", lex)
+                    bool_exp += ' ' + str(lex)
+                    l_index += 1
+                self.__intermediate_code.append(f'{comand}{bool_exp}')
 
             l_index += 1
 

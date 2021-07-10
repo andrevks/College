@@ -26,4 +26,12 @@ BeginFun
 
 	endFunLoop.
 
+     if valor_ethereum = valor_barato & taxas < 123 then
+        showMeTheCode "Invista seu dinheiro".
+
+      else
+
+        showMeTheCode "Continue fazendo analises dos precos".
+
+    end.
 EndFun
