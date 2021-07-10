@@ -34,7 +34,7 @@ def fun_compiler():
         syntax = SyntaxAnalyser(token_list , log=True).switch_mode(log=True)
         syntax_result(syntax)
         id_list = SemanticAnalyser(token_list_backup , lse=True , ts=True).switch_mode(lse=True , ts=True)
-        # print(f'\nid_list: {id_list} ')
+        print(f'\nid_list: {id_list} ')
         IntermediateCode(id_list , token_list_backup)
 
 
@@ -44,7 +44,7 @@ def fun_compiler():
         syntax = SyntaxAnalyser(token_list , ls).switch_mode(ls)
         syntax_result(syntax)
         id_list = SemanticAnalyser(token_list_backup , lse , ts).switch_mode(lse , ts)
-        # print(f'\nid_list: {id_list} ')
+        print(f'\nid_list: {id_list} ')
         IntermediateCode(id_list , token_list_backup)
 
 

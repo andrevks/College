@@ -35,7 +35,7 @@ class IntermediateCode:
                 l_index += 1
 
             elif type == 'TK_ATRIB':
-                comand = 'var'
+                comand = tok[l_index - 1].lexeme
                 infix_exp = ''
                 l_index += 1
                 while tok[l_index].lexeme != '.':
@@ -46,10 +46,10 @@ class IntermediateCode:
                 print("INFIX: ", infix_exp)
                 postfix_exp = self.convert.infixToPostfix(infix_exp)
                 print("POSTFIX: ", postfix_exp)
-                self.__intermediate_code.extend(f'{comand} = {postfix_exp}')
+                self.__intermediate_code.append(f'{comand} = {postfix_exp}')
 
             l_index += 1
 
-
-        print('\nEND')
-        print(self.__intermediate_code)
+        print("\n---------CÓDIGO INTERMEDIÁRIO---------")
+        for codeline in self.__intermediate_code:
+            print(codeline)

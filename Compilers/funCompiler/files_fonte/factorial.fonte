@@ -4,7 +4,6 @@ BeginFun
 	funny gold.
 	funny acc.
 
-	funny valor_total <- ((old/10) * (gold+1000))/(acc+400).
 
 	funny terms_to_calculate.
 	grabInput terms_to_calculate, old, gold, acc.
@@ -12,6 +11,7 @@ BeginFun
 	funny n2.
 	funny counted <- 0.
 	funny new_number.
+	funny valor_total <- ((old/10) * (gold+1000))/(acc+400).
 
 
 	funLoopWhile counted < terms_to_calculate do
