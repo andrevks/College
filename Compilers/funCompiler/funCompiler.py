@@ -5,6 +5,7 @@ from receiveFlags import source_code
 from syntaxAnalyser import SyntaxAnalyser
 from lexicalAnalyser import LexicalAnalyser
 from semanticAnalyser import SemanticAnalyser
+from intermediateCode import IntermediateCode
 
 
 def clone_list(list):
@@ -26,18 +27,25 @@ def fun_compiler():
     lse = args.lsemantico
     ts = args.tsimbolos
     token_list: List[Any] = []
+    id_list = []
     if tudo:
         token_list = LexicalAnalyser(source_code , True).switch_mode(lt=True)
         token_list_backup = clone_list(token_list)
         syntax = SyntaxAnalyser(token_list , log=True).switch_mode(log=True)
         syntax_result(syntax)
-        SemanticAnalyser(token_list_backup , lse=True , ts=True).switch_mode(lse=True , ts=True)
+        id_list = SemanticAnalyser(token_list_backup , lse=True , ts=True).switch_mode(lse=True , ts=True)
+        # print(f'\nid_list: {id_list} ')
+        IntermediateCode(id_list , token_list_backup)
+
+
     else:
         token_list = LexicalAnalyser(source_code , lt).switch_mode(lt)
         token_list_backup = clone_list(token_list)
         syntax = SyntaxAnalyser(token_list , ls).switch_mode(ls)
         syntax_result(syntax)
-        SemanticAnalyser(token_list_backup , lse , ts).switch_mode(lse , ts)
+        id_list = SemanticAnalyser(token_list_backup , lse , ts).switch_mode(lse , ts)
+        # print(f'\nid_list: {id_list} ')
+        IntermediateCode(id_list , token_list_backup)
 
 
 fun_compiler()

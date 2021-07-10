@@ -33,6 +33,7 @@ class SemanticAnalyser:
         self.__symbol_table = HashTable()
         self.__token_list = tokens
         self.__keys_history = []
+        self.__id_list = []
 
     def switch_mode(self , lse , ts):
         if lse:
@@ -43,6 +44,7 @@ class SemanticAnalyser:
             self.verify_semantic_log(ts)
         else:
             self.verify_semantic()
+        return self.__id_list
 
     def insert_log(self , lexeme , line , value , location):
         new_var = Symbol(lexeme , value , line , location)
@@ -63,10 +65,13 @@ class SemanticAnalyser:
             print('{:<20}  {:<10} {:<10}'.format('Variáveis' , 'Valor' , 'linha'))
             print('{:<20}  {:<10} {:<10}'.format('----------' , '------' , '-----'))
             for key in self.__keys_history:
-                var_value = self.__symbol_table.find(key).value
                 var = self.__symbol_table.find(key).var
+                var_value = self.__symbol_table.find(key).value
                 line = self.__symbol_table.find(key).line
                 print('{:<20}  {:<10} {:<10}'.format(var , var_value , line))
+                self.__id_list.append(var)
+
+
 
     def verify_semantic_log(self , ts):
         l_index = 0
@@ -140,6 +145,13 @@ class SemanticAnalyser:
     '''
         ---------------- Default ---------------- 
     '''
+
+    def create_id_list(self):
+        for key in self.__keys_history:
+            var = self.__symbol_table.find(key).var
+            var_value = self.__symbol_table.find(key).value
+            line = self.__symbol_table.find(key).line
+            self.__id_list.append(var)
 
     def insert(self , lexeme , line , value , location):
         new_var = Symbol(lexeme , value , line , location)
@@ -215,3 +227,4 @@ class SemanticAnalyser:
                     SemanticError(line , col , lex , f'Divisão por ZERO')
 
             l_index += 1
+        self.create_id_list()

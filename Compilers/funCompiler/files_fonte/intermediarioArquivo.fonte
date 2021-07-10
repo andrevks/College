@@ -1,25 +1,5 @@
 BeginFun
 
-	funny terms_to_calculate <- 9 .
-	funny n1.
-	funny n2.
-	funny counted <- 2.
-    funny new_number.
-
-	funLoopWhile counted < terms_to_calculate & counted <> 0 do
-
-		showMeTheCode n1.
-
-		new_number <- n1 + n2.
-
-		n2 <- new_number.
-
-		counted <- counted + 1.
-
-	endFunLoop.
-
-
-
     funny valor_barato.
 	funny valor_caro.
 	funny bitcoin.
@@ -29,21 +9,11 @@ BeginFun
     funny quadriculado.
     funny valor_ethereum.
 
-    valor_caro <- 60.
-    idade <- valor_caro.
-
-
-    bitcoin <-counted/4.
-
-
 	grabInput valor_barato.
-
-    valor_barato <- 10.
-    taxas <- 1/valor_barato.
 
     funny jurosComp.
     funny valor_bitcoin.
-	funny valor_investido <- (((bitcoin/10) * ((idade+1000)+jurosComp+taxas))/(quadriculado+400)).
+	funny valor_investido <- ((bitcoin/10) * (idade+1000+jurosComp+taxas))/(quadriculado+400).
 
 	showMeTheCode valor_investido .
 

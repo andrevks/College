@@ -52,7 +52,7 @@ BeginFun
  		 if valor_ethereum = valor_barato & taxas < 123 then
 			showMeTheCode "Invista seu dinheiro".
 
-		  elif
+		  elif ethereum > 4000
 
 			showMeTheCode "Guarde seu dinheiro".
 		  else
