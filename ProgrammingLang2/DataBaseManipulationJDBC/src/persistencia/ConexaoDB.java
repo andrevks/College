@@ -2,18 +2,17 @@ package persistencia;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /*
 * Classe responsável por criar e retornar uma instância de conexão com o banco de dados.
  *  */
-public class ConexaoBD {
+public class ConexaoDB {
 
     private Connection con;
-    private static ConexaoDB instancia;
+    private static ConexaoBD instancia;
 
-    private ConexaoDB() throws  PersistenciaException {
+    private ConexaoBD() throws  PersistenciaException {
         try {
             Class.forName("org.postgresql.Driver");
             String url = "jdbc:postgresql://localhost:5432/academico";

@@ -1,0 +1,15 @@
+CREATE TABLE aluno
+(
+    matricula serial NOT NULL,
+    nome character(50) NOT NULL,
+    nomemae character(50) NOT NULL,
+    nomepai character(50) NOT NULL,
+    sexo integer NOT NULL,
+    logradouro character(50),
+    numero integer,
+    bairro character(50),
+    cidade character(50),
+    uf character(2),
+    curso integer REFERENCES curso(codigo),
+    CONSTRAINT aluno_pkey PRIMARY KEY (matricula)
+); CREATE TABLE
