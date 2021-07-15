@@ -106,5 +106,14 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/hibernate-release-5.2.18.Final/hibernate-release-5.2.18.Final/lib/jpa-metamodel-generator/hibernate-jpamodelgen-5.2.18.Final.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

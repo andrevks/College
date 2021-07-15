@@ -1,21 +1,23 @@
 package vo;
 
+import javax.persistence.*;
 import java.io.Serializable;
-import javax.persistence.Table;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 @Entity
-@Table(name = "grupoproduto")
-public class GrupoProdutoVO implements Serializable {
+@Table(name = "grupoproduto2")
+public class GrupoProduto2VO implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int codigo;
+
+    @Column(length = 50, nullable = false)
     private String nome;
+
+    @Column(precision = 5, scale = 2, nullable = false)
     private float margemLucro;
+
+    @Column(precision = 5,scale = 2, nullable = false)
     private float promocao;
 
     public int getCodigo() {
@@ -52,7 +54,7 @@ public class GrupoProdutoVO implements Serializable {
 
     @Override
     public String toString(){
-        return this.nome + " - " + this.codigo;
+        return this.nome + " - "  + this.codigo;
     }
 
     @Override
@@ -63,7 +65,8 @@ public class GrupoProdutoVO implements Serializable {
         if(getClass() != obj.getClass()){
             return false;
         }
-        final GrupoProdutoVO other = (GrupoProdutoVO) obj;
+
+        final GrupoProduto2VO other = (GrupoProduto2VO) obj;
         if(this.codigo != other.codigo){
             return false;
         }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit name="UnidadeBDPostgre" persistenceXmlPath="src/META-INF/persistence.xml">
+        <packages>
+          <package value="" />
+        </packages>
+        <entities>
+          <entity value="vo.GrupoProdutoVO" />
+        </entities>
+      </persistence-unit>
+    </persistence-units>
+  </component>
+</project>
