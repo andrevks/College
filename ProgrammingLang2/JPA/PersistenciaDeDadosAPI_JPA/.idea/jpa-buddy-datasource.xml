@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JpbDataSourceConfig">
+    <data-sources>
+      <data-source id="6b40a08b-4f1f-4f1b-9dcd-0840fa94d66c" name="bdprodutos" url="jdbc:postgresql://localhost:5432/bdprodutos" driverClass="org.postgresql.Driver" />
+    </data-sources>
+    <data-source-infos>
+      <data-source-info id="6b40a08b-4f1f-4f1b-9dcd-0840fa94d66c" persistence-unit-name="UnidadeBDPostgres" />
+    </data-source-infos>
+  </component>
+</project>

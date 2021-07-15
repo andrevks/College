@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="requiredJPA">
+    <CLASSES>
+      <root url="file://$USER_HOME$/Downloads/hibernate-release-5.2.18.Final/hibernate-release-5.2.18.Final/lib/required" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$USER_HOME$/Downloads/hibernate-release-5.2.18.Final/hibernate-release-5.2.18.Final/lib/required" recursive="false" />
+  </library>
+</component>
