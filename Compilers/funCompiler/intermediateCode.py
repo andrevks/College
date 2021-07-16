@@ -19,7 +19,7 @@ class IntermediateCode:
 
 
     def show_intermediate_code(self):
-        print("\n---------CÓDIGO INTERMEDIÁRIO---------")
+        print('\n---------CÓDIGO INTERMEDIÁRIO---------')
         for codeline in self.__intermediate_code:
             print(codeline)
 
@@ -30,10 +30,10 @@ class IntermediateCode:
         comand = ''
         l_index = 0
         #pegar variáveis declaradas
-        print("\n-----------VAR LIST----------")
+        self.set_log('\n--LOG: CÓDIGO INTERMEDIÁRIO')
         for var in self.__variables:
             self.__intermediate_code.append(f'_Var {var}')
-            self.set_log(f'Montando a variável ({var})')
+            self.set_log(f'Montou a variável ({var})')
         print(self.__variables)
         while l_index < len(tok):
             lex = tok[l_index].lexeme
@@ -57,9 +57,8 @@ class IntermediateCode:
                     lex = tok[l_index].lexeme
                     infix_exp += str(lex)
                     l_index += 1
-                print("INFIX: ", infix_exp)
                 postfix_exp = self.convert.infixToPostfix(infix_exp)
-                print("POSTFIX: ", postfix_exp)
+                self.set_log(f'Fez a conversão infixa para posfixa')
                 self.__intermediate_code.append(f'{var} = {postfix_exp}')
                 self.set_log(f'Reconheceu uma atribuição de variável ({var}<- {postfix_exp})')
             elif lex == 'funLoopWhile':
@@ -72,7 +71,7 @@ class IntermediateCode:
                     bool_exp += ' ' + str(lex)
                     l_index += 1
                 self.__intermediate_code.append(f'\n{comand}{bool_exp} {endcmd}')
-                self.set_log(f'Reconheceu o comando enquanto (funLoopWhile ({bool_exp}))')
+                self.set_log(f'Reconheceu o comando enquanto e faca (funLoopWhile ({bool_exp}) do)')
             elif lex == 'endFunLoop':
                 comand = 'fim_enquanto'
                 self.__intermediate_code.append(f'{comand}')
@@ -84,7 +83,6 @@ class IntermediateCode:
                 l_index += 1
                 while tok[l_index].lexeme != 'then':
                     lex = tok[l_index].lexeme
-                    print("lex: ", lex)
                     bool_exp += ' ' + str(lex)
                     l_index += 1
                 self.__intermediate_code.append(f'\n{comand}{bool_exp} {endcmd}')
@@ -103,7 +101,6 @@ class IntermediateCode:
                 l_index += 1
                 while tok[l_index].lexeme != '.':
                     lex = tok[l_index].lexeme
-                    print("lex: ", lex)
                     bool_exp += ' ' + str(lex)
                     l_index += 1
                 self.__intermediate_code.append(f'{comand}{bool_exp}')

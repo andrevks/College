@@ -47,14 +47,12 @@ BeginFun
 
 	showMeTheCode valor_investido .
 
+
 	funLoopWhile valor_ethereum < valor_bitcoin do
 
  		 if valor_ethereum = valor_barato & taxas < 123 then
 			showMeTheCode "Invista seu dinheiro".
 
-		  elif ethereum > 4000
-
-			showMeTheCode "Guarde seu dinheiro".
 		  else
 
 			showMeTheCode "Continue fazendo analises dos precos".
