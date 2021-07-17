@@ -26,6 +26,10 @@ BeginFun
 
 	endFunLoop.
 
+	funny valor_ethereum.
+	funny valor_barato.
+	funny taxas.
+
      if valor_ethereum = valor_barato & taxas < 123 then
         showMeTheCode "Invista seu dinheiro".
 

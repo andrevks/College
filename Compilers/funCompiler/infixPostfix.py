@@ -102,7 +102,3 @@ class StackInfix:
 
 
 
-# st = StackInfix()
-# st.infixToPostfix("(bitcoin_99/wide) * ((idade+1000)+jurosComp+taxas)/(quadriculado+400)")
-# st.infixToPostfix('(bitcoin_99/wide) * (idade+1000+jurosComp+taxas))/(quadriculado+400)')
-# st.infixToPostfix('((lab21312_test - taxes_33) * idade + (jurosComp*any - 1000))/(quadriculado+400)')
