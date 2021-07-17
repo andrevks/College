@@ -1,4 +1,4 @@
-from typing import List , Any
+from typing import List, Any
 
 from receiveFlags import args
 from receiveFlags import source_code
@@ -6,6 +6,7 @@ from syntaxAnalyser import SyntaxAnalyser
 from lexicalAnalyser import LexicalAnalyser
 from semanticAnalyser import SemanticAnalyser
 from intermediateCode import IntermediateCode
+from finalAssemblyRaspberry import FinalRaspberry
 
 
 def clone_list(list):
@@ -29,23 +30,23 @@ def fun_compiler():
     token_list: List[Any] = []
     id_list = []
     if tudo:
-        token_list = LexicalAnalyser(source_code , True).switch_mode(lt=True)
+        token_list = LexicalAnalyser(source_code, True).switch_mode(lt=True)
         token_list_backup = clone_list(token_list)
-        syntax = SyntaxAnalyser(token_list , log=True).switch_mode(log=True)
+        syntax = SyntaxAnalyser(token_list, log=True).switch_mode(log=True)
         syntax_result(syntax)
-        id_list = SemanticAnalyser(token_list_backup , lse=True , ts=True).switch_mode(lse=True , ts=True)
+        id_list = SemanticAnalyser(token_list_backup, lse=True, ts=True).switch_mode(lse=True, ts=True)
         print(f'\nid_list: {id_list} ')
-        IntermediateCode(id_list , token_list_backup)
-
-
+        inter_code = IntermediateCode(id_list, token_list_backup).generate_intermediate_code()
+        FinalRaspberry(inter_code, id_list)
     else:
-        token_list = LexicalAnalyser(source_code , lt).switch_mode(lt)
+        token_list = LexicalAnalyser(source_code, lt).switch_mode(lt)
         token_list_backup = clone_list(token_list)
-        syntax = SyntaxAnalyser(token_list , ls).switch_mode(ls)
+        syntax = SyntaxAnalyser(token_list, ls).switch_mode(ls)
         syntax_result(syntax)
-        id_list = SemanticAnalyser(token_list_backup , lse , ts).switch_mode(lse , ts)
+        id_list = SemanticAnalyser(token_list_backup, lse, ts).switch_mode(lse, ts)
         print(f'\nid_list: {id_list} ')
-        IntermediateCode(id_list , token_list_backup)
+        inter_code = IntermediateCode(id_list, token_list_backup).generate_intermediate_code()
+        FinalRaspberry(inter_code, id_list)
 
 
 fun_compiler()

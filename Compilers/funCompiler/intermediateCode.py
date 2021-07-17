@@ -7,7 +7,6 @@ class IntermediateCode:
         self.__log_inter_code = []
         self.__intermediate_code = []
         self.convert = StackInfix()
-        self.generate_intermediate_code()
 
     def set_log(self,log):
         self.__log_inter_code.append(log)
