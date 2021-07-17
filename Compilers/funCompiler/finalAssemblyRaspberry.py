@@ -13,15 +13,15 @@ class FinalRaspberry:
 
     def get_var_value(self, var):
         self.append_final_code(f'LDR R1, ={var}', '@Send variable address')
-        self.append_final_code(f'LDR R1, [{var}]', '@Send variable address')
-        self.append_final_code(f'MOV R3, R1', '@Move value to the R3')
+        self.append_final_code(f'LDR R1, [R1]', '@Send value inside var')
+        self.append_final_code(f'MOV R2, R1', '@Move value to the R2')
 
     def append_final_code(self, txt, comment=''):
         self.__final_code.append(f'{txt} {comment}')
 
     def get_new_label(self, keyword):
         self.__label_num += 1
-        return ''.join(f'_{keyword}{self.__label_num}:')
+        return ''.join(f'_{keyword}{self.__label_num}')
 
     def generate_final_code(self):
         inter_code = self.__intermediate_code
@@ -45,8 +45,9 @@ class FinalRaspberry:
                 self.append_final_code(f'LDR R1, ={inter_line}', '@Send variable address')
                 self.append_final_code(f'BL scanf', ' @Function to receive input from the keyboard\n')
             elif inter_line == 'se':
-                label = self.get_new_label('se')
-                self.__stack.push(label)
+                se_label = self.get_new_label('se')
+                senao_label = self.get_new_label('senao')
+                self.__stack.push(senao_label)
                 inter_line = inter_code[l_index].split()
                 print(f"EXPR_IN_SE: {inter_line}")
                 i = 1
@@ -56,15 +57,36 @@ class FinalRaspberry:
                     elem = inter_line[i]
 
                     if elem in OP_RE:
-                        print(f'{elem}')
                         previous_var = inter_line[i - 1]
                         posterior_var = inter_line[i + 1]
-                        if elem == "<":
-                            self.append_final_code('', '@ int pattern (%d)')
-                            self.append_final_code(f'LDR R1, ={inter_line}', '@Send variable address')
-                            self.append_final_code(f'BL scanf', ' @Function to receive input from the keyboard\n')
-
+                        self.get_var_value(previous_var)  # value of a prev_var, send it to R2
+                        self.append_final_code(f'MOV R3, R2 ', '@Send end result to R3')
+                        self.get_var_value(posterior_var)  # value of the post_var, send it to R2
+                        self.append_final_code(f'CMP R3, R2 ', '@Compare R3 and R2, changes flags status')
+                        print(f'{elem}')
+                        if elem == '<':
+                            self.append_final_code(f'BLT {se_label} ', '@Jumps if R3 < R1')
+                            self.append_final_code(f'B {senao_label}', '@Jumps unconditionally (R3 == R1)')
+                        elif elem == '>':
+                            self.append_final_code(f'BGT {se_label} ', '@Jumps if R3 > R1 (Zero is set)')
+                            self.append_final_code(f'B {senao_label}', '@Jumps unconditionally ')
+                        elif elem == '=':
+                            self.append_final_code(f'BEQ {se_label} ', '@Jumps if R3 == R1 (Zero is set)')
+                            self.append_final_code(f'B {senao_label}', '@Jumps unconditionally (R3 <> R1)')
+                        elif elem == '<>':
+                            self.append_final_code(f'BNE {se_label} ', '@Jumps if R3 > R1 (Zero is not set)')
+                            self.append_final_code(f'B {senao_label}', '@Jumps unconditionally ')
                     i += 1
+                self.append_final_code(f'{se_label}:', '@add symbol after expr')
+            elif inter_line == 'senao':
+                fim_se_label = self.get_new_label("fim_se")
+                senao_label = self.__stack.pop()
+                self.__stack.push(fim_se_label)
+                self.append_final_code(f'B {fim_se_label}', '@Jumps unconditionally')
+                self.append_final_code(f'{senao_label}:', '@add symbol after expr')
+            elif inter_line == 'fim_se':
+                fim_label = self.__stack.pop()
+                self.append_final_code(f'{fim_label}:')
 
             l_index += 1
 
@@ -84,5 +106,8 @@ class FinalRaspberry:
         for var in self.__var_list:
             self.append_final_code(f'{var}: .word 0', )
 
+        file = open('files_fonte/finalresult.fonte', 'w')
         for line in self.__final_code:
+            file.writelines(line + '\n')
             print(line)
+        file.close()

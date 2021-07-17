@@ -1,0 +1,48 @@
+BeginFun
+
+	funny old.
+	funny gold.
+	funny acc.
+
+
+	funny terms_to_calculate.
+	grabInput terms_to_calculate, old, gold, acc.
+	funny n1.
+	funny n2.
+	funny counted <- 0.
+	funny new_number.
+	funny valor_total <- ((old/10) * (gold+1000))/(acc+400).
+
+
+	funLoopWhile counted < terms_to_calculate do
+
+		showMeTheCode n1.
+
+		new_number <- n1 + n2.
+
+		n2 <- new_number.
+
+		counted <- counted + 1.
+
+	endFunLoop.
+
+	funny valor_ethereum.
+	funny valor_barato.
+	funny taxas.
+
+     if valor_ethereum = valor_barato then
+
+        showMeTheCode "Testando o = ".
+
+      else
+
+        showMeTheCode "Continue fazendo analises dos precos".
+
+    end.
+
+     if taxas < 123 then
+
+        showMeTheCode "Testando o < ".
+     end.
+
+EndFun
