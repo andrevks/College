@@ -1,4 +1,15 @@
 from util.stack import Stack
+import re
+
+
+def is_digit(elem):
+    digit = r'\d'
+    return re.match(digit, elem)
+
+
+def is_variable(elem):
+    var_pattern = r'[A-Za-z]|\d|_'
+    return re.match(var_pattern, elem)
 
 
 class FinalRaspberry:
@@ -11,10 +22,21 @@ class FinalRaspberry:
         self.__label_num = -1
         self.generate_final_code()
 
-    def get_var_value(self, var):
-        self.append_final_code(f'LDR R1, ={var}', '@Send variable address')
-        self.append_final_code(f'LDR R1, [R1]', '@Send value inside var')
-        self.append_final_code(f'MOV R2, R1', '@Move value to the R2')
+    def calculate_arith_exp(self, ar_exp):
+        if len(ar_exp) == 1:
+            elem = ar_exp[0]
+            self.get_value(elem)
+        # else:
+        #     for elem in ar_exp:
+        #         if elem == '/':
+
+
+    def get_value(self, elem):
+        if is_digit(elem):
+            self.append_final_code(f'MOV R2, #{str(elem)}', '@Move value to the R2')
+        elif is_variable(elem):
+            self.append_final_code(f'LDR R1,={elem}', '@Send address to the R1')
+            self.append_final_code(f'LDR R2, [R1]', '@Move value from R2 to var location')
 
     def append_final_code(self, txt, comment=''):
         self.__final_code.append(f'{txt} {comment}')
@@ -41,9 +63,18 @@ class FinalRaspberry:
 
             if inter_line == 'leia':
                 inter_line = inter_code[l_index].split()[1]
-                self.append_final_code('LDR R0, =pattern', '@ int pattern (%d)')
+                self.append_final_code('LDR R0, =pattern', '@int pattern (%d)')
                 self.append_final_code(f'LDR R1, ={inter_line}', '@Send variable address')
                 self.append_final_code(f'BL scanf', ' @Function to receive input from the keyboard\n')
+            elif '=' in inter_code[l_index].split():
+                if inter_code[l_index].split()[1] == '=':
+                    var = inter_code[l_index].split()[0]
+                    ar_exp = inter_code[l_index].split()[2:]
+
+                    self.calculate_arith_exp(ar_exp)
+                    self.append_final_code(f'LDR R1, ={var}', '@Getting var address')
+                    self.append_final_code(f'STR R2, [R1] ', '@Store exp result in var\n')
+
             elif inter_line == 'se':
                 se_label = self.get_new_label('se')
                 senao_label = self.get_new_label('senao')
@@ -59,11 +90,10 @@ class FinalRaspberry:
                     if elem in OP_RE:
                         previous_var = inter_line[i - 1]
                         posterior_var = inter_line[i + 1]
-                        self.get_var_value(previous_var)  # value of a prev_var, send it to R2
+                        self.get_value(previous_var)  # value of a prev_var, send it to R2
                         self.append_final_code(f'MOV R3, R2 ', '@Send end result to R3')
-                        self.get_var_value(posterior_var)  # value of the post_var, send it to R2
+                        self.get_value(posterior_var)  # value of the post_var, send it to R2
                         self.append_final_code(f'CMP R3, R2 ', '@Compare R3 and R2, changes flags status')
-                        print(f'{elem}')
                         if elem == '<':
                             self.append_final_code(f'BLT {se_label} ', '@Jumps if R3 < R1')
                             self.append_final_code(f'B {senao_label}', '@Jumps unconditionally (R3 == R1)')
