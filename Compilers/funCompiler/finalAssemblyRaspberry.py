@@ -30,7 +30,6 @@ class FinalRaspberry:
         #     for elem in ar_exp:
         #         if elem == '/':
 
-
     def get_value(self, elem):
         if is_digit(elem):
             self.append_final_code(f'MOV R2, #{str(elem)}', '@Move value to the R2')
@@ -45,12 +44,8 @@ class FinalRaspberry:
         self.__label_num += 1
         return ''.join(f'_{keyword}{self.__label_num}')
 
-    def generate_final_code(self):
-        inter_code = self.__intermediate_code
-        l_index = 0
-
+    def set_header(self):
         print('\n____FINAL:')
-
         self.append_final_code('.global main')
         self.append_final_code('.func main')
         self.append_final_code('main:')
@@ -58,8 +53,32 @@ class FinalRaspberry:
         self.append_final_code('STR LR, [R1] ', '@Store LinkRegister in var ')
         self.__final_code.append('@------BEGIN--------\n')
 
+    def set_bottom(self):
+        self.__final_code.append('@------END--------')
+        self.append_final_code('LDR R1, =backup_lr', '@Address of the var ')
+        self.append_final_code('LDR LR, [LR]')
+        self.append_final_code('BX LR', 'Return from the main function')
+
+        self.append_final_code('\n.data', '@ Data section')
+        self.append_final_code('.balign 8', '@Bytes allocated to each var')
+        self.append_final_code(f'pattern: .asciz \"%d\"', '@Int format')
+        self.append_final_code(f'pattern_print: .asciz \"%d\\n\"')
+        self.append_final_code(f'backup_lr: .word 0\n')
+        self.append_final_code(f'\n.global printf')
+        self.append_final_code(f'.global scanf')
+        for var in self.__var_list:
+            self.append_final_code(f'{var}: .word 0')
+
+    def generate_final_code(self):
+        inter_code = self.__intermediate_code
+        l_index = 0
+
+        self.set_header()
+
         while l_index < len(inter_code):
             inter_line = inter_code[l_index].split()[0]
+            OP_RE = ['<>', '=', '<', '>']
+            BOOL = ['\\', '&']
 
             if inter_line == 'leia':
                 inter_line = inter_code[l_index].split()[1]
@@ -80,10 +99,7 @@ class FinalRaspberry:
                 senao_label = self.get_new_label('senao')
                 self.__stack.push(senao_label)
                 inter_line = inter_code[l_index].split()
-                print(f"EXPR_IN_SE: {inter_line}")
                 i = 1
-                OP_RE = ['<>', '=', '<', '>']
-                BOOL = ['\\', '&']
                 while inter_line[i] != 'entao':
                     elem = inter_line[i]
 
@@ -94,6 +110,7 @@ class FinalRaspberry:
                         self.append_final_code(f'MOV R3, R2 ', '@Send end result to R3')
                         self.get_value(posterior_var)  # value of the post_var, send it to R2
                         self.append_final_code(f'CMP R3, R2 ', '@Compare R3 and R2, changes flags status')
+
                         if elem == '<':
                             self.append_final_code(f'BLT {se_label} ', '@Jumps if R3 < R1')
                             self.append_final_code(f'B {senao_label}', '@Jumps unconditionally (R3 == R1)')
@@ -121,21 +138,8 @@ class FinalRaspberry:
             l_index += 1
 
         print("\n-----------FINAL CODE-------------")
-        self.__final_code.append('@------END--------')
-        self.append_final_code('LDR R1, =backup_lr', '@Address of the var ')
-        self.append_final_code('LDR LR, [LR]')
-        self.append_final_code('BX LR', 'Return from the main function')
 
-        self.append_final_code('\n.data', '@ Data section')
-        self.append_final_code('.balign 8', '@Bytes allocated to each var')
-        self.append_final_code(f'pattern: .asciz \"%d\"', '@Int format')
-        self.append_final_code(f'pattern_print: .asciz \"%d\\n\"')
-        self.append_final_code(f'backup_lr: .word 0\n')
-        self.append_final_code(f'\n.global printf')
-        self.append_final_code(f'.global scanf')
-        for var in self.__var_list:
-            self.append_final_code(f'{var}: .word 0', )
-
+        self.set_bottom()
         file = open('files_fonte/finalresult.fonte', 'w')
         for line in self.__final_code:
             file.writelines(line + '\n')
