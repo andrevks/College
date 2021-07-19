@@ -26,9 +26,26 @@ class FinalRaspberry:
         if len(ar_exp) == 1:
             elem = ar_exp[0]
             self.get_value(elem)
-        # else:
-        #     for elem in ar_exp:
-        #         if elem == '/':
+        else:
+            for elem in ar_exp:
+                if elem == '/':
+                    self.__final_code.append('@DIVISION')
+                    self.append_final_code('POP {R1}', '@Divisor(under bar) from stack')
+                    self.append_final_code('POP {R0}', '@Dividend(above bar) from stack')
+                    div_label = self.get_new_label('div')
+                    end_div_label = self.get_new_label('end_div')
+                    self.append_final_code(f'MOV R2, #0', '@Reset R2(Quotient) to 0')
+                    self.append_final_code(f'{div_label}:\n', '@Begin of the label(div)')
+                    self.append_final_code(f'CMP R0, R1', '@R0 should be >= than R1 to divide')
+                    self.append_final_code(f'BLT {end_div_label}', '@Jump to end_div if R0 < R1')
+                    self.append_final_code(f'ADD R2, R2, #1', '@Increment R2(Quotient/Result)')
+                    self.append_final_code(f'SUB R0, R0, R1 ', '@R0 = R0 - R1')
+                    self.append_final_code(f'B {div_label}', '@Jump to ')
+                    self.append_final_code(f'{end_div_label}:\n')
+                    self.append_final_code('PUSH {R2}', '@(Quotient/Result) to the stack')
+                    self.__final_code.append('@END-DIVISION')
+
+            self.append_final_code('POP {R0}', '@Result of the acc from stack')
 
     def get_value(self, elem):
         if is_digit(elem):
@@ -44,7 +61,7 @@ class FinalRaspberry:
         self.__label_num += 1
         return ''.join(f'_{keyword}{self.__label_num}')
 
-    def set_header(self):
+    def get_header(self):
         print('\n____FINAL:')
         self.append_final_code('.global main')
         self.append_final_code('.func main')
@@ -53,7 +70,7 @@ class FinalRaspberry:
         self.append_final_code('STR LR, [R1] ', '@Store LinkRegister in var ')
         self.__final_code.append('@------BEGIN--------\n')
 
-    def set_bottom(self):
+    def get_bottom(self):
         self.__final_code.append('@------END--------')
         self.append_final_code('LDR R1, =backup_lr', '@Address of the var ')
         self.append_final_code('LDR LR, [LR]')
@@ -73,7 +90,7 @@ class FinalRaspberry:
         inter_code = self.__intermediate_code
         l_index = 0
 
-        self.set_header()
+        self.get_header()
 
         while l_index < len(inter_code):
             inter_line = inter_code[l_index].split()[0]
@@ -139,7 +156,7 @@ class FinalRaspberry:
 
         print("\n-----------FINAL CODE-------------")
 
-        self.set_bottom()
+        self.get_bottom()
         file = open('files_fonte/finalresult.fonte', 'w')
         for line in self.__final_code:
             file.writelines(line + '\n')
