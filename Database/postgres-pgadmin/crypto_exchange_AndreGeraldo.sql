@@ -1,5 +1,5 @@
 CREATE TABLE moeda (
-  codmoeda CHAR(3) NOT NULL,
+  codmoeda SERIAL NOT NULL,
   nome VARCHAR(25) NOT NULL UNIQUE,
   simbolo VARCHAR(200),
   CONSTRAINT pkmoeda PRIMARY KEY (codmoeda)
@@ -23,7 +23,7 @@ CREATE TABLE ordem (
   quantidade INTEGER NOT NULL,
   valorunitario NUMERIC(10,9) NOT NULL,
   idusuario INTEGER NOT NULL,
-  codmoeda CHAR(3) NOT NULL,
+  codmoeda INTEGER NOT NULL,
   CONSTRAINT pkordem PRIMARY KEY (idordem),
   CONSTRAINT fkordem_usuario FOREIGN KEY(idusuario) REFERENCES usuario(idusuario),
   CONSTRAINT fkordem_moeda FOREIGN KEY(codmoeda) REFERENCES moeda(codmoeda)
@@ -36,7 +36,7 @@ CREATE TABLE trasacao (
   data DATE NOT NULL,
   valor NUMERIC NOT NULL,
   taxa NUMERIC(3,0) NOT NULL,
-  idordem INTEGER, --NULL
+  idordem INTEGER NOT NULL,
   CONSTRAINT pktransacao PRIMARY KEY (idtransacao),
   CONSTRAINT fktransacao_ordem FOREIGN KEY(idordem) REFERENCES ordem(idordem)
 );
@@ -87,14 +87,9 @@ CREATE TABLE carteira_transacao (
   CONSTRAINT fkcarteira_transacao_carteira FOREIGN KEY (idcarteira) REFERENCES carteira(idcarteira)
 );
 
--- INSERT INFO
-
---MOEDA
 INSERT INTO moeda (codmoeda, nome) VALUES ('BTC','Bitcoin');
 INSERT INTO moeda (codmoeda, nome) VALUES ('ETH','Ethereum');
 INSERT INTO moeda (codmoeda, nome) VALUES ('ADA','Cardano');
-SELECT * FROM moeda;
---USUARIO
 
 INSERT INTO usuario(nome, email, senha, cpf, fone) 
 VALUES ('Aurora','aurora@banco.com','7509d123bce','21542833140', '6599981234');
@@ -102,46 +97,44 @@ INSERT INTO usuario(nome, email, senha, cpf, fone)
 VALUES ('Maria Eduarda','maria@sha.com@banco.com','1aa92331861','22852340747','6589092343');
 INSERT INTO usuario(nome, email, senha, cpf, fone)
 VALUES ('Joao','joao@conseno.com','cf8fd738a5','86288106259','6589098888');
-SELECT * FROM usuario;
---ORDEM
 
 INSERT INTO ordem(opcao, estado, data, quantidade, valorunitario, idusuario, codmoeda)
-VALUES('credito', 'concluido', DATE '2021-06-22',80,1,1,'BTC');
+VALUES('credito', 'concluido', DATE '2021-06-22',80,1,2,'BTC');
 
 INSERT INTO ordem(opcao, estado, data, quantidade, valorunitario, idusuario, codmoeda)
 VALUES('debito', 'espera', DATE '2021-06-20',240,1,3,'ETH');
 
 INSERT INTO ordem(opcao, estado, data, quantidade, valorunitario, idusuario, codmoeda)
+VALUES('credito', 'espera', DATE '2021-06-18',50,1,3,'ADA');
+
+INSERT INTO ordem(opcao, estado, data, quantidade, valorunitario, idusuario, codmoeda)
 VALUES('credito', 'concluido', DATE '2021-06-23',200,1,2,'ADA');
-SELECT * FROM ordem;
 
--- INSERT INTO ordem(opcao, estado, data, quantidade, valorunitario, idusuario, codmoeda)
--- VALUES('debito', 'concluido', DATE '2021-06-25',50,1,5,'ADA');
+INSERT INTO ordem(opcao, estado, data, quantidade, valorunitario, idusuario, codmoeda)
+VALUES('debito', 'concluido', DATE '2021-06-25',50,1,5,'ADA');
 
--- INSERT INTO ordem(opcao, estado, data, quantidade, valorunitario, idusuario, codmoeda)
--- VALUES('credito', 'concluido', DATE '2021-06-25',500,1,5,'BTC');
-
+INSERT INTO ordem(opcao, estado, data, quantidade, valorunitario, idusuario, codmoeda)
+VALUES('credito', 'concluido', DATE '2021-06-25',500,1,5,'BTC');
 -- TRANSACAO
 
 
 INSERT INTO trasacao(tipo_trasacao,descricao, data, valor, taxa, idordem)
-VALUES('ordem', 'debito', DATE '2021-06-22',80, 10, 1);
+VALUES('ordem', 'debito', DATE '2021-06-22',80, 10, 2);
 
 INSERT INTO trasacao(tipo_trasacao, data, valor, taxa, idordem)
-VALUES('ordem', DATE '2021-06-24',200, 10, 3);
+VALUES('ordem', DATE '2021-06-24',200, 10, 7);
 
-INSERT INTO trasacao(tipo_trasacao, data, valor, taxa)
-VALUES('saque', DATE '2021-06-25',50, 10);
+INSERT INTO trasacao(tipo_trasacao, data, valor, taxa, idordem)
+VALUES('saque', DATE '2021-06-25',50, 10, 8);
 
-INSERT INTO trasacao(tipo_trasacao, data, valor, taxa)
-VALUES('deposito', DATE '2021-06-25',500, 10);
-SELECT * FROM trasacao;
+INSERT INTO trasacao(tipo_trasacao, data, valor, taxa, idordem)
+VALUES('deposito', DATE '2021-06-25',500, 10, 9);
 
 -- SAQUE
 
 INSERT INTO saque(endereco, valor,idtransacao,idusuario)
-VALUES('5170e7e806',50, 3, 1);
-SELECT * FROM saque;
+VALUES('5170e7e806',50, 6, 5);
+
 -- BANCO
 
 INSERT INTO banco(conta, agencia)
@@ -152,53 +145,33 @@ VALUES('1191984-1','3628');
 
 INSERT INTO banco(conta, agencia)
 VALUES('23635-0','0097');
-SELECT * FROM banco;
+
 -- DEPOSITO
 
 INSERT INTO deposito(endereco, valor, idtransacao,bancoconta)
-VALUES('5170e7e806',500, 4 ,'1093135-X');
-SELECT * FROM deposito;
+VALUES('5170e7e806',500, 7 ,'1093135-X');
 
 -- CARTEIRA
 
 INSERT INTO carteira(valortotal, idusuario)
-VALUES(1000, 1);
+VALUES(1000, 2);
 
 INSERT INTO carteira(valortotal, idusuario)
-VALUES(1200, 2);
+VALUES(1200, 3);
 
 INSERT INTO carteira(valortotal, idusuario)
-VALUES(750, 3);
-SELECT * FROM carteira;
+VALUES(750, 5);
+
 -- CARTEIRA-TRANSACAO
 
 INSERT INTO carteira_transacao(valor, idtransacao,idcarteira)
-VALUES(80, 1, 1);
+VALUES(80, 4, 1);
 
 INSERT INTO carteira_transacao(valor, idtransacao,idcarteira)
-VALUES(200, 2, 2);
+VALUES(200, 5, 1);
 
 INSERT INTO carteira_transacao(valor, idtransacao,idcarteira)
-VALUES(50, 3, 3);
+VALUES(50, 6, 3);
 
 INSERT INTO carteira_transacao(valor, idtransacao,idcarteira)
-VALUES(500, 4, 3);
-SELECT * FROM carteira_transacao;
-
-SELECT * FROM banco;
-SELECT * FROM carteira;
-SELECT * FROM carteira_transacao;
-SELECT * FROM deposito;
-SELECT * FROM moeda;
-SELECT * FROM ordem;
-SELECT * FROM saque;
-SELECT * FROM trasacao;
-SELECT * FROM usuario;
-
---INDEX
-
-CREATE INDEX idx_usuario_nome ON usuario USING btree(nome);
-
-CREATE INDEX idx_ordem_estado ON ordem USING hash(estado);
-
-CREATE INDEX idx_trasacao_tipo_trasacao ON trasacao USING hash(tipo_trasacao);
+VALUES(500, 7, 3);
