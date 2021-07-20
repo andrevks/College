@@ -32,7 +32,7 @@ CREATE TABLE ordem (
 CREATE TABLE transacao (
   idtransacao SERIAL NOT NULL, 
   tipo_transacao CHAR(10) NOT NULL, --INDEX FOR tipo_transacao
-  descricao VARCHAR(250),
+  descricao VARCHAR(30),
   data DATE NOT NULL,
   valor NUMERIC NOT NULL,
   taxa NUMERIC(3,0) NOT NULL,
@@ -53,9 +53,11 @@ CREATE TABLE deposito (
   valor NUMERIC NOT NULL,
   idtransacao INTEGER NOT NULL,
   bancoconta CHAR(10) NOT NULL,
+  idusuario INTEGER NOT NULL,
   CONSTRAINT pkdeposito PRIMARY KEY (iddeposito),
   CONSTRAINT fkdeposito_transacao FOREIGN KEY (idtransacao) REFERENCES transacao(idtransacao),
-  CONSTRAINT fkdeposito_bancoconta FOREIGN KEY (bancoconta) REFERENCES banco(conta)
+  CONSTRAINT fkdeposito_bancoconta FOREIGN KEY (bancoconta) REFERENCES banco(conta),
+  CONSTRAINT fkdeposito_usuario FOREIGN KEY (idusuario) REFERENCES usuario(idusuario)
 );
 
 CREATE TABLE saque (
@@ -77,15 +79,15 @@ CREATE TABLE carteira (
   CONSTRAINT fkcarteira_usuario FOREIGN KEY (idusuario) REFERENCES usuario(idusuario)
 );
 
-CREATE TABLE carteira_transacao (
-  idcarteira_transacao SERIAL NOT NULL,
-  valor NUMERIC NOT NULL,
-  idtransacao INTEGER NOT NULL,
-  idcarteira INTEGER NOT NULL,
-  CONSTRAINT pkcarteira_transacao PRIMARY KEY (idcarteira_transacao),
-  CONSTRAINT fkcarteira_transacao_transacao FOREIGN KEY (idtransacao) REFERENCES transacao(idtransacao),
-  CONSTRAINT fkcarteira_transacao_carteira FOREIGN KEY (idcarteira) REFERENCES carteira(idcarteira)
-);
+-- CREATE TABLE carteira_transacao (
+--   idcarteira_transacao SERIAL NOT NULL,
+--   valor NUMERIC NOT NULL,
+--   idtransacao INTEGER NOT NULL,
+--   idcarteira INTEGER NOT NULL,
+--   CONSTRAINT pkcarteira_transacao PRIMARY KEY (idcarteira_transacao),
+--   CONSTRAINT fkcarteira_transacao_transacao FOREIGN KEY (idtransacao) REFERENCES transacao(idtransacao),
+--   CONSTRAINT fkcarteira_transacao_carteira FOREIGN KEY (idcarteira) REFERENCES carteira(idcarteira)
+-- );
 
 -- INSERT INFO
 
@@ -93,6 +95,7 @@ CREATE TABLE carteira_transacao (
 INSERT INTO moeda (codmoeda, nome) VALUES ('BTC','Bitcoin');
 INSERT INTO moeda (codmoeda, nome) VALUES ('ETH','Ethereum');
 INSERT INTO moeda (codmoeda, nome) VALUES ('ADA','Cardano');
+
 SELECT * FROM moeda;
 --USUARIO
 
@@ -136,17 +139,24 @@ VALUES('saque', DATE '2021-06-25',50, 10);
 
 INSERT INTO transacao(tipo_transacao, data, valor, taxa)
 VALUES('deposito', DATE '2021-06-25',500, 10);
-SELECT * FROM transacao;
+
 
 INSERT INTO transacao(tipo_transacao,descricao, data, valor, taxa, idordem)
 VALUES('ordem', 'debito', DATE '2021-07-20',755, 10, 4);
+
+INSERT INTO transacao(tipo_transacao, data, valor, taxa)
+VALUES('saque', DATE '2021-07-20',100, 10);
+
+INSERT INTO transacao(tipo_transacao, data, valor, taxa)
+VALUES('deposito', DATE '2021-07-20', 4000, 10);
+
+INSERT INTO transacao(tipo_transacao, data, valor, taxa)
+VALUES('saque', DATE '2021-07-21',200, 10);
+
+INSERT INTO transacao(tipo_transacao, data, valor, taxa)
+VALUES('deposito', DATE '2021-07-21', 337, 10);
+
 SELECT * FROM transacao;
-
--- SELECT t.idtransacao, t.tipo_transacao, t.data as data_transacao , o.idordem, o.opcao, o.quantidade, o.valorunitario,
--- u.idusuario, u.nome
--- FROM transacao t, ordem o, usuario u
--- WHERE t.idordem = o.idordem AND u.idusuario = o.idusuario
-
 
 SELECT * FROM usuario;
 
@@ -156,9 +166,16 @@ SELECT * FROM ordem;
 
 INSERT INTO saque(endereco, valor,idtransacao,idusuario)
 VALUES('5170e7e806',50, 3, 1);
+
+INSERT INTO saque(endereco, valor,idtransacao,idusuario)
+VALUES('a9a8066170',100, 6, 2);
+
+INSERT INTO saque(endereco, valor,idtransacao,idusuario)
+VALUES('aww3231230',200, 8, 3);
+
 SELECT * FROM saque;
 
--- BANCO
+-- BANCO 
 
 INSERT INTO banco(conta, agencia)
 VALUES('1093135-X','2624');
@@ -168,13 +185,23 @@ VALUES('1191984-1','3628');
 
 INSERT INTO banco(conta, agencia)
 VALUES('23635-0','0097');
+
 SELECT * FROM banco;
 
 -- DEPOSITO
 
-INSERT INTO deposito(endereco, valor, idtransacao,bancoconta)
-VALUES('5170e7e806',500, 4 ,'1093135-X');
+
+INSERT INTO deposito(endereco, valor, idtransacao,bancoconta,idusuario)
+VALUES('5170e7e806', 500, 4, '1093135-X', 1);
+
+INSERT INTO deposito(endereco, valor, idtransacao,bancoconta, idusuario)
+VALUES('21321aa708', 4000, 7, '1191984-1', 3);
+
+INSERT INTO deposito(endereco, valor, idtransacao,bancoconta, idusuario)
+VALUES('213yyy983', 337, 9, '23635-0', 4);
+
 SELECT * FROM deposito;
+
 
 -- CARTEIRA
 
@@ -186,25 +213,29 @@ VALUES(1200, 2);
 
 INSERT INTO carteira(valortotal, idusuario)
 VALUES(750, 3);
+
+INSERT INTO carteira(valortotal, idusuario)
+VALUES(1500, 4);
+
 SELECT * FROM carteira;
--- CARTEIRA-TRANSACAO
 
-INSERT INTO carteira_transacao(valor, idtransacao,idcarteira)
-VALUES(80, 1, 1);
+-- -- CARTEIRA-TRANSACAO
 
-INSERT INTO carteira_transacao(valor, idtransacao,idcarteira)
-VALUES(200, 2, 2);
+-- INSERT INTO carteira_transacao(valor, idtransacao,idcarteira)
+-- VALUES(80, 1, 1);
 
-INSERT INTO carteira_transacao(valor, idtransacao,idcarteira)
-VALUES(50, 3, 3);
+-- INSERT INTO carteira_transacao(valor, idtransacao,idcarteira)
+-- VALUES(200, 2, 2);
 
-INSERT INTO carteira_transacao(valor, idtransacao,idcarteira)
-VALUES(500, 4, 3);
-SELECT * FROM carteira_transacao;
+-- INSERT INTO carteira_transacao(valor, idtransacao,idcarteira)
+-- VALUES(50, 3, 3);
+
+-- INSERT INTO carteira_transacao(valor, idtransacao,idcarteira)
+-- VALUES(500, 4, 3);
+-- SELECT * FROM carteira_transacao;
 
 SELECT * FROM banco;
 SELECT * FROM carteira;
-SELECT * FROM carteira_transacao;
 SELECT * FROM deposito;
 SELECT * FROM moeda;
 SELECT * FROM ordem;
@@ -222,10 +253,19 @@ CREATE INDEX idx_transacao_tipo_transacao ON transacao USING hash(tipo_transacao
 
 
 
+-- Quais os clientes que estão fazendo transações em um determinado dia ?
 
--- Quais os clientes que estão diariamente fazendo transações ?
+-- SELECT t.idtransacao, t.tipo_transacao, t.data as data_transacao , o.idordem, o.opcao, o.quantidade, o.valorunitario,
+-- u.idusuario, u.nome
+-- FROM transacao t, ordem o, usuario u
+-- WHERE t.idordem = o.idordem AND u.idusuario = o.idusuario
 
--- Quais as moedas com maior market cap ?  Existem moedas que deveríamos bloquear por falta de comercialização, queremos identificar moedas com baixo market cap
+-- Quais as moedas com maior market cap ? 
+
+-- SELECT t.idtransacao, t.tipo_transacao, t.data as data_transacao , o.idordem, o.opcao, o.quantidade, o.valorunitario,
+-- u.idusuario, u.nome
+-- FROM transacao t, ordem o, usuario u
+-- WHERE t.idordem = o.idordem AND u.idusuario = o.idusuario
 
 -- A nossa rentabilidade vem através das taxas das transações, sabendo disso, qual a rentabilidade mensal ?
 
