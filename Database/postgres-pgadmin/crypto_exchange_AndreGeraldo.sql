@@ -266,15 +266,18 @@ WHERE t.data = '2021-07-20'
 
 -- A nossa rentabilidade vem através das taxas das transações, sabendo disso, qual a rentabilidade mensal ?
 -- (neste caso, inclui todos os tipos de transação, ordem, deposito e saque)
-
+  SELECT TO_CHAR(t.data,'mm-yyyy') mes_ano, SUM(t.valor * (t.taxa/100)) as valor_mensal
+  FROM transacao t 
+  GROUP BY TO_CHAR(t.data,'mm-yyyy')
 
 -- Qual a média da quantidade de transações do tipo ordem feitas mensalmente?
 -- REFORMULANDO: Qual a quantidade e valor médio das transações do tipo ordem feitas mensalmente?
   
-  SELECT TO_CHAR(t.data,'mm-yyyy') mes_ano, COUNT(t.idtransacao) as qtd, AVG(t.valor)
+  SELECT TO_CHAR(t.data,'mm-yyyy') mes_ano, COUNT(t.idtransacao) as qtd, AVG(t.valor) valor_medio
   FROM transacao t 
   GROUP BY t.tipo_transacao, TO_CHAR(t.data,'mm-yyyy')
-  HAVING t.tipo_transacao = 'ordem'
+  HAVING t.tipo_transacao = 'ordem
+  
   
 
 -- Quais as moedas mais negociadas ?
