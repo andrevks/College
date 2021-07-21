@@ -264,23 +264,22 @@ WHERE t.data = '2021-07-20'
 
 -- Quais as moedas com maior market cap ? 
 
--- SELECT t.idtransacao, t.tipo_transacao, t.data as data_transacao , o.idordem, o.opcao, o.quantidade, o.valorunitario,
--- u.idusuario, u.nome
--- FROM transacao t, ordem o, usuario u
--- WHERE t.idordem = o.idordem AND u.idusuario = o.idusuario
-
 -- A nossa rentabilidade vem através das taxas das transações, sabendo disso, qual a rentabilidade mensal ?
+-- (neste caso, inclui todos os tipos de transação, ordem, deposito e saque)
+
 
 -- Qual a média da quantidade de transações do tipo ordem feitas mensalmente?
+-- REFORMULANDO: Qual a quantidade e valor médio das transações do tipo ordem feitas mensalmente?
+  
+  SELECT TO_CHAR(t.data,'mm-yyyy') mes_ano, COUNT(t.idtransacao) as qtd, AVG(t.valor)
+  FROM transacao t 
+  GROUP BY t.tipo_transacao, TO_CHAR(t.data,'mm-yyyy')
+  HAVING t.tipo_transacao = 'ordem'
+  
 
--- Qual a moeda mais negociada ?
+-- Quais as moedas mais negociadas ?
 
--- SELECT *
--- FROM ordem o, transacao t, moeda m
--- WHERE o.idordem = t.idordem AND o.codmoeda = m.codmoeda
-
-
-SELECT o.codmoeda, COUNT(o.codmoeda) as vezes_negociada, SUM(t.valor) as total_negociado
+SELECT o.codmoeda as moeda, COUNT(o.codmoeda) as vezes_negociada, SUM(t.valor) as total_negociado
 FROM ordem o INNER JOIN transacao t ON o.idordem = t.idordem 
 GROUP BY o.codmoeda
 
@@ -294,18 +293,26 @@ GROUP BY o.codmoeda
   GROUP BY o.codmoeda
   ORDER BY SUM(t.valor * (t.taxa/100)) DESC
   
--- o codmoeda é o suficiente para identificar qual a moeda 
 
 SELECT o.codmoeda, t.valor, (t.taxa/100) as tax, t.data
 FROM transacao t INNER JOIN ordem o ON o.idordem = t.idordem
 
 
--- Qual o faturamento de um determinado mês por moeda ? 
+-- Qual o faturamento de um determinado mês por moeda ?
 
+  SELECT o.codmoeda as moeda , SUM(t.valor * (t.taxa/100)) as valor 
+  FROM transacao t INNER JOIN ordem o ON o.idordem = t.idordem
+  WHERE TO_CHAR(t.data,'mm/yyyy') = '06/2021'
+  GROUP BY o.codmoeda
+  ORDER BY SUM(t.valor * (t.taxa/100)) DESC
+  
 -- Relação das moedas mais vendidas/compradas.
 
 -- Qual o histórico dos depósitos/saques de determinado cliente ? 
 
--- Quais as moedas mais utilizadas como troca em um determinado período ?
+
+-- Quais as moedas mais utilizadas como troca em um determinado período ? (inrelevante, já que o sistema mudou de funcionamento, a moeda de troca é sempre o real)
+
 
 -- Quais moedas sofreram a maior diferença de preço nos últimos 7 dias ?
+
