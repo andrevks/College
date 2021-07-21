@@ -254,13 +254,13 @@ CREATE INDEX idx_transacao_tipo_transacao ON transacao USING hash(tipo_transacao
 
 --RELATORIOS
 
--- Quais os clientes fizeram transações em um determinado dia ? além disso, 
---qual o tipo e o valor 
+-- Quais clientes fizeram transações de compra e venda 
+-- em um determinado dia ? e quais os valores negociados ?
 
 SELECT u.nome, o.opcao as tipo, t.valor
 FROM ordem o INNER JOIN transacao t ON o.idordem = t.idordem
-		         INNER JOIN usuario u ON u.idusuario = o.idusuario
-WHERE t.data = '2021-06-22'
+		     INNER JOIN usuario u ON u.idusuario = o.idusuario
+WHERE t.data = '2021-07-20'
 
 -- Quais as moedas com maior market cap ? 
 
@@ -279,19 +279,26 @@ WHERE t.data = '2021-06-22'
 -- FROM ordem o, transacao t, moeda m
 -- WHERE o.idordem = t.idordem AND o.codmoeda = m.codmoeda
 
-SELECT m.codmoeda, COUNT(m.codmoeda) as num_negociacao, SUM(t.valor) as total_negociado
-FROM ordem o INNER JOIN transacao t ON o.idordem = t.idordem 
-			 INNER JOIN moeda m ON o.codmoeda = m.codmoeda
-GROUP BY m.codmoeda
 
---More optimal way:
-SELECT o.codmoeda, COUNT(o.codmoeda) as vezes_negociada, SUM(t.valor) as valor_total_negociado
+SELECT o.codmoeda, COUNT(o.codmoeda) as vezes_negociada, SUM(t.valor) as total_negociado
 FROM ordem o INNER JOIN transacao t ON o.idordem = t.idordem 
 GROUP BY o.codmoeda
 
 -- Quais as transações realizadas por um determinado cliente em ordem do mais recente ao mais antigo ?
 
 -- Qual o faturamento anual por moeda ? 
+
+  SELECT o.codmoeda as moeda , SUM(t.valor * (t.taxa/100)) as valor 
+  FROM transacao t INNER JOIN ordem o ON o.idordem = t.idordem
+  WHERE TO_CHAR(t.data,'yyyy') = '2021'
+  GROUP BY o.codmoeda
+  ORDER BY SUM(t.valor * (t.taxa/100)) DESC
+  
+-- o codmoeda é o suficiente para identificar qual a moeda 
+
+SELECT o.codmoeda, t.valor, (t.taxa/100) as tax, t.data
+FROM transacao t INNER JOIN ordem o ON o.idordem = t.idordem
+
 
 -- Qual o faturamento de um determinado mês por moeda ? 
 
