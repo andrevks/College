@@ -309,7 +309,16 @@ FROM transacao t INNER JOIN ordem o ON o.idordem = t.idordem
 -- Relação das moedas mais vendidas/compradas.
 
 -- Qual o histórico dos depósitos/saques de determinado cliente ? 
+SELECT d.endereco as end_deposito, d.valor as valor_deposito, d.bancoconta as conta_origem_deposito, 
+s.endereco as end_saque, s.valor
+FROM deposito d, saque s
+		WHERE d.idusuario = (SELECT u.idusuario FROM usuario u WHERE LOWER(u.nome) LIKE '%jo%')	
+		AND s.idusuario = d.idusuario
 
+
+(SELECT * FROM usuario u WHERE LOWER(u.nome) LIKE '%jo%')
+SELECT * FROM deposito
+SELECT * FROM saque
 
 -- Quais as moedas mais utilizadas como troca em um determinado período ? (inrelevante, já que o sistema mudou de funcionamento, a moeda de troca é sempre o real)
 
