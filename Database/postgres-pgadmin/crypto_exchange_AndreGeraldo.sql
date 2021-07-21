@@ -252,13 +252,15 @@ CREATE INDEX idx_ordem_estado ON ordem USING hash(estado);
 CREATE INDEX idx_transacao_tipo_transacao ON transacao USING hash(tipo_transacao);
 
 
+--RELATORIOS
 
--- Quais os clientes que estão fazendo transações em um determinado dia ?
+-- Quais os clientes fizeram transações em um determinado dia ? além disso, 
+--qual o tipo e o valor 
 
--- SELECT t.idtransacao, t.tipo_transacao, t.data as data_transacao , o.idordem, o.opcao, o.quantidade, o.valorunitario,
--- u.idusuario, u.nome
--- FROM transacao t, ordem o, usuario u
--- WHERE t.idordem = o.idordem AND u.idusuario = o.idusuario
+SELECT u.nome, o.opcao as tipo, t.valor
+FROM ordem o INNER JOIN transacao t ON o.idordem = t.idordem
+		         INNER JOIN usuario u ON u.idusuario = o.idusuario
+WHERE t.data = '2021-06-22'
 
 -- Quais as moedas com maior market cap ? 
 
@@ -271,7 +273,21 @@ CREATE INDEX idx_transacao_tipo_transacao ON transacao USING hash(tipo_transacao
 
 -- Qual a média da quantidade de transações do tipo ordem feitas mensalmente?
 
--- Quais as moedas mais negociadas?
+-- Qual a moeda mais negociada ?
+
+-- SELECT *
+-- FROM ordem o, transacao t, moeda m
+-- WHERE o.idordem = t.idordem AND o.codmoeda = m.codmoeda
+
+SELECT m.codmoeda, COUNT(m.codmoeda) as num_negociacao, SUM(t.valor) as total_negociado
+FROM ordem o INNER JOIN transacao t ON o.idordem = t.idordem 
+			 INNER JOIN moeda m ON o.codmoeda = m.codmoeda
+GROUP BY m.codmoeda
+
+--More optimal way:
+SELECT o.codmoeda, COUNT(o.codmoeda) as vezes_negociada, SUM(t.valor) as valor_total_negociado
+FROM ordem o INNER JOIN transacao t ON o.idordem = t.idordem 
+GROUP BY o.codmoeda
 
 -- Quais as transações realizadas por um determinado cliente em ordem do mais recente ao mais antigo ?
 
