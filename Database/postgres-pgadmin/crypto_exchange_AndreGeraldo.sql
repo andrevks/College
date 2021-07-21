@@ -254,8 +254,7 @@ CREATE INDEX idx_transacao_tipo_transacao ON transacao USING hash(tipo_transacao
 
 --RELATORIOS
 
--- Quais clientes fizeram transações de compra e venda 
--- em um determinado dia ? e quais os valores negociados ?
+-- Quais clientes fizeram transações de compra e venda em um determinado dia ? e quais os valores negociados ?
 
 SELECT u.nome, o.opcao as tipo, t.valor
 FROM ordem o INNER JOIN transacao t ON o.idordem = t.idordem
@@ -263,30 +262,45 @@ FROM ordem o INNER JOIN transacao t ON o.idordem = t.idordem
 WHERE t.data = '2021-07-20'
 
 -- Quais as moedas com maior market cap ? 
+--market cap: It’s calculated by multiplying the number of coins in circulation by the current market price of a single coin.
+
+SELECT o.codmoeda as moeda, SUM(t.valor) as market_cap
+FROM transacao t INNER JOIN ordem o ON o.idordem = t.idordem
+GROUP BY o.codmoeda
+ORDER BY SUM(t.valor) DESC
+ 
+
 
 -- A nossa rentabilidade vem através das taxas das transações, sabendo disso, qual a rentabilidade mensal ?
--- (neste caso, inclui todos os tipos de transação, ordem, deposito e saque)
+--(neste caso, inclui todos os tipos de transação, ordem, deposito e saque)
+  
   SELECT TO_CHAR(t.data,'mm-yyyy') mes_ano, SUM(t.valor * (t.taxa/100)) as valor_mensal
   FROM transacao t 
   GROUP BY TO_CHAR(t.data,'mm-yyyy')
-
+ 
+ 
 -- Qual a média da quantidade de transações do tipo ordem feitas mensalmente?
 -- REFORMULANDO: Qual a quantidade e valor médio das transações do tipo ordem feitas mensalmente?
   
   SELECT TO_CHAR(t.data,'mm-yyyy') mes_ano, COUNT(t.idtransacao) as qtd, AVG(t.valor) valor_medio
   FROM transacao t 
   GROUP BY t.tipo_transacao, TO_CHAR(t.data,'mm-yyyy')
-  HAVING t.tipo_transacao = 'ordem
+  HAVING t.tipo_transacao = 'ordem'
+ 
   
-  
-
--- Quais as moedas mais negociadas ?
+-- Quais as moedas mais negociadas e valortotal negociado ?
 
 SELECT o.codmoeda as moeda, COUNT(o.codmoeda) as vezes_negociada, SUM(t.valor) as total_negociado
 FROM ordem o INNER JOIN transacao t ON o.idordem = t.idordem 
 GROUP BY o.codmoeda
 
--- Quais as transações realizadas por um determinado cliente em ordem do mais recente ao mais antigo ?
+-- Quais as transações de moedas realizadas por um determinado cliente em ordem do mais recente ao mais antigo ?
+
+SELECT t.data, o.codmoeda as moeda, t.valor, t.taxa
+FROM ordem o INNER JOIN transacao t ON o.idordem = t.idordem
+WHERE o.idusuario = (SELECT u.idusuario FROM usuario u WHERE LOWER(u.nome) LIKE '%auro%')	
+ORDER BY t.data DESC
+--ADC mais uma transacao deste cliente 
 
 -- Qual o faturamento anual por moeda ? 
 
@@ -297,8 +311,8 @@ GROUP BY o.codmoeda
   ORDER BY SUM(t.valor * (t.taxa/100)) DESC
   
 
-SELECT o.codmoeda, t.valor, (t.taxa/100) as tax, t.data
-FROM transacao t INNER JOIN ordem o ON o.idordem = t.idordem
+-- SELECT o.codmoeda, t.valor, (t.taxa/100) as tax, t.data
+-- FROM transacao t INNER JOIN ordem o ON o.idordem = t.idordem
 
 
 -- Qual o faturamento de um determinado mês por moeda ?
@@ -309,22 +323,20 @@ FROM transacao t INNER JOIN ordem o ON o.idordem = t.idordem
   GROUP BY o.codmoeda
   ORDER BY SUM(t.valor * (t.taxa/100)) DESC
   
--- Relação das moedas mais vendidas/compradas.
+-- Relação das moedas mais vendidas/compradas. idem ao "moedas mais negociadas"
 
 -- Qual o histórico dos depósitos/saques de determinado cliente ? 
+
 SELECT d.endereco as end_deposito, d.valor as valor_deposito, d.bancoconta as conta_origem_deposito, 
 s.endereco as end_saque, s.valor
 FROM deposito d, saque s
 		WHERE d.idusuario = (SELECT u.idusuario FROM usuario u WHERE LOWER(u.nome) LIKE '%jo%')	
 		AND s.idusuario = d.idusuario
 
+--Adc mais um deposito e saque para entender como funciona 
 
-(SELECT * FROM usuario u WHERE LOWER(u.nome) LIKE '%jo%')
-SELECT * FROM deposito
-SELECT * FROM saque
-
--- Quais as moedas mais utilizadas como troca em um determinado período ? (inrelevante, já que o sistema mudou de funcionamento, a moeda de troca é sempre o real)
+-- Quais as moedas mais utilizadas como troca em um determinado período ?
+-- (inrelevante, já que o sistema mudou de funcionamento, a moeda de troca é sempre o real)
 
 
 -- Quais moedas sofreram a maior diferença de preço nos últimos 7 dias ?
-
