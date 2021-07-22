@@ -259,7 +259,8 @@ CREATE INDEX idx_transacao_tipo_transacao ON transacao USING hash(tipo_transacao
 SELECT u.nome, o.opcao as tipo, t.valor
 FROM ordem o INNER JOIN transacao t ON o.idordem = t.idordem
 		     INNER JOIN usuario u ON u.idusuario = o.idusuario
-WHERE t.data = '2021-07-20'
+WHERE t.data = '2021-07-20';
+
 
 -- Quais as moedas com maior market cap ? 
 --market cap: It’s calculated by multiplying the number of coins in circulation by the current market price of a single coin.
@@ -267,7 +268,7 @@ WHERE t.data = '2021-07-20'
 SELECT o.codmoeda as moeda, SUM(t.valor) as market_cap
 FROM transacao t INNER JOIN ordem o ON o.idordem = t.idordem
 GROUP BY o.codmoeda
-ORDER BY SUM(t.valor) DESC
+ORDER BY SUM(t.valor) DESC;
  
 
 
@@ -276,7 +277,7 @@ ORDER BY SUM(t.valor) DESC
   
   SELECT TO_CHAR(t.data,'mm-yyyy') mes_ano, SUM(t.valor * (t.taxa/100)) as valor_mensal
   FROM transacao t 
-  GROUP BY TO_CHAR(t.data,'mm-yyyy')
+  GROUP BY TO_CHAR(t.data,'mm-yyyy');
  
  
 -- Qual a média da quantidade de transações do tipo ordem feitas mensalmente?
@@ -285,22 +286,21 @@ ORDER BY SUM(t.valor) DESC
   SELECT TO_CHAR(t.data,'mm-yyyy') mes_ano, COUNT(t.idtransacao) as qtd, AVG(t.valor) valor_medio
   FROM transacao t 
   GROUP BY t.tipo_transacao, TO_CHAR(t.data,'mm-yyyy')
-  HAVING t.tipo_transacao = 'ordem'
+  HAVING t.tipo_transacao = 'ordem';
  
   
 -- Quais as moedas mais negociadas e valortotal negociado ?
 
 SELECT o.codmoeda as moeda, COUNT(o.codmoeda) as vezes_negociada, SUM(t.valor) as total_negociado
 FROM ordem o INNER JOIN transacao t ON o.idordem = t.idordem 
-GROUP BY o.codmoeda
+GROUP BY o.codmoeda;
 
 -- Quais as transações de moedas realizadas por um determinado cliente em ordem do mais recente ao mais antigo ?
 
 SELECT t.data, o.codmoeda as moeda, t.valor, t.taxa
 FROM ordem o INNER JOIN transacao t ON o.idordem = t.idordem
 WHERE o.idusuario = (SELECT u.idusuario FROM usuario u WHERE LOWER(u.nome) LIKE '%auro%')	
-ORDER BY t.data DESC
---ADC mais uma transacao deste cliente 
+ORDER BY t.data DESC;
 
 -- Qual o faturamento anual por moeda ? 
 
@@ -308,12 +308,8 @@ ORDER BY t.data DESC
   FROM transacao t INNER JOIN ordem o ON o.idordem = t.idordem
   WHERE TO_CHAR(t.data,'yyyy') = '2021'
   GROUP BY o.codmoeda
-  ORDER BY SUM(t.valor * (t.taxa/100)) DESC
+  ORDER BY SUM(t.valor * (t.taxa/100)) DESC;
   
-
--- SELECT o.codmoeda, t.valor, (t.taxa/100) as tax, t.data
--- FROM transacao t INNER JOIN ordem o ON o.idordem = t.idordem
-
 
 -- Qual o faturamento de um determinado mês por moeda ?
 
@@ -321,7 +317,7 @@ ORDER BY t.data DESC
   FROM transacao t INNER JOIN ordem o ON o.idordem = t.idordem
   WHERE TO_CHAR(t.data,'mm/yyyy') = '06/2021'
   GROUP BY o.codmoeda
-  ORDER BY SUM(t.valor * (t.taxa/100)) DESC
+  ORDER BY SUM(t.valor * (t.taxa/100)) DESC;
   
 -- Relação das moedas mais vendidas/compradas. idem ao "moedas mais negociadas"
 
@@ -331,12 +327,13 @@ SELECT d.endereco as end_deposito, d.valor as valor_deposito, d.bancoconta as co
 s.endereco as end_saque, s.valor
 FROM deposito d, saque s
 		WHERE d.idusuario = (SELECT u.idusuario FROM usuario u WHERE LOWER(u.nome) LIKE '%jo%')	
-		AND s.idusuario = d.idusuario
+		AND s.idusuario = d.idusuario;
 
---Adc mais um deposito e saque para entender como funciona 
 
 -- Quais as moedas mais utilizadas como troca em um determinado período ?
 -- (inrelevante, já que o sistema mudou de funcionamento, a moeda de troca é sempre o real)
 
 
 -- Quais moedas sofreram a maior diferença de preço nos últimos 7 dias ?
+-- (teria que ter o histórico diário da moeda, com o percentual da variação para conseguir ter precisao nesta informação, 
+-- aumentando a complexidade do sistema
