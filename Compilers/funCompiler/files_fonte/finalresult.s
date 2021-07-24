@@ -168,5 +168,5 @@ valor_total: .word 0
 valor_ethereum: .word 0 
 valor_barato: .word 0 
 taxas: .word 0 
-string1: .word 0 
-string2: .word 0 
+string1: .asciz "Invista seu dinheiro\n"  
+string2: .asciz "Continue fazendo analises dos precos\n"  

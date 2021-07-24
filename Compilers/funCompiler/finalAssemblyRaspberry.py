@@ -107,7 +107,12 @@ class FinalRaspberry:
         self.append_final_code(f'\n.global printf')
         self.append_final_code(f'.global scanf')
         for var in self.__var_list:
-            self.append_final_code(f'{var}: .word 0')
+            if 'string' not in var:
+                self.append_final_code(f'{var}: .word 0')
+            else:
+                var_name = var.split('"')[0]
+                string_value = var.split('"')[1]
+                self.append_final_code(f'{var_name}: .asciz \"{string_value}\\n\" ')
 
     def generate_final_code(self):
         inter_code = self.__intermediate_code

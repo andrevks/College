@@ -82,7 +82,10 @@ class SemanticAnalyser:
                 line = self.__symbol_table.find(key).line
                 if is_digit(str(var_value)):
                     print('{:<20}  {:<10} {:<10}'.format(var , var_value , line))
-                self.__id_list.append(var)
+                    self.__id_list.append(var)
+                else:
+                    self.__id_list.append(f'{var}{var_value}')
+
 
 
 
