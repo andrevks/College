@@ -1,17 +1,13 @@
 BeginFun
 
-	funny old.
-	funny gold.
-	funny acc.
 
 
 	funny terms_to_calculate.
-	grabInput terms_to_calculate, old, gold, acc.
+	grabInput terms_to_calculate.
 	funny n1.
 	funny n2.
 	funny counted <- 0.
 	funny new_number.
-	funny valor_total <- ((old/10) * (gold+1000))/(acc+400).
 
 
 	funLoopWhile counted < terms_to_calculate do
@@ -26,16 +22,4 @@ BeginFun
 
 	endFunLoop.
 
-	funny valor_ethereum.
-	funny valor_barato.
-	funny taxas.
-
-     if valor_ethereum = valor_barato & taxas < 123 then
-        showMeTheCode "Invista seu dinheiro".
-
-      else
-
-        showMeTheCode "Continue fazendo analises dos precos".
-
-    end.
 EndFun

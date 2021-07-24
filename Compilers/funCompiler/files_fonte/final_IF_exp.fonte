@@ -1,0 +1,23 @@
+BeginFun
+
+
+
+    showMeTheCode "Digite o valor da taxa".
+	funny taxas.
+
+	grabInput taxas.
+
+     if taxas < 123 then
+
+        showMeTheCode "EH MENOR ( < )".
+     end.
+
+     if taxas > 123 then
+        showMeTheCode "EH MAIOR ( > )".
+     end.
+
+     if taxas <> 123 then
+        showMeTheCode "EH DIFERENTE ( <> )".
+     end.
+
+EndFun

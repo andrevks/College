@@ -103,7 +103,6 @@ class IntermediateCode:
                 var_name = ''
                 l_index += 1
                 lex = tok[l_index].lexeme
-
                 var_name = lex
 
                 self.__intermediate_code.append(f'{comand} {var_name}')

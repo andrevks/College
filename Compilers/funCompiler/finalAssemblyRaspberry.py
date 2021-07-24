@@ -151,21 +151,24 @@ class FinalRaspberry:
                     self.append_final_code(f'BL printf', ' @Function to receive input from the keyboard\n')
                     self.__var_list.append(f'{string_var}\"{string_value}\"')
 
-            elif '=' in inter_code[l_index].split():
-                if inter_code[l_index].split()[1] == '=':
-                    var = inter_code[l_index].split()[0]
-                    ar_exp = inter_code[l_index].split()[2:]
+            elif '=' in inter_code[l_index].split() and inter_code[l_index].split()[0] != 'se'\
+                    and inter_code[l_index].split()[0] != 'enquanto':
 
-                    self.calculate_arith_exp(ar_exp)
-                    self.append_final_code(f'LDR R1, ={var}', '@Getting var address')
-                    self.append_final_code(f'STR R2, [R1] ', '@Store exp result in var\n')
+                var = inter_code[l_index].split()[0]
+                ar_exp = inter_code[l_index].split()[2:]
+
+                self.calculate_arith_exp(ar_exp)
+                self.append_final_code(f'LDR R1, ={var}', '@Getting var address')
+                self.append_final_code(f'STR R2, [R1] ', '@Store exp result in var\n')
 
             elif inter_line == 'se':
                 se_label = self.get_new_label('se')
                 senao_label = self.get_new_label('senao')
                 self.__stack.push(senao_label)
-                inter_line = inter_code[l_index].split()
-                i = 1
+
+                inter_line = inter_code[l_index].split()[1:]
+                print(inter_line)
+                i = 0
                 while inter_line[i] != 'entao':
                     elem = inter_line[i]
 

@@ -36,18 +36,6 @@ LDR R0, =string2 @Send variable address
 BL printf  @Function to receive input from the keyboard
 
 _senao3: 
-LDR R1,=taxas @Send address to the R1
-LDR R2, [R1] @Move value from R2 to var location
-MOV R3, R2  @Send end result to R3
-MOV R2, #123 @Move value to the R2
-CMP R3, R2  @Compare R3 and R2, changes flags status
-BNE _se4  @Jumps if R3 > R1 (Zero is not set)
-B _senao5 @Jumps unconditionally 
-_se4: @add symbol after expr
-LDR R0, =string3 @Send variable address
-BL printf  @Function to receive input from the keyboard
-
-_senao5: 
 @------END--------
 LDR LR, =backup_lr @Address of the var 
 LDR LR, [LR] 
@@ -66,4 +54,3 @@ taxas: .word 0
 string0: .asciz "Digite o valor da taxa\n"  
 string1: .asciz "EH MENOR ( < )\n"  
 string2: .asciz "EH MAIOR ( > )\n"  
-string3: .asciz "EH DIFERENTE ( <> )\n"  
