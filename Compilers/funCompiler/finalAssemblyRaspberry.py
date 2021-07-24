@@ -30,6 +30,7 @@ class FinalRaspberry:
             for elem in ar_exp:
                 if is_variable(elem) or is_digit(elem):
                     self.get_value(elem)
+                    self.append_final_code('PUSH {R2}', '@(Result) to the stack')
                 elif elem == '/':
                     self.__final_code.append('@DIVISION')
                     self.append_final_code('POP {R1}', '@Divisor(under bar) from stack')
