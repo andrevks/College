@@ -125,6 +125,17 @@ class FinalRaspberry:
                 self.append_final_code('LDR R0, =pattern', '@int pattern (%d)')
                 self.append_final_code(f'LDR R1, ={inter_line}', '@Send variable address')
                 self.append_final_code(f'BL scanf', ' @Function to receive input from the keyboard\n')
+            elif inter_line == 'escreva':
+                inter_line = inter_code[l_index].split()[1]
+                if inter_line == is_variable(inter_line):
+                    var = inter_code[l_index].split()[1]
+                    # first case, when it's a variable
+                    self.append_final_code('LDR R0, =pattern_print', '@int pattern (%d)')
+                    self.append_final_code(f'LDR R1, ={var}', '@Send variable address')
+                    self.append_final_code(f'LDR R1, [R1]', '@Send variable address')
+                    self.append_final_code(f'BL printf', ' @Function to receive input from the keyboard\n')
+                # else:
+
             elif '=' in inter_code[l_index].split():
                 if inter_code[l_index].split()[1] == '=':
                     var = inter_code[l_index].split()[0]

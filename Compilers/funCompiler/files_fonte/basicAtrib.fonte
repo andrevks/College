@@ -1,5 +1,6 @@
 BeginFun
 
 	funny old <- 8.
+	showMeTheCode old.
 
 EndFun

@@ -1,5 +1,11 @@
 from hashTable import HashTable
 import hashTable
+import re
+
+
+def is_digit(elem):
+    digit = r'\d'
+    return re.match(digit, elem)
 
 
 class SemanticError(Exception):
@@ -34,6 +40,11 @@ class SemanticAnalyser:
         self.__token_list = tokens
         self.__keys_history = []
         self.__id_list = []
+        self.__string_num = 0
+
+    def get_new_string_name(self):
+        self.__string_num += 1
+        return ''.join(f'string{self.__string_num}')
 
     def switch_mode(self , lse , ts):
         if lse:
@@ -45,6 +56,7 @@ class SemanticAnalyser:
         else:
             self.verify_semantic()
         return self.__id_list
+
 
     def insert_log(self , lexeme , line , value , location):
         new_var = Symbol(lexeme , value , line , location)
@@ -68,7 +80,8 @@ class SemanticAnalyser:
                 var = self.__symbol_table.find(key).var
                 var_value = self.__symbol_table.find(key).value
                 line = self.__symbol_table.find(key).line
-                print('{:<20}  {:<10} {:<10}'.format(var , var_value , line))
+                if is_digit(str(var_value)):
+                    print('{:<20}  {:<10} {:<10}'.format(var , var_value , line))
                 self.__id_list.append(var)
 
 
@@ -138,6 +151,14 @@ class SemanticAnalyser:
                         SemanticError(line , col , lex , f'Divisão por ZERO')
                 elif right_var.lexeme == 0:
                     SemanticError(line , col , lex , f'Divisão por ZERO')
+            #STRING
+            elif type == 'showMeTheCode':
+                l_index += 1
+                type = tok[l_index].type
+                if type == 'TK_STRING':
+                    value = tok[l_index].lexeme
+                    string_name = self.get_new_string_name()
+                    self.insert_log(string_name, line , value , l_index)
 
             l_index += 1
         self.show_symbol_table_log(ts)
@@ -225,6 +246,14 @@ class SemanticAnalyser:
                         SemanticError(line , col , lex , f'Divisão por ZERO')
                 elif right_var.lexeme == 0:
                     SemanticError(line , col , lex , f'Divisão por ZERO')
+            #STRING
+            elif type == 'showMeTheCode':
+                l_index += 1
+                type = tok[l_index].type
+                if type == 'TK_STRING':
+                    value = tok[l_index].lexeme
+                    string_name = self.get_new_string_name()
+                    self.insert_log(string_name, line , value , l_index)
 
             l_index += 1
         self.create_id_list()
