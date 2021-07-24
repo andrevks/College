@@ -30,7 +30,7 @@ class FinalRaspberry:
             for elem in ar_exp:
                 if is_variable(elem) or is_digit(elem):
                     self.get_value(elem)
-                    self.append_final_code('PUSH {R2}', '@(Result) to the stack')
+                    self.append_final_code('PUSH {R2}', '@(Result) to the stack\n')
                 elif elem == '/':
                     self.__final_code.append('@DIVISION')
                     self.append_final_code('POP {R1}', '@Divisor(under bar) from stack')
@@ -44,7 +44,7 @@ class FinalRaspberry:
                     self.append_final_code(f'ADD R2, R2, #1', '@Increment R2(Quotient/Result)')
                     self.append_final_code(f'SUB R0, R0, R1 ', '@R0 = R0 - R1')
                     self.append_final_code(f'B {div_label}', '@Jump to ')
-                    self.append_final_code(f'{end_div_label}:\n')
+                    self.append_final_code(f'{end_div_label}:')
                     self.append_final_code('PUSH {R2}', '@(Quotient/Result) to the stack')
                     self.__final_code.append('@END-DIVISION')
                 elif elem == '*':
@@ -68,7 +68,7 @@ class FinalRaspberry:
                     self.append_final_code(f'ADD R2, R0, R1 ', '@R2 = R0 + R1')
                     self.append_final_code('PUSH {R2}', '@(Result) to the stack')
                     self.__final_code.append('@END-ADD')
-            self.append_final_code('POP {R2}', '@Result of the acc from stack to R2')
+            self.append_final_code('POP {R2}', '@Result of the acc from stack to R2\n')
 
     def get_value(self, elem):
         if is_digit(elem):
@@ -95,9 +95,9 @@ class FinalRaspberry:
 
     def get_bottom(self):
         self.__final_code.append('@------END--------')
-        self.append_final_code('LDR R1, =backup_lr', '@Address of the var ')
+        self.append_final_code('LDR LR, =backup_lr', '@Address of the var ')
         self.append_final_code('LDR LR, [LR]')
-        self.append_final_code('BX LR', 'Return from the main function')
+        self.append_final_code('BX LR', '@Return from the main function')
 
         self.append_final_code('\n.data', '@ Data section')
         self.append_final_code('.balign 8', '@Bytes allocated to each var')
