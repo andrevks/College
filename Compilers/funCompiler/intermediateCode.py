@@ -6,6 +6,7 @@ class IntermediateCode:
         self.__tokens_list = tokens_list
         self.__log_inter_code = []
         self.__intermediate_code = []
+        self.__strings_list = []
         self.convert = StackInfix()
 
     def set_log(self,log):
@@ -31,8 +32,11 @@ class IntermediateCode:
         #pegar variáveis declaradas
         self.set_log('\n--LOG: CÓDIGO INTERMEDIÁRIO')
         for var in self.__variables:
-            self.__intermediate_code.append(f'_Var {var}')
-            self.set_log(f'Montou a variável ({var})')
+            var_name = var.split('"')[0]
+            self.__intermediate_code.append(f'_Var {var_name}')
+            self.set_log(f'Montou a variável ({var_name})')
+            if 'string' in var:
+                self.__strings_list.append(var)
         print(self.__variables)
         while l_index < len(tok):
             lex = tok[l_index].lexeme
@@ -96,14 +100,14 @@ class IntermediateCode:
                 self.set_log('Reconheceu o comando fim_se (end)')
             elif lex == 'showMeTheCode':
                 comand = 'escreva'
-                bool_exp = ''
+                var_name = ''
                 l_index += 1
-                while tok[l_index].lexeme != '.':
-                    lex = tok[l_index].lexeme
-                    bool_exp += ' ' + str(lex)
-                    l_index += 1
-                self.__intermediate_code.append(f'{comand}{bool_exp}')
-                self.set_log(f'Reconheceu o comando escreva (showMeTheCode ({bool_exp}))')
+                lex = tok[l_index].lexeme
+
+                var_name = lex
+
+                self.__intermediate_code.append(f'{comand} {var_name}')
+                self.set_log(f'Reconheceu o comando escreva (showMeTheCode ({var_name}))')
             l_index += 1
 
         self.show_log()

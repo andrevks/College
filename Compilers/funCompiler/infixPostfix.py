@@ -77,9 +77,9 @@ class StackInfix:
 
             elif i == ')':  # if ')' pop till '('
                 while (not self.isempty()) and self.peek() != '(':
-                    n = self.pop()
-                    postfix += ' '
-                    postfix = postfix + n
+                    n = self.pop() + ' '
+                    # postfix += ' '
+                    postfix = postfix + ' ' + n
                 if (not self.isempty()) and self.peek() != '(':
                     return -1
                 else:
@@ -89,14 +89,14 @@ class StackInfix:
                 postfix += ' '
                 while (not self.isempty()) and self.notGreater(i):
                     c = self.pop()
-                    postfix = postfix + c
+                    postfix = postfix + c + ' '
                 self.push(i)
             else:
                 continue
         # pop all the operator from the stack
         while not self.isempty():
             postfix += ' '
-            op_par = self.pop()
+            op_par = self.pop() + ' '
             postfix = postfix + op_par
         return postfix
 

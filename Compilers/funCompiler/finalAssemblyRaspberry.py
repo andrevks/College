@@ -20,7 +20,12 @@ class FinalRaspberry:
         self.__log_final_code = []
         self.__stack = Stack()
         self.__label_num = -1
+        self.__string_num = -1
         self.generate_final_code()
+
+    def get_new_string_name(self):
+        self.__string_num += 1
+        return ''.join(f'string{self.__string_num}')
 
     def calculate_arith_exp(self, ar_exp):
         if len(ar_exp) == 1:
@@ -132,14 +137,19 @@ class FinalRaspberry:
                 self.append_final_code(f'BL scanf', ' @Function to receive input from the keyboard\n')
             elif inter_line == 'escreva':
                 inter_line = inter_code[l_index].split()[1]
-                if inter_line == is_variable(inter_line):
+                if is_variable(inter_line):
                     var = inter_code[l_index].split()[1]
                     # first case, when it's a variable
                     self.append_final_code('LDR R0, =pattern_print', '@int pattern (%d)')
                     self.append_final_code(f'LDR R1, ={var}', '@Send variable address')
                     self.append_final_code(f'LDR R1, [R1]', '@Send variable address')
                     self.append_final_code(f'BL printf', ' @Function to receive input from the keyboard\n')
-                # else:
+                else:
+                    string_value = inter_code[l_index].split('"')[1]
+                    string_var = self.get_new_string_name()
+                    self.append_final_code(f'LDR R0, ={string_var}', '@Send variable address')
+                    self.append_final_code(f'BL printf', ' @Function to receive input from the keyboard\n')
+                    self.__var_list.append(f'{string_var}\"{string_value}\"')
 
             elif '=' in inter_code[l_index].split():
                 if inter_code[l_index].split()[1] == '=':
@@ -199,5 +209,5 @@ class FinalRaspberry:
         file = open('files_fonte/finalresult.s', 'w')
         for line in self.__final_code:
             file.writelines(line + '\n')
-            print(line)
+            # print(line)
         file.close()

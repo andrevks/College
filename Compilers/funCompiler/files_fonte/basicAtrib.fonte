@@ -1,6 +1,15 @@
 BeginFun
 
-	funny old <- 8.
-	showMeTheCode old.
+
+	funny four.
+	funny five.
+	funny twenty.
+	grabInput four,five,twenty.
+
+	showMeTheCode "Resultado valor_total".
+	funny valor_total <- ((twenty/2) * (five+4000))/(four*40).
+	showMeTheCode valor_total.
+    showMeTheCode "Invista seu dinheiro".
+    showMeTheCode "Continue fazendo analises dos precos".
 
 EndFun

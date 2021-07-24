@@ -42,9 +42,6 @@ class SemanticAnalyser:
         self.__id_list = []
         self.__string_num = 0
 
-    def get_new_string_name(self):
-        self.__string_num += 1
-        return ''.join(f'string{self.__string_num}')
 
     def switch_mode(self , lse , ts):
         if lse:
@@ -83,8 +80,8 @@ class SemanticAnalyser:
                 if is_digit(str(var_value)):
                     print('{:<20}  {:<10} {:<10}'.format(var , var_value , line))
                     self.__id_list.append(var)
-                else:
-                    self.__id_list.append(f'{var}{var_value}')
+                # else:
+                #     self.__id_list.append(f'{var}{var_value}')
 
 
 
@@ -155,13 +152,13 @@ class SemanticAnalyser:
                 elif right_var.lexeme == 0:
                     SemanticError(line , col , lex , f'Divisão por ZERO')
             #STRING
-            elif type == 'showMeTheCode':
-                l_index += 1
-                type = tok[l_index].type
-                if type == 'TK_STRING':
-                    value = tok[l_index].lexeme
-                    string_name = self.get_new_string_name()
-                    self.insert_log(string_name, line , value , l_index)
+            # elif type == 'showMeTheCode':
+            #     l_index += 1
+            #     type = tok[l_index].type
+            #     if type == 'TK_STRING':
+            #         value = tok[l_index].lexeme
+            #         string_name = self.get_new_string_name()
+            #         self.insert_log(string_name, line , value , l_index)
 
             l_index += 1
         self.show_symbol_table_log(ts)
@@ -250,13 +247,13 @@ class SemanticAnalyser:
                 elif right_var.lexeme == 0:
                     SemanticError(line , col , lex , f'Divisão por ZERO')
             #STRING
-            elif type == 'showMeTheCode':
-                l_index += 1
-                type = tok[l_index].type
-                if type == 'TK_STRING':
-                    value = tok[l_index].lexeme
-                    string_name = self.get_new_string_name()
-                    self.insert_log(string_name, line , value , l_index)
+            # elif type == 'showMeTheCode':
+            #     l_index += 1
+            #     type = tok[l_index].type
+            #     if type == 'TK_STRING':
+            #         value = tok[l_index].lexeme
+            #         string_name = self.get_new_string_name()
+            #         self.insert_log(string_name, line , value , l_index)
 
             l_index += 1
         self.create_id_list()
