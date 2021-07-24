@@ -28,7 +28,9 @@ class FinalRaspberry:
             self.get_value(elem)
         else:
             for elem in ar_exp:
-                if elem == '/':
+                if is_variable(elem) or is_digit(elem):
+                    self.get_value(elem)
+                elif elem == '/':
                     self.__final_code.append('@DIVISION')
                     self.append_final_code('POP {R1}', '@Divisor(under bar) from stack')
                     self.append_final_code('POP {R0}', '@Dividend(above bar) from stack')
@@ -44,8 +46,28 @@ class FinalRaspberry:
                     self.append_final_code(f'{end_div_label}:\n')
                     self.append_final_code('PUSH {R2}', '@(Quotient/Result) to the stack')
                     self.__final_code.append('@END-DIVISION')
-
-            self.append_final_code('POP {R0}', '@Result of the acc from stack')
+                elif elem == '*':
+                    self.__final_code.append('@MULT')
+                    self.append_final_code('POP {R1}')
+                    self.append_final_code('POP {R0}')
+                    self.append_final_code(f'MUL R2, R0, R1', '@R2 = R0 * R1')
+                    self.append_final_code('PUSH {R2}', '@(Result) to the stack')
+                    self.__final_code.append('@END-MULT')
+                elif elem == '-':
+                    self.__final_code.append('@SUB')
+                    self.append_final_code('POP {R1}')
+                    self.append_final_code('POP {R0}')
+                    self.append_final_code(f'SUB R2, R0, R1 ', '@R2 = R0 - R1')
+                    self.append_final_code('PUSH {R2}', '@(Result) to the stack')
+                    self.__final_code.append('@END-SUB')
+                elif elem == '+':
+                    self.__final_code.append('@ADD')
+                    self.append_final_code('POP {R1}')
+                    self.append_final_code('POP {R0}')
+                    self.append_final_code(f'ADD R2, R0, R1 ', '@R2 = R0 + R1')
+                    self.append_final_code('PUSH {R2}', '@(Result) to the stack')
+                    self.__final_code.append('@END-ADD')
+            self.append_final_code('POP {R2}', '@Result of the acc from stack to R2')
 
     def get_value(self, elem):
         if is_digit(elem):
@@ -89,13 +111,13 @@ class FinalRaspberry:
     def generate_final_code(self):
         inter_code = self.__intermediate_code
         l_index = 0
+        OP_RE = ['<>', '=', '<', '>']
+        BOOL = ['\\', '&']
 
         self.get_header()
 
         while l_index < len(inter_code):
             inter_line = inter_code[l_index].split()[0]
-            OP_RE = ['<>', '=', '<', '>']
-            BOOL = ['\\', '&']
 
             if inter_line == 'leia':
                 inter_line = inter_code[l_index].split()[1]
@@ -157,7 +179,7 @@ class FinalRaspberry:
         print("\n-----------FINAL CODE-------------")
 
         self.get_bottom()
-        file = open('files_fonte/finalresult.fonte', 'w')
+        file = open('files_fonte/finalresult.s', 'w')
         for line in self.__final_code:
             file.writelines(line + '\n')
             print(line)
