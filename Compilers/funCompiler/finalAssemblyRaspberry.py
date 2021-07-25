@@ -22,12 +22,14 @@ class FinalRaspberry:
         self.__label_num = -1
         self.__string_num = -1
         self.generate_final_code()
+        self.append_log('\n--LOG: GERAÇÃO CÓDIGO FINAL')
 
     def get_new_string_name(self):
         self.__string_num += 1
         return ''.join(f'string{self.__string_num}')
 
     def calculate_arith_exp(self, ar_exp):
+        self.append_log('Geração do código final Expressão Aritmética (R2 <- Rfinal)')
         if len(ar_exp) == 1:
             elem = ar_exp[0]
             self.get_value(elem)
@@ -37,6 +39,7 @@ class FinalRaspberry:
                     self.get_value(elem)
                     self.append_final_code('PUSH {R2}', '@(Result) to the stack\n')
                 elif elem == '/':
+                    self.append_log('Geração do código final DIVISÃO')
                     self.__final_code.append('@DIVISION')
                     self.append_final_code('POP {R1}', '@Divisor(under bar) from stack')
                     self.append_final_code('POP {R0}', '@Dividend(above bar) from stack')
@@ -53,6 +56,7 @@ class FinalRaspberry:
                     self.append_final_code('PUSH {R2}', '@(Quotient/Result) to the stack')
                     self.__final_code.append('@END-DIVISION')
                 elif elem == '*':
+                    self.append_log('Geração do código final MULTIPLICAÇÃO')
                     self.__final_code.append('@MULT')
                     self.append_final_code('POP {R1}')
                     self.append_final_code('POP {R0}')
@@ -60,6 +64,7 @@ class FinalRaspberry:
                     self.append_final_code('PUSH {R2}', '@(Result) to the stack')
                     self.__final_code.append('@END-MULT')
                 elif elem == '-':
+                    self.append_log('Geração do código final SUBTRAÇÃO')
                     self.__final_code.append('@SUB')
                     self.append_final_code('POP {R1}')
                     self.append_final_code('POP {R0}')
@@ -67,6 +72,7 @@ class FinalRaspberry:
                     self.append_final_code('PUSH {R2}', '@(Result) to the stack')
                     self.__final_code.append('@END-SUB')
                 elif elem == '+':
+                    self.append_log('Geração do código final ADIÇÃO')
                     self.__final_code.append('@ADD')
                     self.append_final_code('POP {R1}')
                     self.append_final_code('POP {R0}')
@@ -76,6 +82,7 @@ class FinalRaspberry:
             self.append_final_code('POP {R2}', '@Result of the acc from stack to R2\n')
 
     def get_value(self, elem):
+        self.append_log(f'Geração para comando de obter valor')
         if is_digit(elem):
             self.append_final_code(f'MOV R2, #{str(elem)}', '@Move value to the R2')
         elif is_variable(elem):
@@ -87,23 +94,36 @@ class FinalRaspberry:
 
     def get_new_label(self, keyword):
         self.__label_num += 1
-        return ''.join(f'_{keyword}{self.__label_num}')
+        new_label = ''.join(f'_{keyword}{self.__label_num}')
+        self.append_log(f'Geração de nova label ({new_label})')
+        return  new_label
+
+    def append_log(self, log):
+        self.__log_final_code.append(log)
+
+    def show_log(self):
+        for logline in self.__log_final_code:
+            print(logline)
 
     def get_header(self):
-        print('\n____FINAL:')
+        self.append_log('Montagem do cabeçalho')
         self.append_final_code('.global main')
         self.append_final_code('.func main')
         self.append_final_code('main:')
+        self.append_log('Guardou o endereço do LinkRegister')
         self.append_final_code('LDR R1, =backup_lr', '@Address of the var ')
         self.append_final_code('STR LR, [R1] ', '@Store LinkRegister in var ')
         self.__final_code.append('@------BEGIN--------\n')
 
     def get_bottom(self):
+        self.append_log('Montagem do rodapé ')
         self.__final_code.append('@------END--------')
+        self.append_log('Pegou o endereço do LinkRegister da var')
         self.append_final_code('LDR LR, =backup_lr', '@Address of the var ')
         self.append_final_code('LDR LR, [LR]')
         self.append_final_code('BX LR', '@Return from the main function')
 
+        self.append_log('Geração da seção .data ')
         self.append_final_code('\n.data', '@ Data section')
         self.append_final_code('.balign 8', '@Bytes allocated to each var')
         self.append_final_code(f'pattern: .asciz \"%d\"', '@Int format')
@@ -112,6 +132,7 @@ class FinalRaspberry:
         self.append_final_code(f'\n.global printf')
         self.append_final_code(f'.global scanf')
         for var in self.__var_list:
+            self.append_log(f'Geração da variável ({var})')
             if 'string' not in var:
                 self.append_final_code(f'{var}: .word 0')
             else:
@@ -120,6 +141,7 @@ class FinalRaspberry:
                 self.append_final_code(f'{var_name}: .asciz \"{string_value}\\n\" ')
 
     def generate_final_code(self):
+        self.append_log(f'Começo da geração de Código Final Assembly (RASPBERRY PI)')
         inter_code = self.__intermediate_code
         l_index = 0
         OP_RE = ['<>', '=', '<', '>']
@@ -131,6 +153,7 @@ class FinalRaspberry:
             inter_line = inter_code[l_index].split()[0]
 
             if inter_line == 'leia':
+                self.append_log(f'Geração do comando leia ')
                 inter_line = inter_code[l_index].split()[1]
                 self.append_final_code('LDR R0, =pattern', '@int pattern (%d)')
                 self.append_final_code(f'LDR R1, ={inter_line}', '@Send variable address')
@@ -139,6 +162,7 @@ class FinalRaspberry:
                 inter_line = inter_code[l_index].split()[1]
                 if is_variable(inter_line):
                     var = inter_code[l_index].split()[1]
+                    self.append_log(f'Geração do comando escreva ({var})')
                     # first case, when it's a variable
                     self.append_final_code('LDR R0, =pattern_print', '@int pattern (%d)')
                     self.append_final_code(f'LDR R1, ={var}', '@Send variable address')
@@ -146,6 +170,7 @@ class FinalRaspberry:
                     self.append_final_code(f'BL printf', ' @Function to receive input from the keyboard\n')
                 else:
                     string_value = inter_code[l_index].split('"')[1]
+                    self.append_log(f'Geração do comando escreva ({string_value})')
                     string_var = self.get_new_string_name()
                     self.append_final_code(f'LDR R0, ={string_var}', '@Send variable address')
                     self.append_final_code(f'BL printf', ' @Function to receive input from the keyboard\n')
@@ -156,12 +181,14 @@ class FinalRaspberry:
 
                 var = inter_code[l_index].split()[0]
                 ar_exp = inter_code[l_index].split()[2:]
+                self.append_log(f'Geração do comando de atribuição ({var})')
 
                 self.calculate_arith_exp(ar_exp)
                 self.append_final_code(f'LDR R1, ={var}', '@Getting var address')
                 self.append_final_code(f'STR R2, [R1] ', '@Store exp result in var\n')
 
             elif inter_line == 'se':
+                self.append_log(f'Geração do comando condicional se')
                 se_label = self.get_new_label('se')
                 senao_label = self.get_new_label('senao')
                 self.__stack.push(senao_label)
@@ -201,16 +228,19 @@ class FinalRaspberry:
                     i += 1
                 self.append_final_code(f'{se_label}:', '@add symbol after expr')
             elif inter_line == 'senao':
+                self.append_log(f'Geração do comando senao')
                 fim_se_label = self.get_new_label("fim_se")
                 senao_label = self.__stack.pop()
                 self.append_final_code(f'B {fim_se_label}', '@Jumps unconditionally')
                 self.append_final_code(f'{senao_label}:', '@add symbol after expr')
                 self.__stack.push(fim_se_label)
             elif inter_line == 'fim_se':
+                self.append_log(f'Geração do comando fim_se')
                 fim_label = self.__stack.pop()
                 self.append_final_code(f'{fim_label}:')
             elif inter_line == 'enquanto':
 
+                self.append_log(f'Geração do comando enquanto')
                 enquanto_label = self.get_new_label('enquanto')
                 fim_enquanto_label = self.get_new_label('fim_enquanto')
                 self.__stack.push(fim_enquanto_label)
@@ -248,6 +278,7 @@ class FinalRaspberry:
                     self.__final_code.append('@EXPRESSIONS')
                     i += 1
             elif inter_line == 'fim_enquanto':
+                self.append_log(f'Geração dos comandos para o fim_enquanto')
                 self.__final_code.append('@END-EXPRESSIONS')
                 enquanto_label = self.__stack.pop()
                 fim_enquanto_label = self.__stack.pop()
@@ -259,6 +290,7 @@ class FinalRaspberry:
         print("\n-----------FINAL CODE-------------")
 
         self.get_bottom()
+        self.show_log()
         file = open('files_fonte/finalresult.s', 'w')
         for line in self.__final_code:
             file.writelines(line + '\n')

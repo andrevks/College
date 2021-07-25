@@ -1,0 +1,25 @@
+BeginFun
+
+
+    showMeTheCode "INICIO DO PROGRAMA".
+	funny x <- 1.
+	funny y <- 2.
+	funny z <- 1.
+	funny t <- 2.
+	funny a <- 1.
+	funny b <- 2.
+
+     if a <> b then
+        showMeTheCode "a <> b".
+     end.
+
+     if x > y then
+        showMeTheCode "x > y".
+     end.
+
+     if z < t then
+        showMeTheCode "z < t".
+     end.
+
+
+EndFun

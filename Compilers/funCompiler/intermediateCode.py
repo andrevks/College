@@ -9,7 +9,7 @@ class IntermediateCode:
         self.__strings_list = []
         self.convert = StackInfix()
 
-    def set_log(self,log):
+    def append_log(self , log):
         self.__log_inter_code.append(log)
 
 
@@ -30,11 +30,11 @@ class IntermediateCode:
         comand = ''
         l_index = 0
         #pegar variáveis declaradas
-        self.set_log('\n--LOG: CÓDIGO INTERMEDIÁRIO')
+        self.append_log('\n--LOG: CÓDIGO INTERMEDIÁRIO')
         for var in self.__variables:
             var_name = var.split('"')[0]
             self.__intermediate_code.append(f'_Var {var_name}')
-            self.set_log(f'Montou a variável ({var_name})')
+            self.append_log(f'Montou a variável ({var_name})')
             if 'string' in var:
                 self.__strings_list.append(var)
         print(self.__variables)
@@ -50,7 +50,7 @@ class IntermediateCode:
                 if tok[l_index].type == 'TK_ID':
                     lex = tok[l_index].lexeme
                     self.__intermediate_code.append(f'{comand} {lex}')
-                    self.set_log('Reconheceu o comando de leitura (grabInput)')
+                    self.append_log('Reconheceu o comando de leitura (grabInput)')
                 l_index += 1
             elif type == 'TK_ATRIB':
                 var = tok[l_index - 1].lexeme
@@ -61,9 +61,9 @@ class IntermediateCode:
                     infix_exp += str(lex)
                     l_index += 1
                 postfix_exp = self.convert.infixToPostfix(infix_exp)
-                self.set_log(f'Fez a conversão infixa para posfixa')
+                self.append_log(f'Fez a conversão infixa para posfixa')
                 self.__intermediate_code.append(f'{var} = {postfix_exp}')
-                self.set_log(f'Reconheceu uma atribuição de variável ({var}<- {postfix_exp})')
+                self.append_log(f'Reconheceu uma atribuição de variável ({var}<- {postfix_exp})')
             elif lex == 'funLoopWhile':
                 comand = 'enquanto'
                 endcmd = 'faca'
@@ -74,11 +74,11 @@ class IntermediateCode:
                     bool_exp += ' ' + str(lex)
                     l_index += 1
                 self.__intermediate_code.append(f'\n{comand}{bool_exp} {endcmd}')
-                self.set_log(f'Reconheceu o comando enquanto e faca (funLoopWhile ({bool_exp}) do)')
+                self.append_log(f'Reconheceu o comando enquanto e faca (funLoopWhile ({bool_exp}) do)')
             elif lex == 'endFunLoop':
                 comand = 'fim_enquanto'
                 self.__intermediate_code.append(f'{comand}')
-                self.set_log('Reconheceu o comando fim_enquanto (endFunLoop)')
+                self.append_log('Reconheceu o comando fim_enquanto (endFunLoop)')
             elif lex == 'if':
                 comand = 'se'
                 endcmd = 'entao'
@@ -89,15 +89,15 @@ class IntermediateCode:
                     bool_exp += ' ' + str(lex)
                     l_index += 1
                 self.__intermediate_code.append(f'\n{comand}{bool_exp} {endcmd}')
-                self.set_log(f'Reconheceu o comando se e então (if({bool_exp}) then)')
+                self.append_log(f'Reconheceu o comando se e então (if({bool_exp}) then)')
             elif lex == 'else':
                 comand = 'senao'
                 self.__intermediate_code.append(f'{comand}')
-                self.set_log('Reconheceu o comando senao (else)')
+                self.append_log('Reconheceu o comando senao (else)')
             elif lex == 'end':
                 comand = 'fim_se'
                 self.__intermediate_code.append(f'{comand}')
-                self.set_log('Reconheceu o comando fim_se (end)')
+                self.append_log('Reconheceu o comando fim_se (end)')
             elif lex == 'showMeTheCode':
                 comand = 'escreva'
                 var_name = ''
@@ -106,7 +106,7 @@ class IntermediateCode:
                 var_name = lex
 
                 self.__intermediate_code.append(f'{comand} {var_name}')
-                self.set_log(f'Reconheceu o comando escreva (showMeTheCode ({var_name}))')
+                self.append_log(f'Reconheceu o comando escreva (showMeTheCode ({var_name}))')
             l_index += 1
 
         self.show_log()
