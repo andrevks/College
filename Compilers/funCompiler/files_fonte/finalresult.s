@@ -16,7 +16,7 @@ MOV R2, #0 @Move value to the R2
 LDR R1, =n1 @Getting var address
 STR R2, [R1]  @Store exp result in var
 
-MOV R2, #0 @Move value to the R2
+MOV R2, #1 @Move value to the R2
 LDR R1, =n2 @Getting var address
 STR R2, [R1]  @Store exp result in var
 
@@ -27,6 +27,9 @@ STR R2, [R1]  @Store exp result in var
 MOV R2, #0 @Move value to the R2
 LDR R1, =new_number @Getting var address
 STR R2, [R1]  @Store exp result in var
+
+LDR R0, =string1 @Send variable address
+BL printf  @Function to receive input from the keyboard
 
 _enquanto0: @Loop label before condition
 @CONDITION
@@ -91,11 +94,6 @@ POP {R2} @Result of the acc from stack to R2
 LDR R1, =counted @Getting var address
 STR R2, [R1]  @Store exp result in var
 
-LDR R0, =pattern_print @int pattern (%d)
-LDR R1, =new_number @Send variable address
-LDR R1, [R1] @Send variable address
-BL printf  @Function to receive input from the keyboard
-
 @END-EXPRESSIONS
 B _enquanto0 @Jumps unconditionally 
 _fim_enquanto1: 
@@ -119,3 +117,4 @@ n2: .word 0
 counted: .word 0 
 new_number: .word 0 
 string0: .asciz "Digite o num maximo da sequencia de fibo:\n"  
+string1: .asciz " \n"  
