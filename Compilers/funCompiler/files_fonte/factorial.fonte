@@ -1,13 +1,12 @@
 BeginFun
 
-
-
+    showMeTheCode "Digite o num maximo da sequencia de fibo:".
 	funny terms_to_calculate.
 	grabInput terms_to_calculate.
-	funny n1.
-	funny n2.
+	funny n1 <- 0.
+	funny n2 <- 0.
 	funny counted <- 0.
-	funny new_number.
+	funny new_number <- 0.
 
 
 	funLoopWhile counted < terms_to_calculate do
@@ -16,9 +15,13 @@ BeginFun
 
 		new_number <- n1 + n2.
 
+        n1 <- n2.
+
 		n2 <- new_number.
 
 		counted <- counted + 1.
+
+		showMeTheCode new_number.
 
 	endFunLoop.
 

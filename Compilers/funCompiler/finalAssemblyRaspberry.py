@@ -167,7 +167,6 @@ class FinalRaspberry:
                 self.__stack.push(senao_label)
 
                 inter_line = inter_code[l_index].split()[1:]
-                print(inter_line)
                 i = 0
                 while inter_line[i] != 'entao':
                     elem = inter_line[i]
@@ -197,12 +196,51 @@ class FinalRaspberry:
             elif inter_line == 'senao':
                 fim_se_label = self.get_new_label("fim_se")
                 senao_label = self.__stack.pop()
-                self.__stack.push(fim_se_label)
                 self.append_final_code(f'B {fim_se_label}', '@Jumps unconditionally')
                 self.append_final_code(f'{senao_label}:', '@add symbol after expr')
+                self.__stack.push(fim_se_label)
             elif inter_line == 'fim_se':
                 fim_label = self.__stack.pop()
                 self.append_final_code(f'{fim_label}:')
+            elif inter_line == 'enquanto':
+
+                enquanto_label = self.get_new_label('enquanto')
+                fim_enquanto_label = self.get_new_label('fim_enquanto')
+                self.__stack.push(fim_enquanto_label)
+                self.__stack.push(enquanto_label)
+
+                self.append_final_code(f'{enquanto_label}:', '@Loop label before condition')
+                inter_line = inter_code[l_index].split()[1:]
+                i = 1
+                while inter_line[i] != 'faca':
+                    elem = inter_line[i]
+
+                    if elem in OP_RE:
+                        previous_var = inter_line[i - 1]
+                        posterior_var = inter_line[i + 1]
+                        self.__final_code.append('@CONDITION')
+                        self.get_value(previous_var)  # value of a prev_var, send it to R2
+                        self.append_final_code(f'MOV R3, R2 ', '@Send end result to R3')
+                        self.get_value(posterior_var)  # value of the post_var, send it to R2
+                        self.append_final_code(f'CMP R3, R2 ', '@Compare R3 and R2, changes flags status')
+                        self.__final_code.append('@END-CONDITION')
+
+                        if elem == '<':
+                            self.append_final_code(f'BGE {fim_enquanto_label} ', '@Jumps if R3 >= R1')
+                        elif elem == '>':
+                            self.append_final_code(f'BLE {fim_enquanto_label} ', '@Jumps if R3 =< R1')
+                        elif elem == '<>':
+                            self.append_final_code(f'BEQ {fim_enquanto_label} ', '@Jumps if R3 == R1')
+                        elif elem == '=':
+                            self.append_final_code(f'BNE {fim_enquanto_label} ', '@Jumps if R3 > R1')
+                        self.__final_code.append('@EXPRESSIONS')
+                    i += 1
+            elif inter_line == 'fim_enquanto':
+                self.__final_code.append('@END-EXPRESSIONS')
+                enquanto_label = self.__stack.pop()
+                fim_enquanto_label = self.__stack.pop()
+                self.append_final_code(f'B {enquanto_label}', '@Jumps unconditionally ')
+                self.append_final_code(f'{fim_enquanto_label}:')
 
             l_index += 1
 

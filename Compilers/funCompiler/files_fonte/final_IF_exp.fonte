@@ -10,14 +10,11 @@ BeginFun
      if taxas < 123 then
 
         showMeTheCode "EH MENOR ( < )".
+
+         if taxas > 19 then
+            showMeTheCode "EH MAIOR ( > )".
+         end.
      end.
 
-     if taxas > 123 then
-        showMeTheCode "EH MAIOR ( > )".
-     end.
-
-     if taxas <> 123 then
-        showMeTheCode "EH DIFERENTE ( <> )".
-     end.
 
 EndFun
