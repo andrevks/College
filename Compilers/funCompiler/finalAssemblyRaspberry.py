@@ -166,31 +166,36 @@ class FinalRaspberry:
                 senao_label = self.get_new_label('senao')
                 self.__stack.push(senao_label)
 
-                inter_line = inter_code[l_index].split()[1:]
+                bool_exp = inter_code[l_index]
+                bool_exp_list = bool_exp.split()
+                operator_pos = [idx for idx, elem in enumerate(bool_exp_list) if elem in OP_RE]
+                print(f'bool_exp.split(): {bool_exp_list}')
+                print("OPERATOR_POS: ", operator_pos)
+
                 i = 0
-                while inter_line[i] != 'entao':
-                    elem = inter_line[i]
+                while i < len(operator_pos):
+                    elem = bool_exp_list[operator_pos[i]]
 
-                    if elem in OP_RE:
-                        previous_var = inter_line[i - 1]
-                        posterior_var = inter_line[i + 1]
-                        self.get_value(previous_var)  # value of a prev_var, send it to R2
-                        self.append_final_code(f'MOV R3, R2 ', '@Send end result to R3')
-                        self.get_value(posterior_var)  # value of the post_var, send it to R2
-                        self.append_final_code(f'CMP R3, R2 ', '@Compare R3 and R2, changes flags status')
+                    previous_var = bool_exp_list[operator_pos[i] - 1]
+                    posterior_var = bool_exp_list[operator_pos[i] + 1]
+                    print(f'PREVIOUS: {previous_var}, POST: {posterior_var}')
+                    self.get_value(previous_var)  # value of a prev_var, send it to R2
+                    self.append_final_code(f'MOV R3, R2 ', '@Send end result to R3')
+                    self.get_value(posterior_var)  # value of the post_var, send it to R2
+                    self.append_final_code(f'CMP R3, R2 ', '@Compare R3 and R2, changes flags status')
 
-                        if elem == '<':
-                            self.append_final_code(f'BLT {se_label} ', '@Jumps if R3 < R1')
-                            self.append_final_code(f'B {senao_label}', '@Jumps unconditionally (R3 == R1)')
-                        elif elem == '>':
-                            self.append_final_code(f'BGT {se_label} ', '@Jumps if R3 > R1 (Zero is set)')
-                            self.append_final_code(f'B {senao_label}', '@Jumps unconditionally ')
-                        elif elem == '=':
-                            self.append_final_code(f'BEQ {se_label} ', '@Jumps if R3 == R1 (Zero is set)')
-                            self.append_final_code(f'B {senao_label}', '@Jumps unconditionally (R3 <> R1)')
-                        elif elem == '<>':
-                            self.append_final_code(f'BNE {se_label} ', '@Jumps if R3 > R1 (Zero is not set)')
-                            self.append_final_code(f'B {senao_label}', '@Jumps unconditionally ')
+                    if elem == '<':
+                        self.append_final_code(f'BLT {se_label} ', '@Jumps if R3 < R1')
+                        self.append_final_code(f'B {senao_label}', '@Jumps unconditionally (R3 == R1)')
+                    elif elem == '>':
+                        self.append_final_code(f'BGT {se_label} ', '@Jumps if R3 > R1 (Zero is set)')
+                        self.append_final_code(f'B {senao_label}', '@Jumps unconditionally ')
+                    elif elem == '=':
+                        self.append_final_code(f'BEQ {se_label} ', '@Jumps if R3 == R1 (Zero is set)')
+                        self.append_final_code(f'B {senao_label}', '@Jumps unconditionally (R3 <> R1)')
+                    elif elem == '<>':
+                        self.append_final_code(f'BNE {se_label} ', '@Jumps if R3 > R1 (Zero is not set)')
+                        self.append_final_code(f'B {senao_label}', '@Jumps unconditionally ')
                     i += 1
                 self.append_final_code(f'{se_label}:', '@add symbol after expr')
             elif inter_line == 'senao':
@@ -211,6 +216,8 @@ class FinalRaspberry:
 
                 self.append_final_code(f'{enquanto_label}:', '@Loop label before condition')
                 inter_line = inter_code[l_index].split()[1:]
+                print('>>>>>>>>BEFORE: ', inter_code[l_index])
+                print('>>>>>>>>SPLITED INTERLINE: ', inter_line)
                 i = 1
                 while inter_line[i] != 'faca':
                     elem = inter_line[i]

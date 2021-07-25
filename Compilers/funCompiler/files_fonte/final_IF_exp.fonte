@@ -4,16 +4,13 @@ BeginFun
 
     showMeTheCode "Digite o valor da taxa".
 	funny taxas.
+	funny dinheiro.
 
 	grabInput taxas.
 
-     if taxas < 123 then
 
-        showMeTheCode "EH MENOR ( < )".
-
-         if taxas > 19 then
-            showMeTheCode "EH MAIOR ( > )".
-         end.
+     if taxas > 19 then
+        showMeTheCode "EH MAIOR ( > )".
      end.
 
 
