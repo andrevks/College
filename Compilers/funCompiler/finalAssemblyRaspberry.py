@@ -179,10 +179,12 @@ class FinalRaspberry:
                     previous_var = bool_exp_list[operator_pos[i] - 1]
                     posterior_var = bool_exp_list[operator_pos[i] + 1]
                     print(f'PREVIOUS: {previous_var}, POST: {posterior_var}')
+                    self.__final_code.append('@CONDITION')
                     self.get_value(previous_var)  # value of a prev_var, send it to R2
                     self.append_final_code(f'MOV R3, R2 ', '@Send end result to R3')
                     self.get_value(posterior_var)  # value of the post_var, send it to R2
                     self.append_final_code(f'CMP R3, R2 ', '@Compare R3 and R2, changes flags status')
+                    self.__final_code.append('@END-CONDITION')
 
                     if elem == '<':
                         self.append_final_code(f'BLT {se_label} ', '@Jumps if R3 < R1')
@@ -213,34 +215,37 @@ class FinalRaspberry:
                 fim_enquanto_label = self.get_new_label('fim_enquanto')
                 self.__stack.push(fim_enquanto_label)
                 self.__stack.push(enquanto_label)
-
                 self.append_final_code(f'{enquanto_label}:', '@Loop label before condition')
-                inter_line = inter_code[l_index].split()[1:]
-                print('>>>>>>>>BEFORE: ', inter_code[l_index])
-                print('>>>>>>>>SPLITED INTERLINE: ', inter_line)
-                i = 1
-                while inter_line[i] != 'faca':
-                    elem = inter_line[i]
 
-                    if elem in OP_RE:
-                        previous_var = inter_line[i - 1]
-                        posterior_var = inter_line[i + 1]
-                        self.__final_code.append('@CONDITION')
-                        self.get_value(previous_var)  # value of a prev_var, send it to R2
-                        self.append_final_code(f'MOV R3, R2 ', '@Send end result to R3')
-                        self.get_value(posterior_var)  # value of the post_var, send it to R2
-                        self.append_final_code(f'CMP R3, R2 ', '@Compare R3 and R2, changes flags status')
-                        self.__final_code.append('@END-CONDITION')
+                bool_exp = inter_code[l_index]
+                bool_exp_list = bool_exp.split()
+                operator_pos = [idx for idx, elem in enumerate(bool_exp_list) if elem in OP_RE]
+                print(f'bool_exp.split(): {bool_exp_list}')
+                print("OPERATOR_POS: ", operator_pos)
 
-                        if elem == '<':
-                            self.append_final_code(f'BGE {fim_enquanto_label} ', '@Jumps if R3 >= R1')
-                        elif elem == '>':
-                            self.append_final_code(f'BLE {fim_enquanto_label} ', '@Jumps if R3 =< R1')
-                        elif elem == '<>':
-                            self.append_final_code(f'BEQ {fim_enquanto_label} ', '@Jumps if R3 == R1')
-                        elif elem == '=':
-                            self.append_final_code(f'BNE {fim_enquanto_label} ', '@Jumps if R3 > R1')
-                        self.__final_code.append('@EXPRESSIONS')
+                i = 0
+                while i < len(operator_pos):
+                    elem = bool_exp_list[operator_pos[i]]
+
+                    previous_var = bool_exp_list[operator_pos[i] - 1]
+                    posterior_var = bool_exp_list[operator_pos[i] + 1]
+                    print(f'PREVIOUS: {previous_var}, POST: {posterior_var}')
+                    self.__final_code.append('@CONDITION')
+                    self.get_value(previous_var)  # value of a prev_var, send it to R2
+                    self.append_final_code(f'MOV R3, R2 ', '@Send end result to R3')
+                    self.get_value(posterior_var)  # value of the post_var, send it to R2
+                    self.append_final_code(f'CMP R3, R2 ', '@Compare R3 and R2, changes flags status')
+                    self.__final_code.append('@END-CONDITION')
+
+                    if elem == '<':
+                        self.append_final_code(f'BGE {fim_enquanto_label} ', '@Jumps if R3 >= R1')
+                    elif elem == '>':
+                        self.append_final_code(f'BLE {fim_enquanto_label} ', '@Jumps if R3 =< R1')
+                    elif elem == '<>':
+                        self.append_final_code(f'BEQ {fim_enquanto_label} ', '@Jumps if R3 == R1')
+                    elif elem == '=':
+                        self.append_final_code(f'BNE {fim_enquanto_label} ', '@Jumps if R3 > R1')
+                    self.__final_code.append('@EXPRESSIONS')
                     i += 1
             elif inter_line == 'fim_enquanto':
                 self.__final_code.append('@END-EXPRESSIONS')

@@ -8,21 +8,22 @@ BeginFun
 	funny counted <- 0.
 	funny new_number <- 0.
 
+    if terms_to_calculate < 43 then
+        showMeTheCode " ".
+        funLoopWhile counted < terms_to_calculate do
 
-    showMeTheCode " ".
-	funLoopWhile counted < terms_to_calculate do
+            showMeTheCode n1.
 
-        showMeTheCode n1.
+            new_number <- n1 + n2.
 
-		new_number <- n1 + n2.
+            n1 <- n2.
 
-        n1 <- n2.
+            n2 <- new_number.
 
-		n2 <- new_number.
-
-		counted <- counted + 1.
+            counted <- counted + 1.
 
 
-	endFunLoop.
+        endFunLoop.
+    end.
 
 EndFun

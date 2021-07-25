@@ -8,9 +8,24 @@ BeginFun
 
 	grabInput taxas.
 
+     if taxas < 123 then
+        showMeTheCode "EH MENOR ".
 
-     if taxas > 19 then
-        showMeTheCode "EH MAIOR ( > )".
+        else
+        showMeTheCode "Passou no ELSE ".
+
+     end.
+
+     if taxas > 123 then
+        showMeTheCode "EH MAIOR ".
+     end.
+
+     if taxas = 123 then
+        showMeTheCode "EH IGUAL ".
+     end.
+
+     if taxas <> 123 then
+        showMeTheCode "EH DIFF ".
      end.
 
 
