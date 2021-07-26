@@ -13,7 +13,7 @@ def is_variable(elem):
 
 
 class FinalRaspberry:
-    def __init__(self, intermediate, var_list):
+    def __init__(self, intermediate, var_list, lgc):
         self.__intermediate_code = intermediate
         self.__var_list = var_list
         self.__final_code = []
@@ -21,6 +21,7 @@ class FinalRaspberry:
         self.__stack = Stack()
         self.__label_num = -1
         self.__string_num = -1
+        self.__lgc = lgc
         self.generate_final_code()
         self.append_log('\n--LOG: GERAÇÃO CÓDIGO FINAL')
 
@@ -96,14 +97,15 @@ class FinalRaspberry:
         self.__label_num += 1
         new_label = ''.join(f'_{keyword}{self.__label_num}')
         self.append_log(f'Geração de nova label ({new_label})')
-        return  new_label
+        return new_label
 
     def append_log(self, log):
         self.__log_final_code.append(log)
 
     def show_log(self):
-        for logline in self.__log_final_code:
-            print(logline)
+        if self.__lgc:
+            for logline in self.__log_final_code:
+                print(logline)
 
     def get_header(self):
         self.append_log('Montagem do cabeçalho')

@@ -53,6 +53,11 @@ parser.add_argument('-ts',
                     action='store_true',
                     help='Exibe a tabela de símbolos.')
 
+parser.add_argument('-lgc',
+                    dest='lgeracao',
+                    action='store_true',
+                    help='Exibe a tabela de símbolos.')
+
 # file required argument
 parser.add_argument('filename', help='Required: Informe um caminho para um arquivo')
 args = parser.parse_args()

@@ -27,6 +27,7 @@ def fun_compiler():
     ls = args.lsintatico
     lse = args.lsemantico
     ts = args.tsimbolos
+    lgc = args.lgeracao
     token_list: List[Any] = []
     id_list = []
     if tudo:
@@ -37,7 +38,7 @@ def fun_compiler():
         id_list = SemanticAnalyser(token_list_backup, lse=True, ts=True).switch_mode(lse=True, ts=True)
         print(f'\nid_list: {id_list} ')
         inter_code = IntermediateCode(id_list, token_list_backup).generate_intermediate_code()
-        FinalRaspberry(inter_code, id_list)
+        FinalRaspberry(inter_code, id_list, lgc=True)
     else:
         token_list = LexicalAnalyser(source_code, lt).switch_mode(lt)
         token_list_backup = clone_list(token_list)
@@ -46,7 +47,7 @@ def fun_compiler():
         id_list = SemanticAnalyser(token_list_backup, lse, ts).switch_mode(lse, ts)
         print(f'\nid_list: {id_list} ')
         inter_code = IntermediateCode(id_list, token_list_backup).generate_intermediate_code()
-        FinalRaspberry(inter_code, id_list)
+        FinalRaspberry(inter_code, id_list, lgc)
 
 
 fun_compiler()
