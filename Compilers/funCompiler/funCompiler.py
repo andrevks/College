@@ -17,8 +17,10 @@ def clone_list(list):
 def syntax_result(syntax):
     if syntax:
         print("\nO arquivo foi RECONHECIDO pelo analisador sintático !\n")
+        return True
     else:
         print("\nQue Pena! O arquivo foi NÃO FOI RECONHECIDO pelo analisador sintático !\n")
+        return False
 
 
 def fun_compiler():
@@ -37,18 +39,18 @@ def fun_compiler():
         token_list = LexicalAnalyser(source_code, True).switch_mode(lt=True)
         token_list_backup = clone_list(token_list)
         syntax = SyntaxAnalyser(token_list, ls=True)
-        syntax_result(syntax)
-        id_list = SemanticAnalyser(token_list_backup, lse=True, ts=True).verify_semantic()
-        inter_code = IntermediateCode(id_list, token_list_backup, tci=True, lci=True).generate_intermediate_code()
-        final_code = FinalRaspberry(inter_code, id_list, lgc=True).generate_final_code()
+        if syntax_result(syntax):
+            id_list = SemanticAnalyser(token_list_backup, lse=True, ts=True).verify_semantic()
+            inter_code = IntermediateCode(id_list, token_list_backup, tci=True, lci=True).generate_intermediate_code()
+            final_code = FinalRaspberry(inter_code, id_list, lgc=True).generate_final_code()
     else:
         token_list = LexicalAnalyser(source_code, lt).switch_mode(lt)
         token_list_backup = clone_list(token_list)
         syntax = SyntaxAnalyser(token_list, ls)
-        syntax_result(syntax)
-        id_list = SemanticAnalyser(token_list_backup, lse, ts).verify_semantic()
-        inter_code = IntermediateCode(id_list, token_list_backup, tci, lci).generate_intermediate_code()
-        final_code = FinalRaspberry(inter_code, id_list, lgc).generate_final_code()
+        if syntax_result(syntax):
+            id_list = SemanticAnalyser(token_list_backup, lse, ts).verify_semantic()
+            inter_code = IntermediateCode(id_list, token_list_backup, tci, lci).generate_intermediate_code()
+            final_code = FinalRaspberry(inter_code, id_list, lgc).generate_final_code()
 
     file = open('files_fonte/finalresult.s', 'w')
     for line in final_code:

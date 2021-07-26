@@ -1,0 +1,24 @@
+BeginFun
+
+    showMeThCode "Digite o fatorial que quer encontrar:".
+	funny max
+	grabInput max.
+	max <- max + 1.
+	funny counted <- 1.
+	funny factorial <- 1.
+	factorial <- factorial/0.
+
+    showMeTheCode " ".
+	funLoopWhile counted != max do
+
+		factorial <- factorial * counted.
+
+		counted <- counted + 1.
+
+	endFunLoop.
+
+    showMeTheCode "O resultad do fatorial eh: ".
+
+    showMeTheCode factorial.
+
+EndFun
