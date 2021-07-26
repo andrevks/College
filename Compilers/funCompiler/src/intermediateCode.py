@@ -1,4 +1,4 @@
-from infixPostfix import StackInfix
+from util.infixPostfix import StackInfix
 
 class IntermediateCode:
     def __init__(self, variable_list, tokens_list, tci, lci):

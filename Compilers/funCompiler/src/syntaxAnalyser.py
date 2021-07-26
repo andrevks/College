@@ -1,4 +1,4 @@
-import lexicalAnalyser
+import src.lexicalAnalyser
 from util.stack import Stack
 #Representing the big table
 SYNTAX_TABLE = {

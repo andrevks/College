@@ -20,7 +20,7 @@ BOOL : [ \| & ]
 :{WS}*
 TK_ID: {L} ({L} | {D} | _ )*
 TK_NUM: {D}+
-TK_STRING: \" ({L} | {D} | . | % | :  )* \"
+TK_STRING: \" ({L} | {D} | . | % | : )* \"
 
 BeginFun =TK_ID: "BeginFun"
 EndFun = TK_ID: "EndFun"
@@ -39,7 +39,7 @@ if = TK_ID: "if"
 then = TK_ID: "then"
 else = TK_ID: "else"
 end = TK_ID: "end"
-elif = TK_ID: "elif"
+//elif = TK_ID: "elif"
 funLoopWhile = TK_ID: "funLoopWhile"
 do = TK_ID: "do"
 endFunLoop = TK_ID: "endFunLoop"
@@ -66,7 +66,7 @@ TK_OP_RE: {OP_RE}
 <KEY>
 
 <ELSE>
-<ELIF>
+//<ELIF>
 <STRING>
 
 <OPER>
@@ -101,9 +101,9 @@ TK_OP_RE: {OP_RE}
 <STRING> ::= TK_STRING  ;
 
 //If-Statement
-<COMANDO> ::= if <EXPR_BOOL> then <LISTA_COMANDOS> <ELIF> <ELSE> end;
+<COMANDO> ::= if <EXPR_BOOL> then <LISTA_COMANDOS><ELSE> end;
 <ELSE> ::= else <LISTA_COMANDOS> | î ;
-<ELIF> ::= elif <EXPR_BOOL> <LISTA_COMANDOS> | î;
+//<ELIF> ::= elif <EXPR_BOOL> <LISTA_COMANDOS> | î;
 
 //While-statement
 <COMANDO> ::= funLoopWhile <EXPR_BOOL> do <LISTA_COMANDOS> endFunLoop;

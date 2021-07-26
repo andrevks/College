@@ -1,12 +1,12 @@
 from typing import List, Any
 
-from receiveFlags import args
-from receiveFlags import source_code
-from syntaxAnalyser import SyntaxAnalyser
-from lexicalAnalyser import LexicalAnalyser
-from semanticAnalyser import SemanticAnalyser
-from intermediateCode import IntermediateCode
-from finalAssemblyRaspberry import FinalRaspberry
+from util.receiveFlags import args
+from util.receiveFlags import source_code
+from src.syntaxAnalyser import SyntaxAnalyser
+from src.lexicalAnalyser import LexicalAnalyser
+from src.semanticAnalyser import SemanticAnalyser
+from src.intermediateCode import IntermediateCode
+from src.finalAssemblyRaspberry import FinalRaspberry
 
 
 def clone_list(list):

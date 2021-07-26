@@ -1,5 +1,4 @@
-from hashTable import HashTable
-import hashTable
+from util.hashTable import HashTable
 import re
 
 def is_digit(elem):
@@ -88,6 +87,8 @@ class SemanticAnalyser:
 
 
     def verify_semantic(self):
+        self.append_log("\n---------------Analisador Semântico--------------")
+        self.append_log('\n--LOG DE OPERAÇÕES: ')
         l_index = 0
         tok = self.__token_list
         while l_index < len(tok):
