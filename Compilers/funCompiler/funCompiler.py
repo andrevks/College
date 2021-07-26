@@ -27,27 +27,33 @@ def fun_compiler():
     ls = args.lsintatico
     lse = args.lsemantico
     ts = args.tsimbolos
+    tci = args.tintermediario
+    lci = args.lintermediario
     lgc = args.lgeracao
     token_list: List[Any] = []
     id_list = []
+
     if tudo:
         token_list = LexicalAnalyser(source_code, True).switch_mode(lt=True)
         token_list_backup = clone_list(token_list)
-        syntax = SyntaxAnalyser(token_list, log=True).switch_mode(log=True)
+        syntax = SyntaxAnalyser(token_list, ls=True)
         syntax_result(syntax)
-        id_list = SemanticAnalyser(token_list_backup, lse=True, ts=True).switch_mode(lse=True, ts=True)
-        print(f'\nid_list: {id_list} ')
-        inter_code = IntermediateCode(id_list, token_list_backup).generate_intermediate_code()
-        FinalRaspberry(inter_code, id_list, lgc=True)
+        id_list = SemanticAnalyser(token_list_backup, lse=True, ts=True).verify_semantic()
+        inter_code = IntermediateCode(id_list, token_list_backup, tci=True, lci=True).generate_intermediate_code()
+        final_code = FinalRaspberry(inter_code, id_list, lgc=True).generate_final_code()
     else:
         token_list = LexicalAnalyser(source_code, lt).switch_mode(lt)
         token_list_backup = clone_list(token_list)
-        syntax = SyntaxAnalyser(token_list, ls).switch_mode(ls)
+        syntax = SyntaxAnalyser(token_list, ls)
         syntax_result(syntax)
-        id_list = SemanticAnalyser(token_list_backup, lse, ts).switch_mode(lse, ts)
-        print(f'\nid_list: {id_list} ')
-        inter_code = IntermediateCode(id_list, token_list_backup).generate_intermediate_code()
-        FinalRaspberry(inter_code, id_list, lgc)
+        id_list = SemanticAnalyser(token_list_backup, lse, ts).verify_semantic()
+        inter_code = IntermediateCode(id_list, token_list_backup, tci, lci).generate_intermediate_code()
+        final_code = FinalRaspberry(inter_code, id_list, lgc).generate_final_code()
+
+    file = open('files_fonte/finalresult.s', 'w')
+    for line in final_code:
+        file.writelines(line + '\n')
+    file.close()
 
 
 fun_compiler()

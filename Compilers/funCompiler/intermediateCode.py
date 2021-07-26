@@ -1,12 +1,14 @@
 from infixPostfix import StackInfix
 
 class IntermediateCode:
-    def __init__(self, variable_list, tokens_list):
+    def __init__(self, variable_list, tokens_list, tci, lci):
         self.__variables = variable_list
         self.__tokens_list = tokens_list
         self.__log_inter_code = []
         self.__intermediate_code = []
         self.__strings_list = []
+        self.tci = tci
+        self.lci = lci
         self.convert = StackInfix()
 
     def append_log(self , log):
@@ -14,14 +16,16 @@ class IntermediateCode:
 
 
     def show_log(self):
-        for logline in self.__log_inter_code:
-            print(logline)
+        if self.lci:
+            for logline in self.__log_inter_code:
+                print(logline)
 
 
     def show_intermediate_code(self):
-        print('\n---------CÓDIGO INTERMEDIÁRIO---------')
-        for codeline in self.__intermediate_code:
-            print(codeline)
+        if self.tci:
+            print('\n---------CÓDIGO INTERMEDIÁRIO---------')
+            for codeline in self.__intermediate_code:
+                print(codeline)
 
 
 
@@ -37,7 +41,6 @@ class IntermediateCode:
             self.append_log(f'Montou a variável ({var_name})')
             if 'string' in var:
                 self.__strings_list.append(var)
-        print(self.__variables)
         while l_index < len(tok):
             lex = tok[l_index].lexeme
             line = tok[l_index].line

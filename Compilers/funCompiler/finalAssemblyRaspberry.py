@@ -22,8 +22,6 @@ class FinalRaspberry:
         self.__label_num = -1
         self.__string_num = -1
         self.__lgc = lgc
-        self.generate_final_code()
-        self.append_log('\n--LOG: GERAÇÃO CÓDIGO FINAL')
 
     def get_new_string_name(self):
         self.__string_num += 1
@@ -104,6 +102,7 @@ class FinalRaspberry:
 
     def show_log(self):
         if self.__lgc:
+            print("\n-----------CÓDIGO FINAL-------------")
             for logline in self.__log_final_code:
                 print(logline)
 
@@ -134,15 +133,17 @@ class FinalRaspberry:
         self.append_final_code(f'\n.global printf')
         self.append_final_code(f'.global scanf')
         for var in self.__var_list:
-            self.append_log(f'Geração da variável ({var})')
             if 'string' not in var:
+                self.append_log(f'Geração da variável ({var})')
                 self.append_final_code(f'{var}: .word 0')
             else:
                 var_name = var.split('"')[0]
                 string_value = var.split('"')[1]
+                self.append_log(f'Geração da variável ({var_name})')
                 self.append_final_code(f'{var_name}: .asciz \"{string_value}\\n\" ')
 
     def generate_final_code(self):
+        self.append_log('\n--LOG: GERAÇÃO CÓDIGO FINAL')
         self.append_log(f'Começo da geração de Código Final Assembly (RASPBERRY PI)')
         inter_code = self.__intermediate_code
         l_index = 0
@@ -198,8 +199,6 @@ class FinalRaspberry:
                 bool_exp = inter_code[l_index]
                 bool_exp_list = bool_exp.split()
                 operator_pos = [idx for idx, elem in enumerate(bool_exp_list) if elem in OP_RE]
-                print(f'bool_exp.split(): {bool_exp_list}')
-                print("OPERATOR_POS: ", operator_pos)
 
                 i = 0
                 while i < len(operator_pos):
@@ -207,7 +206,6 @@ class FinalRaspberry:
 
                     previous_var = bool_exp_list[operator_pos[i] - 1]
                     posterior_var = bool_exp_list[operator_pos[i] + 1]
-                    print(f'PREVIOUS: {previous_var}, POST: {posterior_var}')
                     self.__final_code.append('@CONDITION')
                     self.get_value(previous_var)  # value of a prev_var, send it to R2
                     self.append_final_code(f'MOV R3, R2 ', '@Send end result to R3')
@@ -252,8 +250,6 @@ class FinalRaspberry:
                 bool_exp = inter_code[l_index]
                 bool_exp_list = bool_exp.split()
                 operator_pos = [idx for idx, elem in enumerate(bool_exp_list) if elem in OP_RE]
-                print(f'bool_exp.split(): {bool_exp_list}')
-                print("OPERATOR_POS: ", operator_pos)
 
                 i = 0
                 while i < len(operator_pos):
@@ -261,7 +257,6 @@ class FinalRaspberry:
 
                     previous_var = bool_exp_list[operator_pos[i] - 1]
                     posterior_var = bool_exp_list[operator_pos[i] + 1]
-                    print(f'PREVIOUS: {previous_var}, POST: {posterior_var}')
                     self.__final_code.append('@CONDITION')
                     self.get_value(previous_var)  # value of a prev_var, send it to R2
                     self.append_final_code(f'MOV R3, R2 ', '@Send end result to R3')
@@ -289,12 +284,6 @@ class FinalRaspberry:
 
             l_index += 1
 
-        print("\n-----------FINAL CODE-------------")
-
         self.get_bottom()
         self.show_log()
-        file = open('files_fonte/finalresult.s', 'w')
-        for line in self.__final_code:
-            file.writelines(line + '\n')
-            # print(line)
-        file.close()
+        return self.__final_code

@@ -53,10 +53,20 @@ parser.add_argument('-ts',
                     action='store_true',
                     help='Exibe a tabela de símbolos.')
 
+parser.add_argument('-tci',
+                    dest='tintermediario',
+                    action='store_true',
+                    help='Exibe a tabela do código intermediário')
+
+parser.add_argument('-lci',
+                    dest='lintermediario',
+                    action='store_true',
+                    help='Exibe o LOG do código intermediário')
+
 parser.add_argument('-lgc',
                     dest='lgeracao',
                     action='store_true',
-                    help='Exibe a tabela de símbolos.')
+                    help='Exibe o LOG da geração de código.')
 
 # file required argument
 parser.add_argument('filename', help='Required: Informe um caminho para um arquivo')
