@@ -3,7 +3,7 @@
 #include <16F877A.h>
 #device ADC=8
 
-#FUSES NOWDT                    //No Watch Dog Timer
+                   //No Watch Dog Timer
 #FUSES HS                       //High speed OSC (>4mhz for PCM/PCH) (>10mhz for PCD)
 #FUSES NOPUT                    //No Power Up Timer
 #FUSES NOPROTECT                //Code not Protected from reading
@@ -29,13 +29,15 @@ void main()
    setup_timer_2(T2_DISABLED,0,1);
    setup_comparator(NC_NC_NC_NC);
    setup_vref(FALSE);
-
-   while(true){
+   
+    while(true){
      output_high(PIN_D2);
 
      delay_ms( 1000 );//1 sec (1000 milsec)
 
      output_low(PIN_D2);
+     
+     delay_ms( 1000 );//1 sec (1000 milsec)
    }
 
 
