@@ -1,4 +1,20 @@
 //#include <04display7seg03.h>
+
+/*
+
+   -  Aluno:André Geraldo, Eng. da Computação (7º semestre).
+
+   -  Professor Dr. Alberto Willian Mascarenhas.
+   
+   -  Disciplina: Microcontroladores.
+   
+   -  Objetivo: construir um contador decimal com PICSimLab configurado com a placa McLab1-PIC16F628A. 
+      O contador vai de 0 a 99 com um delay de 390ms.
+      
+   - Data: 08/09/2021
+
+
+*/
 #include <16F628.h>
 
 #FUSES NOWDT                    //No Watch Dog Timer
@@ -7,16 +23,7 @@
 
 #use delay(crystal=4000000)
 
-#define LED PIN_B4
-
-#define DELAY 390
-
-
-
-
-void clear_all(){
-     OUTPUT_B(0);
-}
+#define DELAY 5
 
 byte const unidade[11]={
     0b11111110,  //0
@@ -54,30 +61,26 @@ void main()
    
    while(true)
    {
-   
-      if(count_num > 10){
+      if(count_num > 100){
          count_num = 0;
       }
-     
-      d = (int) count_num / 10;
-      u = (int) count_num % 10; 
-      //clear_all();
-      //delay_ms(DELAY_OUT);
+      d = count_num / 10;
+      u = count_num % 10;
       
-      output_b(dezena[d]);
-      delay_ms(DELAY);
-      //delay_ms(DELAY);
-
-      output_b(unidade[u]);
-      delay_ms(DELAY);
-      //delay_ms(DELAY);
-    
-      delay_ms(DELAY);
+      //A 390ms Delay
+      for(int i=0; i < 39; i++){
+         //Each loop takes 10ms
+         //The change needs to 
+         //happen after a delay of 390,
+         //that's why it repeats 39 times.
+         output_b(dezena[d]);
+         delay_ms(DELAY);//5ms
+         output_b(unidade[u]);
+         delay_ms(DELAY);//5ms
+      }
+      
       count_num++;
-    
-      
-      
-  
+ 
    }
 
 }
