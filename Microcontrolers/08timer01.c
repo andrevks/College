@@ -1,13 +1,13 @@
 //#include <08timer01.h>
 
 /*
-   -  Aluno:André Geraldo, Eng. da Computa��o (7� semestre).
+   -  Aluno:Andre Geraldo, Eng. da Computacao (7� semestre).
    -  Professor Dr. Alberto Willian Mascarenhas.
    
    -  Disciplina: Microcontroladores.
    
    -  Objetivo: Crie um programa para o PIC16F877A para que os 3 LEDs (1, 2 e 3) conectados na porta D (D0, D1
-      e D2) respectivamente, liguem e desliguem com frequ�ncias iguais Na (50), Nb(280) e Nc(700) Hertz
+      e D2) respectivamente, liguem e desliguem com frequencias iguais Na (50), Nb(280) e Nc(700) Hertz
       
    - Data: 14/09/2021
 */
@@ -30,7 +30,7 @@ void  RTCC_isr(void)
       Para chegar aos valores foi preciso pegar as frequencias dadas e converter-las 
       em periodo.
       
-      Por exemplo, Na = 50 então Ta = 1/50 => Ta = 20ms
+      Por exemplo, Na = 50 entao Ta = 1/50 => Ta = 20ms
       
       - O LED eh mantido ligado com a metade do periodo.
       - Deve-se considerar o tempo de overflow de 13.1ms, neste caso.
